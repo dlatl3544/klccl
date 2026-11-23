@@ -660,10 +660,11 @@ def 저작쪽(w):
         본문 += PDF링크(w, v)
         공개 = [x for x in v["items"] if x["s"] in (2, 3)]
         if 공개:
-            본문 += '<table class="t"><tr><th style="width:80px">편</th><th>제목</th><th style="width:110px">상태</th></tr>' + "".join(
+            본문 += (f'<details class="units"><summary>편 목록 펼치기 <span class="mini">(공개 {len(공개)}{e(w["unit"])})</span></summary>'
+                     '<table class="t"><tr><th style="width:80px">편</th><th>제목</th><th style="width:110px">상태</th></tr>') + "".join(
                 f'<tr><td>제{x["no"]}{e(w["unit"])}</td><td><a href="{{R}}{단위주소(w, x["no"])}">{e(x["title"])}</a> '
                 f'<span class="mini">({e(w["units"][x["no"]]["ref"])})</span></td>'
-                f'<td><span class="tag">{"대역" if x["s"] == 3 else "한국어"}</span></td></tr>' for x in 공개) + "</table>"
+                f'<td><span class="tag">{"대역" if x["s"] == 3 else "한국어"}</span></td></tr>' for x in 공개) + "</table></details>"
         남음 = [x for x in v["items"] if x["s"] not in (2, 3)]
         if 남음:
             c = 집계(남음)

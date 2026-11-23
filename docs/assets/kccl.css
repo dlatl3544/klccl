@@ -277,3 +277,10 @@
   .turn{display:none}
 }
 .shelf a.dl{display:block;margin:4px 0 8px 10px;color:var(--gold)} .btn.dl{text-decoration:none}
+/* 저작 쪽 권별 편 목록 접기 */
+details.units{margin:6px 0 18px;border:1px solid var(--line,#ddd);border-radius:8px;padding:0 12px}
+details.units>summary{cursor:pointer;padding:9px 0;font-weight:600;list-style:none}
+details.units>summary::-webkit-details-marker{display:none}
+details.units>summary::before{content:"▸";display:inline-block;width:1.1em;color:var(--gold);transition:transform .15s}
+details.units[open]>summary::before{transform:rotate(90deg)}
+details.units[open]>summary{border-bottom:1px solid var(--line,#ddd);margin-bottom:8px}
