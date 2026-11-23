@@ -273,6 +273,23 @@ def 저작주소(w) -> str:
     return f"{w['author_dir']}/{w['id']}/"
 
 
+def PDF링크(w, v, 꼴="btn") -> str:
+    """권별 베타판 PDF 내려받기 링크. work.json 의 volumes[].pdf 에 파일 이름을 적는다"""
+    f = v.get("pdf")
+    if not isinstance(f, str):
+        return ""
+    원본 = 뿌리 / "content" / w["author"] / w["id"] / "pdf" / f
+    크기 = f"{원본.stat().st_size / 1048576:.1f}MB" if 원본.exists() else ""
+    쪽 = f'{v["pdf_pages"]}쪽, ' if v.get("pdf_pages") else ""
+    주소 = f'{{R}}{저작주소(w)}pdf/{f}'
+    if 꼴 == "tag":
+        return f' <a class="tag" href="{주소}" download>PDF</a>'
+    if 꼴 == "mini":
+        return f'<a class="dl mini" href="{주소}" download>{v["no"]}권 PDF 내려받기</a>'
+    return (f'<p><a class="btn dl" href="{주소}" download>{v["no"]}권 PDF 내려받기</a> '
+            f'<span class="mini">베타판 · {쪽}{크기} · AI 번역, 신학 감수 전 · CC0</span></p>')
+
+
 def 단위주소(w, n) -> str:
     return f"{w['author_dir']}/{w['id']}/{n:03d}.html"
 
@@ -605,7 +622,7 @@ def 총서():
             줄 = "".join(
                 f'<tr><td>{v["no"]}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
                 f'<span class="mini">{v["from"]}–{v["to"]} ({len(v["items"])}{e(w["unit"])})</span>'
-                f'{" <span class=tag>PDF</span>" if v.get("pdf") else ""}</td><td class="mini">CO {v["co"]}</td>'
+                f'{PDF링크(w, v, "tag")}</td><td class="mini">CO {v["co"]}</td>'
                 f'<td>{막대(v["items"])}<span class="mini">{요약(v["items"])}</span></td></tr>'
                 for w, v in sorted(vols, key=lambda x: x[1]["no"]))
             본문 += f'<table class="t"><tr><th style="width:48px">권</th><th>제목</th><th style="width:80px">저본</th><th style="width:230px">진행</th></tr>{줄}</table>'
@@ -640,6 +657,7 @@ def 저작쪽(w):
     for v in w["volumes"]:
         본문 += f'<h2>{v["no"]}권 『{e(v["title"])}』 <span class="mini">CO {v["co"]}</span></h2>'
         본문 += f'{막대(v["items"])}<div class="mini" style="margin-bottom:8px">{요약(v["items"])}</div>'
+        본문 += PDF링크(w, v)
         공개 = [x for x in v["items"] if x["s"] in (2, 3)]
         if 공개:
             본문 += '<table class="t"><tr><th style="width:80px">편</th><th>제목</th><th style="width:110px">상태</th></tr>' + "".join(
@@ -650,7 +668,7 @@ def 저작쪽(w):
         if 남음:
             c = 집계(남음)
             본문 += (f'<p class="mini">웹 연결 대기 {c[1]}{e(w["unit"])}, 원고 확보 필요 {c["0x"]}{e(w["unit"])}, '
-                    f'번역 예정 {c[0]}{e(w["unit"])}.' + (" 베타판 PDF가 있습니다." if v.get("pdf") else "") + "</p>")
+                    f'번역 예정 {c[0]}{e(w["unit"])}.' + "</p>")
     쪽들[경로] = 틀(경로, f'「{w["title"]}」', 본문, "books",
                   [("", SITE["name"]), ("books/", "도서"), (f'{a["id"]}/', a["name"]), (None, w["title"])])
 
@@ -662,6 +680,8 @@ def 서가(w, 현재번호: int) -> str:
     for v in w["volumes"]:
         여기 = v["from"] <= 현재번호 <= v["to"]
         h += f'<div class="vol{" cur" if 여기 else ""}">{v["no"]}권 『{e(v["title"])}』 {v["from"]}–{v["to"]}</div>'
+        if 여기:
+            h += PDF링크(w, v, "mini")
         if 여기:
             h += '<nav class="slist">'
             공개수 = 0
@@ -800,6 +820,14 @@ def 쓰기():
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(글, encoding="utf-8")
     shutil.copytree(뿌리 / "assets", 출력 / "assets")
+    # 권별 PDF 복사: content/<저자>/<저작>/pdf/<파일> → docs/<저작주소>pdf/<파일>
+    for w in WORKS:
+        for v in w["volumes"]:
+            if isinstance(v.get("pdf"), str):
+                원본 = 뿌리 / "content" / w["author"] / w["id"] / "pdf" / v["pdf"]
+                if 원본.exists():
+                    (출력 / 저작주소(w) / "pdf").mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(원본, 출력 / 저작주소(w) / "pdf" / v["pdf"])
     # 책 모양 읽기용 성경 본문: data/<번역본>/<책코드>.json = {"name", "chapters": [[[절, 본문], …], …]}
     for ver in VERSIONS:
         폴더 = 출력 / "data" / ver["id"]

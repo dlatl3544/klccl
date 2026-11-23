@@ -276,3 +276,4 @@
   #flow p.bv{text-align:left}
   .turn{display:none}
 }
+.shelf a.dl{display:block;margin:4px 0 8px 10px;color:var(--gold)} .btn.dl{text-decoration:none}
