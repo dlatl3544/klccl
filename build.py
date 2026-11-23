@@ -755,6 +755,8 @@ def 쓰기():
         f.write_text(글, encoding="utf-8")
     shutil.copytree(뿌리 / "assets", 출력 / "assets")
     (출력 / ".nojekyll").write_text("", encoding="utf-8")   # GitHub Pages가 파일을 가공하지 않게
+    if SITE.get("domain"):   # 연결한 도메인을 GitHub Pages가 기억하도록
+        (출력 / "CNAME").write_text(SITE["domain"] + "\n", encoding="utf-8")
     b = SITE.get("base_url", "").rstrip("/")
     (출력 / "robots.txt").write_text(f"User-agent: *\nAllow: /\n" + (f"Sitemap: {b}/sitemap.xml\n" if b else ""), encoding="utf-8")
     if b:

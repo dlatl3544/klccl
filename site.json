@@ -3,9 +3,10 @@
   "full": "한국어 기독교 고전 도서관",
   "en": "Korean-Language Christian Classics Library",
   "tagline": "저작권이 소멸한 기독교 고전을 원문과 한국어 번역으로 나란히 읽는 무료 공개 도서관입니다. 번역문은 CC0로 누구나 조건 없이 쓸 수 있습니다.",
-  "base_url": "https://dlatl3544.github.io/klccl",
+  "base_url": "https://klccl.org",
   "contact": {
     "github": "https://github.com/dlatl3544/klccl",
     "email": ""
-  }
+  },
+  "domain": "klccl.org"
 }
