@@ -33,6 +33,24 @@ CO = json.loads((뿌리 / "catalog" / "co.json").read_text(encoding="utf-8"))
 BIBLE = json.loads((뿌리 / "catalog" / "bible.json").read_text(encoding="utf-8"))
 # 개역한글판 본문: catalog/krv/<약칭>.json (구절 "장:절" -> 본문)
 KRV = {f.stem: json.loads(f.read_text(encoding="utf-8")) for f in (뿌리 / "catalog" / "krv").glob("*.json")}
+# 다른 번역본 목록 (catalog/versions.json). VPL 파일은 책 순서가 66권 차례와 같으므로 순서로 맞춘다
+VERSIONS = json.loads((뿌리 / "catalog" / "versions.json").read_text(encoding="utf-8"))["versions"]
+
+
+def VPL읽기(경로: Path) -> dict:
+    """'GEN 1:1 본문' 형식을 {책코드: {장: [[절, 본문], …]}} 로. ¶ 표시는 지운다"""
+    순서, 책들 = [], {}
+    for 줄 in 경로.read_text(encoding="utf-8").splitlines():
+        m = re.match(r"^(\S+) (\d+):(\d+) ?(.*)$", 줄)
+        if not m:
+            continue
+        b, c, v, t = m.group(1), int(m.group(2)), int(m.group(3)), m.group(4).replace("¶", "").strip()
+        if b not in 책들:
+            순서.append(b)
+            책들[b] = {}
+        책들[b].setdefault(c, []).append([v, t])
+    코드들 = [x["code"] for x in BIBLE["books"]]
+    return {코드들[i]: 책들[b] for i, b in enumerate(순서[:66])}
 
 
 def 구절목록(ref: str, 책: dict) -> list:
@@ -498,14 +516,17 @@ def 성경책쪽():
         절 = KRV.get(b["abbr"], {}).get("verses", {})
         목록.append({"code": b["code"], "abbr": b["abbr"], "name": b["name"], "t": b["testament"],
                    "ch": max((int(k.split(":")[0]) for k in 절), default=1)})
-    본문 = (f'<div class="reader-bar"><select id="bkSel" aria-label="책"></select><select id="chSel" aria-label="장"></select>'
+    판목록 = "".join(f'<option value="{v["id"]}">{e(v["name"])}</option>' for v in VERSIONS)
+    본문 = (f'<div class="reader-bar"><select id="verSel" aria-label="번역본">{판목록}</select>'
+          f'<select id="parSel" aria-label="나란히 볼 번역본"><option value="">나란히 보기: 없음</option>{판목록}</select>'
+          f'<select id="bkSel" aria-label="책"></select><select id="chSel" aria-label="장"></select>'
           f'<div class="seg"><button class="btn" id="fsMinus">가−</button><button class="btn" id="fsPlus">가+</button></div>'
           f'<select id="coverSel" aria-label="표지 색"></select><button class="btn" id="markBtn">책갈피로 가기</button>'
-          f'<span class="mini">개역한글판(1961). 절을 누르면 책갈피, 키보드 ←→나 화면 밀기로 쪽을 넘깁니다.</span></div>'
+          f'<span class="mini">절을 누르면 책갈피, 키보드 ←→나 화면 밀기로 쪽을 넘깁니다.</span></div>'
           f'<div class="bookwrap"><div class="tabs ot" id="tabsOT"></div><div class="tabs nt" id="tabsNT"></div>'
           f'<button class="turn prev" id="prevBtn" aria-label="앞 쪽">‹</button><button class="turn next" id="nextBtn" aria-label="다음 쪽">›</button>'
           f'<div class="pages"><div class="runhead" id="runhead"></div><div id="viewport"><div id="flow"></div></div><div class="pageno" id="pageno"></div></div></div>'
-          f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};</script>'
+          f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};window.KLCCL_VERSIONS={json.dumps(VERSIONS, ensure_ascii=False)};</script>'
           f'<script src="{{R}}assets/reader.js" defer></script>')
     경로 = "bible/read/index.html"
     h = 틀(경로, "성경 읽기", 본문, "bible", [("", SITE["name"]), ("bible/", "성경"), (None, "책으로 읽기")])
@@ -746,6 +767,7 @@ def 소개쪽들():
 <dt>쪽 단위 대역</dt><dd>원문과 번역은 원전 쪽(예: CO 34:n) 단위로 맞대어 놓습니다. 쪽 표시 옆 「인용」을 누르면 인용 표기가 복사됩니다.</dd>
 <dt>문체</dt><dd>설교는 합쇼체로 옮깁니다. 성경 본문은 저작재산권이 소멸한 『성경전서 개역한글판』(1961)으로 통일합니다.</dd>
 <dt>설교 첫머리 본문 상자</dt><dd>개역한글판 본문과, 칼빈이 설교 때 읽은 프랑스어 성경 본문을 옮긴 문장을 나란히 둡니다. 칼빈은 자기가 읽은 본문의 낱말을 짚어 설교하므로 두 본문을 함께 보아야 설교가 잘 이해됩니다. 칼빈 본문의 번역은 Claude가 프랑스어에서 옮긴 것이며, 원문은 그 아래에 그대로 둡니다.</dd>
+<dt>함께 싣는 성경 번역본</dt><dd>개역한글판 외에 제네바 성경(1599), 흠정역(KJV), World English Bible, Berean Standard Bible을 함께 싣습니다. 모두 저작권이 없는 퍼블릭 도메인 본문이며, 외국어 번역본은 대조용 참고 자료입니다. 외경(제2경전)은 싣지 않습니다.</dd>
 <dt>AI 활용과 베타판</dt><dd>초벌 번역에 생성형 AI(Claude)를 썼고, 신학 전문가의 감수는 거치지 않았습니다. 그래서 모든 번역은 베타판입니다. 학술 인용 때는 원문을 함께 확인해 주십시오.</dd></dl>
 <h2>이용 조건</h2><div class="box">번역문은 CC0 1.0 퍼블릭 도메인 기증으로 공개합니다. 누구나 허락 없이 복제, 배포, 수정, 출판할 수 있습니다. 출처를 밝혀 주시면 고맙지만 의무는 아닙니다.</div>
 <h2>고침과 기록</h2><p>오류 제보는 <a href="{R}about/contribute/">참여와 오류 제보</a> 쪽의 방법으로 받습니다. 고친 내용은 판 번호와 함께 기록해, 어느 판을 인용했는지 알 수 있게 합니다.</p>"""
@@ -778,17 +800,25 @@ def 쓰기():
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(글, encoding="utf-8")
     shutil.copytree(뿌리 / "assets", 출력 / "assets")
-    # 책 모양 읽기용 성경 본문 (책마다 장 배열)
-    (출력 / "data" / "krv").mkdir(parents=True, exist_ok=True)
-    for b in BIBLE["books"]:
-        절 = KRV.get(b["abbr"], {}).get("verses", {})
-        장들 = {}
-        for k, t in 절.items():
-            c, v = map(int, k.split(":"))
-            장들.setdefault(c, {})[v] = t
-        배열 = [[장들[c][v] for v in sorted(장들[c])] for c in sorted(장들)]
-        (출력 / "data" / "krv" / f'{b["code"]}.json').write_text(
-            json.dumps({"name": b["name"], "chapters": 배열}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # 책 모양 읽기용 성경 본문: data/<번역본>/<책코드>.json = {"name", "chapters": [[[절, 본문], …], …]}
+    for ver in VERSIONS:
+        폴더 = 출력 / "data" / ver["id"]
+        폴더.mkdir(parents=True, exist_ok=True)
+        if ver["id"] == "krv":
+            책별 = {}
+            for b in BIBLE["books"]:
+                장들 = {}
+                for k, t in KRV.get(b["abbr"], {}).get("verses", {}).items():
+                    c, v = map(int, k.split(":"))
+                    장들.setdefault(c, []).append([v, t])
+                책별[b["code"]] = {c: sorted(l) for c, l in 장들.items()}
+        else:
+            책별 = VPL읽기(뿌리 / "catalog" / "versions" / f'{ver["id"]}.vpl.txt')
+        for b in BIBLE["books"]:
+            장들 = 책별.get(b["code"], {})
+            배열 = [장들.get(c, []) for c in range(1, max(장들, default=0) + 1)]
+            (폴더 / f'{b["code"]}.json').write_text(
+                json.dumps({"name": b["name"], "chapters": 배열}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (출력 / ".nojekyll").write_text("", encoding="utf-8")   # GitHub Pages가 파일을 가공하지 않게
     if SITE.get("domain"):   # 연결한 도메인을 GitHub Pages가 기억하도록
         (출력 / "CNAME").write_text(SITE["domain"] + "\n", encoding="utf-8")

@@ -1,0 +1,10 @@
+{
+ "note": "성경 번역본 목록. krv 는 catalog/krv/ 책별 파일, 나머지는 catalog/versions/<id>.vpl.txt (ebible.org VPL 형식, 모두 퍼블릭 도메인).",
+ "versions": [
+  {"id": "krv",  "name": "개역한글판", "short": "개역한글", "lang": "ko", "year": "1961", "note": "성경전서 개역한글판, 대한성서공회. 저작재산권 소멸(2011.12.31)."},
+  {"id": "gnv",  "name": "제네바 성경 1599", "short": "Geneva 1599", "lang": "en", "year": "1599", "note": "Geneva Bible 1599. 칼빈의 제네바에서 나온 개혁주의 영어 성경. 퍼블릭 도메인."},
+  {"id": "kjv",  "name": "흠정역 (KJV)", "short": "KJV", "lang": "en", "year": "1611/1769", "note": "King James (Authorized) Version. 괄호 안 낱말은 번역자가 보충한 말로 기울여 표시. 퍼블릭 도메인."},
+  {"id": "webp", "name": "World English Bible", "short": "WEB", "lang": "en", "year": "2020", "note": "World English Bible (66권 판, LORD 표기). 퍼블릭 도메인. \"World English Bible\"은 상표."},
+  {"id": "bsb",  "name": "Berean Standard Bible", "short": "BSB", "lang": "en", "year": "2020", "note": "Berean Standard Bible. 2023년 4월 30일 퍼블릭 도메인 기증."}
+ ]
+}

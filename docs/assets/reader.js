@@ -9,7 +9,12 @@
   };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const cache = {};
+  const VERS = window.KLCCL_VERSIONS || [{ id: 'krv', name: '개역한글판' }];
   let code = 'gen', chap = 1, spread = 0, spreads = 1, fs = +store.get('bfs', '19');
+  let ver = store.get('bver', 'krv'), par = store.get('bpar', '');
+  if (!VERS.find(v => v.id === ver)) ver = 'krv';
+  // KJV 의 [ ] 는 번역자가 보충한 말: 기울임으로 표시
+  const fmt = t => esc(t).replace(/\[([^\]]+)\]/g, '<i>$1</i>');
 
   // 양옆 책 탭: 왼쪽 구약, 오른쪽 신약
   function tabs() {
@@ -23,25 +28,33 @@
     $('#bkSel').innerHTML = BOOKS.map(b => `<option value="${b.code}">${esc(b.name)}</option>`).join('');
   }
 
-  async function load(c) {
-    if (cache[c]) return cache[c];
-    const r = await fetch(`${root}data/krv/${c}.json`);
-    cache[c] = await r.json();
-    return cache[c];
+  async function load(v, c) {
+    const k = v + '/' + c;
+    if (cache[k]) return cache[k];
+    const r = await fetch(`${root}data/${v}/${c}.json`);
+    cache[k] = await r.json();
+    return cache[k];
   }
 
   // 장 본문을 책 두 쪽에 흘려 넣고, 넘칠 만큼 쪽을 나눈다
   async function show(c, ch, toEnd) {
     const b = BOOKS.find(x => x.code === c) || BOOKS[0];
     code = b.code; chap = Math.max(1, Math.min(ch, b.ch));
-    const data = await load(code);
-    const vs = data.chapters[chap - 1] || [];
+    const vs = ((await load(ver, code)).chapters[chap - 1]) || [];
+    // 나란히 보기: 절 번호로 맞대어 아래에 작게 붙인다
+    const pv = {};
+    if (par && par !== ver) ((await load(par, code)).chapters[chap - 1] || []).forEach(([n, t]) => pv[n] = t);
     const mark = store.get('bmark', '');
+    const en = (VERS.find(x => x.id === ver) || {}).lang === 'en';
+    $('#flow').className = en ? 'en' : '';
     $('#flow').innerHTML =
       (chap === 1 ? `<h2 class="bk-title">${esc(b.name)}</h2>` : '') +
       `<h3 class="ch-title">제 ${chap} 장</h3>` +
-      vs.map((t, i) => `<p class="bv${mark === `${code}/${chap}/${i + 1}` ? ' marked' : ''}" data-v="${i + 1}"><span class="n">${chap}:${i + 1}</span> ${esc(t)}</p>`).join('');
-    $('#runhead').textContent = `개역한글판 · ${b.name} ${chap}장`;
+      vs.map(([n, t]) => `<p class="bv${mark === `${code}/${chap}/${n}` ? ' marked' : ''}" data-v="${n}"><span class="n">${chap}:${n}</span> ${fmt(t)}` +
+        (par && par !== ver ? `<span class="pv">${pv[n] !== undefined ? fmt(pv[n]) : '—'}</span>` : '') + '</p>').join('');
+    const vn = (VERS.find(x => x.id === ver) || {}).name || '';
+    const pn = par && par !== ver ? ' · ' + ((VERS.find(x => x.id === par) || {}).name || '') : '';
+    $('#runhead').textContent = `${vn}${pn} · ${b.name} ${chap}장`;
     $('#bkSel').value = code;
     $('#chSel').innerHTML = Array.from({ length: b.ch }, (_, i) => `<option value="${i + 1}">${i + 1}장</option>`).join('');
     $('#chSel').value = chap;
@@ -114,6 +127,9 @@
     $('#bkSel').onchange = e => show(e.target.value, 1);
     $('#chSel').onchange = e => show(code, +e.target.value);
     $('#coverSel').onchange = e => cover(e.target.value);
+    $('#verSel').value = ver; $('#parSel').value = par;
+    $('#verSel').onchange = e => { ver = e.target.value; store.set('bver', ver); show(code, chap) };
+    $('#parSel').onchange = e => { par = e.target.value; store.set('bpar', par); show(code, chap) };
     $('#fsMinus').onclick = () => { fs = Math.max(14, fs - 1); store.set('bfs', fs); layout() };
     $('#fsPlus').onclick = () => { fs = Math.min(28, fs + 1); store.set('bfs', fs); layout() };
     $('#markBtn').onclick = () => {
@@ -134,6 +150,10 @@
       if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
     });
     let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => layout(), 150) });
+    addEventListener('hashchange', () => {
+      const [c, ch] = location.hash.slice(1).split('/');
+      if (c && (c !== code || +ch !== chap)) show(c, +ch || 1);
+    });
     const h = (location.hash.slice(1) || store.get('blast', 'gen/1')).split('/');
     show(h[0], +h[1] || 1);
   }

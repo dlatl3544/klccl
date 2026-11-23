@@ -252,6 +252,10 @@
 #flow p.bv{margin:0 0 .55em;text-align:justify;word-break:keep-all;cursor:pointer;border-radius:4px;break-inside:avoid-column}
 #flow p.bv .n{font-family:var(--sans);font-size:.72em;color:#8a5a2b;margin-right:.25em}
 #flow p.bv:hover{background:rgba(176,137,79,.10)}
+#flow p.bv .pv{display:block;font-family:var(--fr);font-size:.92em;color:#6b5a40;line-height:1.6;margin:.15em 0 .1em;padding-left:.6em;border-left:2px solid #e0cfa8}
+#flow.en{font-family:var(--fr);font-size:1.06em}
+#flow p.bv i{font-style:italic;color:#7a6a52}
+:root[data-theme="dark"] #flow p.bv .pv{color:#bfb29c;border-color:#4a4030}
 #flow p.bv.marked{background:rgba(214,170,80,.28);box-shadow:inset 3px 0 0 #b0894f}
 .tabs{position:absolute;top:26px;bottom:26px;display:flex;flex-direction:column;justify-content:space-between;gap:1px;width:40px}
 .tabs.ot{left:10px}.tabs.nt{right:10px}
