@@ -680,21 +680,23 @@ def 서가(w, 현재번호: int) -> str:
     h += f'<div class="series"><a href="{{R}}{저작주소(w)}" style="text-decoration:none">「{e(w["title"])}」</a></div>'
     for v in w["volumes"]:
         여기 = v["from"] <= 현재번호 <= v["to"]
-        h += f'<div class="vol{" cur" if 여기 else ""}">{v["no"]}권 『{e(v["title"])}』 {v["from"]}–{v["to"]}</div>'
-        if 여기:
-            h += PDF링크(w, v, "mini")
-        if 여기:
-            h += '<nav class="slist">'
-            공개수 = 0
-            for x in v["items"]:
-                if x["s"] in (2, 3):
-                    공개수 += 1
-                    h += (f'<a href="{{R}}{단위주소(w, x["no"])}"{" class=cur" if x["no"] == 현재번호 else ""}>제{x["no"]}{e(w["unit"])}'
-                          f'{" <span class=tag>대역</span>" if x["s"] == 3 else ""}<span>{e(x["title"])}</span></a>')
-            남 = len(v["items"]) - 공개수
-            if 남:
-                h += f'<span class="off">그 밖 {남}{e(w["unit"])}은 준비 중</span>'
-            h += "</nav>"
+        제목 = f'{v["no"]}권 『{e(v["title"])}』 {v["from"]}–{v["to"]}'
+        공개 = [x for x in v.get("items", []) if x["s"] in (2, 3)]
+        if not 공개:
+            # 공개된 편이 없는 권은 접을 것이 없으므로 제목만 둔다
+            h += f'<div class="vol soon">{제목}</div>'
+            continue
+        # 권마다 접고 펼치는 토글. 지금 읽는 권만 펼쳐 둔다
+        h += f'<details class="voltog"{" open" if 여기 else ""}><summary class="vol{" cur" if 여기 else ""}">{제목}</summary>'
+        h += PDF링크(w, v, "mini")
+        h += '<nav class="slist">'
+        for x in 공개:
+            h += (f'<a href="{{R}}{단위주소(w, x["no"])}"{" class=cur" if x["no"] == 현재번호 else ""}>제{x["no"]}{e(w["unit"])}'
+                  f'{" <span class=tag>대역</span>" if x["s"] == 3 else ""}<span>{e(x["title"])}</span></a>')
+        남 = len(v["items"]) - len(공개)
+        if 남:
+            h += f'<span class="off">그 밖 {남}{e(w["unit"])}은 준비 중</span>'
+        h += "</nav></details>"
     return h + "</div>"
 
 

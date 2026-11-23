@@ -284,3 +284,12 @@ details.units>summary::-webkit-details-marker{display:none}
 details.units>summary::before{content:"▸";display:inline-block;width:1.1em;color:var(--gold);transition:transform .15s}
 details.units[open]>summary::before{transform:rotate(90deg)}
 details.units[open]>summary{border-bottom:1px solid var(--line,#ddd);margin-bottom:8px}
+/* 서가: 권별 접기·펼치기 토글 */
+details.voltog{margin:0}
+details.voltog>summary.vol{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:4px 6px;margin:6px -6px 4px;border-radius:6px;user-select:none}
+details.voltog>summary.vol::-webkit-details-marker{display:none}
+details.voltog>summary.vol:hover{background:var(--gold-soft)}
+details.voltog>summary.vol::after{content:"";flex:none;width:7px;height:7px;margin-left:auto;border-right:1.6px solid var(--gold);border-bottom:1.6px solid var(--gold);transform:rotate(-45deg);transition:transform .15s}
+details.voltog[open]>summary.vol::after{transform:rotate(45deg)}
+details.voltog>summary.vol:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.vol.soon{opacity:.6}
