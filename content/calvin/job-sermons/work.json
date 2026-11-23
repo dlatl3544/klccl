@@ -1,0 +1,49 @@
+{
+  "id": "job-sermons",
+  "author": "calvin",
+  "series": "geneva",
+  "branch": "sermons",
+  "title": "욥기 설교",
+  "cite_title": "욥기 설교",
+  "orig_lang": "fr",
+  "orig_label": "원문 (프랑스어, 1563)",
+  "unit": "편",
+  "co": [
+    33,
+    34,
+    35
+  ],
+  "bible": [
+    "욥"
+  ],
+  "summary": "칼빈이 1554–1555년 제네바에서 욥기 전체를 차례로 풀어 설교한 159편. 1563년 제네바에서 처음 간행되었습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "욥기 설교 1",
+      "from": 1,
+      "to": 61,
+      "co": 33,
+      "pdf": true
+    },
+    {
+      "no": 2,
+      "title": "욥기 설교 2",
+      "from": 62,
+      "to": 118,
+      "co": 34
+    },
+    {
+      "no": 3,
+      "title": "욥기 설교 3",
+      "from": 119,
+      "to": 159,
+      "co": 35
+    }
+  ],
+  "translated_offline": "1-61,72-118",
+  "missing": "68-71",
+  "krv_book": "욥",
+  "genre": "sermons",
+  "lang": "프랑스어"
+}

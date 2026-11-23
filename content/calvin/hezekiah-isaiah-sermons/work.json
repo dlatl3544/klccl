@@ -1,0 +1,45 @@
+{
+  "id": "hezekiah-isaiah-sermons",
+  "author": "calvin",
+  "series": "geneva",
+  "branch": "sermons",
+  "title": "히스기야의 노래와 이사야 53장 설교",
+  "cite_title": "히스기야의 노래와 이사야 53장 설교",
+  "orig_lang": "fr",
+  "orig_label": "원문 (프랑스어)",
+  "unit": "편",
+  "co": [
+    35
+  ],
+  "bible": [
+    "사"
+  ],
+  "summary": "히스기야의 노래(사 38장) 설교 4편과 이사야 53장 설교 7편.",
+  "volumes": [
+    {
+      "no": 4,
+      "title": "히스기야의 노래와 이사야 53장 설교",
+      "from": 1,
+      "to": 11,
+      "co": 35,
+      "labels": [
+        "히1",
+        "히2",
+        "히3",
+        "히4",
+        "사1",
+        "사2",
+        "사3",
+        "사4",
+        "사5",
+        "사6",
+        "사7"
+      ]
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "krv_book": "사",
+  "genre": "sermons",
+  "lang": "프랑스어"
+}

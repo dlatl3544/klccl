@@ -1,0 +1,477 @@
+{
+ "note": "CO = Ioannis Calvini Opera quae supersunt omnia, 59권, 1863–1900. 23–57권 권별 내용은 조사표를 만들면서 채운다.",
+ "volumes": [
+  {
+   "vol": 1,
+   "group": "기독교 강요",
+   "title": "『기독교 강요』 여러 판(1536–1560)",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": "판이 여럿이라 겹침이 많음. 1559 라틴어판·1560 프랑스어판 위주로 범위를 정함"
+  },
+  {
+   "vol": 2,
+   "group": "기독교 강요",
+   "title": "『기독교 강요』 여러 판(1536–1560)",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": "판이 여럿이라 겹침이 많음. 1559 라틴어판·1560 프랑스어판 위주로 범위를 정함"
+  },
+  {
+   "vol": 3,
+   "group": "기독교 강요",
+   "title": "『기독교 강요』 여러 판(1536–1560)",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": "판이 여럿이라 겹침이 많음. 1559 라틴어판·1560 프랑스어판 위주로 범위를 정함"
+  },
+  {
+   "vol": 4,
+   "group": "기독교 강요",
+   "title": "『기독교 강요』 여러 판(1536–1560)",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": "판이 여럿이라 겹침이 많음. 1559 라틴어판·1560 프랑스어판 위주로 범위를 정함"
+  },
+  {
+   "vol": 5,
+   "group": "논고",
+   "title": "논고·교리문답·신앙고백",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 6,
+   "group": "논고",
+   "title": "논고·교리문답·신앙고백",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 7,
+   "group": "논고",
+   "title": "논고·교리문답·신앙고백",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 8,
+   "group": "논고",
+   "title": "논고·교리문답·신앙고백",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 9,
+   "group": "논고",
+   "title": "논고·교리문답·신앙고백",
+   "lang": "라틴어·프랑스어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 10,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 11,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 12,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 13,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 14,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 15,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 16,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 17,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 18,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 19,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 20,
+   "group": "서신",
+   "title": "서신(Thesaurus epistolicus)",
+   "lang": "라틴어·프랑스어",
+   "branch": "letters",
+   "note": "칼빈에게 온 편지도 함께 실림"
+  },
+  {
+   "vol": 21,
+   "group": "연보",
+   "title": "칼빈 연보(Annales Calviniani)",
+   "lang": "라틴어",
+   "branch": "reference",
+   "note": "번역보다 참고 자료로 활용"
+  },
+  {
+   "vol": 22,
+   "group": "논고",
+   "title": "초기 프랑스어 교리문답(1537)과 1–21권 색인",
+   "lang": "프랑스어·라틴어",
+   "branch": "treatises",
+   "note": ""
+  },
+  {
+   "vol": 23,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 24,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 25,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 26,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 27,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 28,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 29,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 30,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 31,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 32,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 33,
+   "group": "주석·설교",
+   "title": "욥기 설교 제1–61편",
+   "lang": "프랑스어",
+   "branch": "sermons",
+   "note": ""
+  },
+  {
+   "vol": 34,
+   "group": "주석·설교",
+   "title": "욥기 설교 제62–118편",
+   "lang": "프랑스어",
+   "branch": "sermons",
+   "note": ""
+  },
+  {
+   "vol": 35,
+   "group": "주석·설교",
+   "title": "욥기 설교 제119–159편, 히스기야의 노래·이사야 53장 설교",
+   "lang": "프랑스어",
+   "branch": "sermons",
+   "note": ""
+  },
+  {
+   "vol": 36,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 37,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 38,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 39,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 40,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 41,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 42,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 43,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 44,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 45,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 46,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 47,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 48,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 49,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 50,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 51,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 52,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 53,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 54,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 55,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 56,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 57,
+   "group": "주석·설교",
+   "title": "주석·설교 (권별 내용 조사 중)",
+   "lang": "라틴어·프랑스어",
+   "branch": "commentaries",
+   "note": ""
+  },
+  {
+   "vol": 58,
+   "group": "보유·색인",
+   "title": "보유, 23–59권 색인",
+   "lang": "라틴어",
+   "branch": "reference",
+   "note": "사이트 색인 자료로 활용"
+  },
+  {
+   "vol": 59,
+   "group": "서지",
+   "title": "서지 목록(Catalogi bibliographici)",
+   "lang": "라틴어",
+   "branch": "reference",
+   "note": "사이트 색인 자료로 활용"
+  }
+ ]
+}

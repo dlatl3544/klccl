@@ -1,0 +1,533 @@
+{
+ "note": "칼빈 전집(CO)에 실린 주석·설교 기준. 설교 수록 범위는 CO 조사표를 만들며 보완한다.",
+ "books": [
+  {
+   "abbr": "창",
+   "name": "창세기",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "gen"
+  },
+  {
+   "abbr": "출",
+   "name": "출애굽기",
+   "kind": "주석",
+   "note": "모세 네 책 조화(Harmonia)",
+   "testament": "구약",
+   "code": "exo"
+  },
+  {
+   "abbr": "레",
+   "name": "레위기",
+   "kind": "주석",
+   "note": "모세 네 책 조화",
+   "testament": "구약",
+   "code": "lev"
+  },
+  {
+   "abbr": "민",
+   "name": "민수기",
+   "kind": "주석",
+   "note": "모세 네 책 조화",
+   "testament": "구약",
+   "code": "num"
+  },
+  {
+   "abbr": "신",
+   "name": "신명기",
+   "kind": "주석·설교",
+   "note": "모세 네 책 조화, 신명기 설교",
+   "testament": "구약",
+   "code": "deu"
+  },
+  {
+   "abbr": "수",
+   "name": "여호수아",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "jos"
+  },
+  {
+   "abbr": "삿",
+   "name": "사사기",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "jdg"
+  },
+  {
+   "abbr": "룻",
+   "name": "룻기",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "rut"
+  },
+  {
+   "abbr": "삼상",
+   "name": "사무엘상",
+   "kind": "확인 중",
+   "note": "설교가 전하나 CO 수록 여부 조사 중",
+   "testament": "구약",
+   "code": "1sa"
+  },
+  {
+   "abbr": "삼하",
+   "name": "사무엘하",
+   "kind": "없음",
+   "note": "설교는 CO에 없고 현대 간행본만 있어 쓰지 않음",
+   "testament": "구약",
+   "code": "2sa"
+  },
+  {
+   "abbr": "왕상",
+   "name": "열왕기상",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "1ki"
+  },
+  {
+   "abbr": "왕하",
+   "name": "열왕기하",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "2ki"
+  },
+  {
+   "abbr": "대상",
+   "name": "역대상",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "1ch"
+  },
+  {
+   "abbr": "대하",
+   "name": "역대하",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "2ch"
+  },
+  {
+   "abbr": "스",
+   "name": "에스라",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "ezr"
+  },
+  {
+   "abbr": "느",
+   "name": "느헤미야",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "neh"
+  },
+  {
+   "abbr": "에",
+   "name": "에스더",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "est"
+  },
+  {
+   "abbr": "욥",
+   "name": "욥기",
+   "kind": "설교",
+   "note": "욥기 설교 159편(CO 33–35)",
+   "testament": "구약",
+   "code": "job"
+  },
+  {
+   "abbr": "시",
+   "name": "시편",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "psa"
+  },
+  {
+   "abbr": "잠",
+   "name": "잠언",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "pro"
+  },
+  {
+   "abbr": "전",
+   "name": "전도서",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "ecc"
+  },
+  {
+   "abbr": "아",
+   "name": "아가",
+   "kind": "없음",
+   "note": "",
+   "testament": "구약",
+   "code": "sng"
+  },
+  {
+   "abbr": "사",
+   "name": "이사야",
+   "kind": "주석·설교",
+   "note": "38장(히스기야의 노래)·53장 설교",
+   "testament": "구약",
+   "code": "isa"
+  },
+  {
+   "abbr": "렘",
+   "name": "예레미야",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "jer"
+  },
+  {
+   "abbr": "애",
+   "name": "예레미야 애가",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "lam"
+  },
+  {
+   "abbr": "겔",
+   "name": "에스겔",
+   "kind": "주석",
+   "note": "1–20장까지만",
+   "testament": "구약",
+   "code": "ezk"
+  },
+  {
+   "abbr": "단",
+   "name": "다니엘",
+   "kind": "주석",
+   "note": "강의록",
+   "testament": "구약",
+   "code": "dan"
+  },
+  {
+   "abbr": "호",
+   "name": "호세아",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "hos"
+  },
+  {
+   "abbr": "욜",
+   "name": "요엘",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "jol"
+  },
+  {
+   "abbr": "암",
+   "name": "아모스",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "amo"
+  },
+  {
+   "abbr": "옵",
+   "name": "오바댜",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "oba"
+  },
+  {
+   "abbr": "욘",
+   "name": "요나",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "jon"
+  },
+  {
+   "abbr": "미",
+   "name": "미가",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "mic"
+  },
+  {
+   "abbr": "나",
+   "name": "나훔",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "nam"
+  },
+  {
+   "abbr": "합",
+   "name": "하박국",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "hab"
+  },
+  {
+   "abbr": "습",
+   "name": "스바냐",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "zep"
+  },
+  {
+   "abbr": "학",
+   "name": "학개",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "hag"
+  },
+  {
+   "abbr": "슥",
+   "name": "스가랴",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "zec"
+  },
+  {
+   "abbr": "말",
+   "name": "말라기",
+   "kind": "주석",
+   "note": "",
+   "testament": "구약",
+   "code": "mal"
+  },
+  {
+   "abbr": "마",
+   "name": "마태복음",
+   "kind": "주석",
+   "note": "공관복음 조화",
+   "testament": "신약",
+   "code": "mat"
+  },
+  {
+   "abbr": "막",
+   "name": "마가복음",
+   "kind": "주석",
+   "note": "공관복음 조화",
+   "testament": "신약",
+   "code": "mrk"
+  },
+  {
+   "abbr": "눅",
+   "name": "누가복음",
+   "kind": "주석",
+   "note": "공관복음 조화",
+   "testament": "신약",
+   "code": "luk"
+  },
+  {
+   "abbr": "요",
+   "name": "요한복음",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "jhn"
+  },
+  {
+   "abbr": "행",
+   "name": "사도행전",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "act"
+  },
+  {
+   "abbr": "롬",
+   "name": "로마서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "rom"
+  },
+  {
+   "abbr": "고전",
+   "name": "고린도전서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "1co"
+  },
+  {
+   "abbr": "고후",
+   "name": "고린도후서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "2co"
+  },
+  {
+   "abbr": "갈",
+   "name": "갈라디아서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "gal"
+  },
+  {
+   "abbr": "엡",
+   "name": "에베소서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "eph"
+  },
+  {
+   "abbr": "빌",
+   "name": "빌립보서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "php"
+  },
+  {
+   "abbr": "골",
+   "name": "골로새서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "col"
+  },
+  {
+   "abbr": "살전",
+   "name": "데살로니가전서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "1th"
+  },
+  {
+   "abbr": "살후",
+   "name": "데살로니가후서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "2th"
+  },
+  {
+   "abbr": "딤전",
+   "name": "디모데전서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "1ti"
+  },
+  {
+   "abbr": "딤후",
+   "name": "디모데후서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "2ti"
+  },
+  {
+   "abbr": "딛",
+   "name": "디도서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "tit"
+  },
+  {
+   "abbr": "몬",
+   "name": "빌레몬서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "phm"
+  },
+  {
+   "abbr": "히",
+   "name": "히브리서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "heb"
+  },
+  {
+   "abbr": "약",
+   "name": "야고보서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "jas"
+  },
+  {
+   "abbr": "벧전",
+   "name": "베드로전서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "1pe"
+  },
+  {
+   "abbr": "벧후",
+   "name": "베드로후서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "2pe"
+  },
+  {
+   "abbr": "요일",
+   "name": "요한일서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "1jn"
+  },
+  {
+   "abbr": "요이",
+   "name": "요한이서",
+   "kind": "없음",
+   "note": "",
+   "testament": "신약",
+   "code": "2jn"
+  },
+  {
+   "abbr": "요삼",
+   "name": "요한삼서",
+   "kind": "없음",
+   "note": "",
+   "testament": "신약",
+   "code": "3jn"
+  },
+  {
+   "abbr": "유",
+   "name": "유다서",
+   "kind": "주석",
+   "note": "",
+   "testament": "신약",
+   "code": "jud"
+  },
+  {
+   "abbr": "계",
+   "name": "요한계시록",
+   "kind": "없음",
+   "note": "",
+   "testament": "신약",
+   "code": "rev"
+  }
+ ]
+}
