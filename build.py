@@ -442,6 +442,7 @@ def 성경쪽():
                 장색인.setdefault((책, 장), []).append((w, u))
     종류 = {"주석": "k-c", "설교": "k-s", "주석·설교": "k-cs", "확인 중": "k-q", "없음": ""}
     본문 = ('<h1>성경</h1><p class="lead">개역한글판(1961) 66권 전체를 읽을 수 있습니다. 책마다 이 도서관에 있는 설교와 주석을 함께 모읍니다.</p>'
+          '<p><a class="btn on" href="{R}bible/read/">책으로 펼쳐 읽기</a></p>'
           '<div class="legend"><span>칼빈 전집에 남은 것:</span><span><i class="kind k-c">주석</i></span><span><i class="kind k-s">설교</i></span>'
           '<span><i class="kind k-cs">주석·설교</i></span><span><i class="kind k-q">확인 중</i></span><span><i class="kind">없음</i></span></div>')
     for 약 in ("구약", "신약"):
@@ -482,12 +483,35 @@ def 성경쪽():
             앞뒤 = '<div class="pager">' + (
                 f'<a href="{{R}}bible/{b["code"]}/{c-1}.html"><small>이전 장</small>{e(b["name"])} {c-1}장</a>' if c > 1 else '<span style="flex:1"></span>') + (
                 f'<a class="next" href="{{R}}bible/{b["code"]}/{c+1}.html"><small>다음 장</small>{e(b["name"])} {c+1}장</a>' if c < 장수 else '<span style="flex:1"></span>') + "</div>"
-            h = (f'<h1>{e(b["name"])} {c}장</h1><p class="mini">성경전서 개역한글판(1961)</p>'
+            h = (f'<h1>{e(b["name"])} {c}장</h1><p class="mini">성경전서 개역한글판(1961) · <a href="{{R}}bible/read/#{b["code"]}/{c}">책으로 펼쳐 읽기</a></p>'
                  f'<div class="krvtext">{본}</div>{옆}{앞뒤}')
             경로 = f'bible/{b["code"]}/{c}.html'
             쪽들[경로] = 틀(경로, f'{b["name"]} {c}장', h, "bible",
                           [("", SITE["name"]), ("bible/", "성경"), (f'bible/{b["code"]}/', b["name"]), (None, f"{c}장")],
                           설명=f'{b["name"]} {c}장 개역한글판 본문')
+
+
+def 성경책쪽():
+    """책 모양으로 성경 읽기: 본문은 data/krv/<코드>.json 을 불러와 펼친 두 쪽에 흘려 넣는다"""
+    목록 = []
+    for b in BIBLE["books"]:
+        절 = KRV.get(b["abbr"], {}).get("verses", {})
+        목록.append({"code": b["code"], "abbr": b["abbr"], "name": b["name"], "t": b["testament"],
+                   "ch": max((int(k.split(":")[0]) for k in 절), default=1)})
+    본문 = (f'<div class="reader-bar"><select id="bkSel" aria-label="책"></select><select id="chSel" aria-label="장"></select>'
+          f'<div class="seg"><button class="btn" id="fsMinus">가−</button><button class="btn" id="fsPlus">가+</button></div>'
+          f'<select id="coverSel" aria-label="표지 색"></select><button class="btn" id="markBtn">책갈피로 가기</button>'
+          f'<span class="mini">개역한글판(1961). 절을 누르면 책갈피, 키보드 ←→나 화면 밀기로 쪽을 넘깁니다.</span></div>'
+          f'<div class="bookwrap"><div class="tabs ot" id="tabsOT"></div><div class="tabs nt" id="tabsNT"></div>'
+          f'<button class="turn prev" id="prevBtn" aria-label="앞 쪽">‹</button><button class="turn next" id="nextBtn" aria-label="다음 쪽">›</button>'
+          f'<div class="pages"><div class="runhead" id="runhead"></div><div id="viewport"><div id="flow"></div></div><div class="pageno" id="pageno"></div></div></div>'
+          f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};</script>'
+          f'<script src="{{R}}assets/reader.js" defer></script>')
+    경로 = "bible/read/index.html"
+    h = 틀(경로, "성경 읽기", 본문, "bible", [("", SITE["name"]), ("bible/", "성경"), (None, "책으로 읽기")])
+    # 책 화면은 넓게 쓰도록 본문 여백 틀을 걷어 낸다
+    h = h.replace('<div class="layout single"><main>', '<div class="layout single wide"><main>').replace('<div class="page">', '<div>', 1)
+    쪽들[경로] = h
 
 
 def 강해쪽():
@@ -754,6 +778,17 @@ def 쓰기():
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(글, encoding="utf-8")
     shutil.copytree(뿌리 / "assets", 출력 / "assets")
+    # 책 모양 읽기용 성경 본문 (책마다 장 배열)
+    (출력 / "data" / "krv").mkdir(parents=True, exist_ok=True)
+    for b in BIBLE["books"]:
+        절 = KRV.get(b["abbr"], {}).get("verses", {})
+        장들 = {}
+        for k, t in 절.items():
+            c, v = map(int, k.split(":"))
+            장들.setdefault(c, {})[v] = t
+        배열 = [[장들[c][v] for v in sorted(장들[c])] for c in sorted(장들)]
+        (출력 / "data" / "krv" / f'{b["code"]}.json').write_text(
+            json.dumps({"name": b["name"], "chapters": 배열}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (출력 / ".nojekyll").write_text("", encoding="utf-8")   # GitHub Pages가 파일을 가공하지 않게
     if SITE.get("domain"):   # 연결한 도메인을 GitHub Pages가 기억하도록
         (출력 / "CNAME").write_text(SITE["domain"] + "\n", encoding="utf-8")
@@ -809,7 +844,7 @@ show(location.hash.slice(1) || 'index.html');
 
 
 if __name__ == "__main__":
-    홈(); 서가쪽(); 저자쪽(); 총서(); 성경쪽(); 강해쪽(); 시편찬송쪽(); 원전쪽(); 찾기쪽(); 진행(); 소개쪽들()
+    홈(); 서가쪽(); 저자쪽(); 총서(); 성경쪽(); 강해쪽(); 성경책쪽(); 시편찬송쪽(); 원전쪽(); 찾기쪽(); 진행(); 소개쪽들()
     for w in WORKS:
         저작쪽(w)
         for n in sorted(w["units"]):
