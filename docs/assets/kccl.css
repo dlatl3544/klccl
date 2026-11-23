@@ -246,7 +246,7 @@
 .runhead{position:absolute;top:14px;left:0;right:0;text-align:center;font-size:12px;color:#8a7a62;letter-spacing:.06em}
 .pageno{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:12px;color:#8a7a62}
 #viewport{overflow:hidden;height:100%}
-#flow{column-fill:auto;transition:transform .35s ease;font-family:var(--serif);color:#2c2418;line-height:1.95}
+#flow{column-fill:auto;font-family:var(--serif);color:#2c2418;line-height:1.95}
 #flow .bk-title{font-size:1.7em;text-align:center;margin:0 0 .2em;color:#2c2418;font-weight:700}
 #flow .ch-title{font-size:1.05em;text-align:center;margin:.2em 0 .9em;color:#8a5a2b;font-weight:600;letter-spacing:.1em}
 #flow p.bv{margin:0 0 .55em;text-align:justify;word-break:keep-all;cursor:pointer;border-radius:4px;break-inside:avoid-column}

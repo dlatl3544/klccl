@@ -37,7 +37,7 @@
   }
 
   // 장 본문을 책 두 쪽에 흘려 넣고, 넘칠 만큼 쪽을 나눈다
-  async function show(c, ch, toEnd) {
+  async function show(c, ch, toEnd, dir) {
     const b = BOOKS.find(x => x.code === c) || BOOKS[0];
     code = b.code; chap = Math.max(1, Math.min(ch, b.ch));
     const vs = ((await load(ver, code)).chapters[chap - 1]) || [];
@@ -61,16 +61,17 @@
     document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x.dataset.code === code));
     history.replaceState(null, '', `#${code}/${chap}`);
     store.set('blast', `${code}/${chap}`);
-    layout(toEnd);
+    layout(toEnd, dir);
   }
 
   function pageW() { return $('#viewport').clientWidth; }
 
-  function layout(toEnd) {
+  function layout(toEnd, dir) {
     const flow = $('#flow'), vp = $('#viewport');
     const two = innerWidth > 820;
     const gap = two ? 64 : 0;
     const colW = two ? (vp.clientWidth - gap) / 2 : vp.clientWidth;
+    flow.style.transition = 'none';          // 새 장을 깔 때는 움직임 없이
     flow.style.columnWidth = colW + 'px';
     flow.style.columnGap = gap + 'px';
     flow.style.height = vp.clientHeight + 'px';
@@ -79,7 +80,23 @@
     const total = Math.max(1, Math.round((flow.scrollWidth + gap) / (colW + gap)));
     spreads = Math.max(1, Math.ceil(total / (two ? 2 : 1)));
     spread = toEnd ? spreads - 1 : 0;
-    move();
+    const x = -spread * (vp.clientWidth + gap);
+    if (dir) {
+      // 장이 바뀔 때: 앞으로 가면 오른쪽에서 들어와 왼쪽으로, 뒤로 가면 왼쪽에서 들어온다
+      const off = (dir === 'next' ? 1 : -1) * (vp.clientWidth + gap);
+      flow.style.transform = `translateX(${x + off}px)`;
+      flow.style.opacity = '0.2';
+      void flow.offsetWidth;                  // 시작 위치를 먼저 그리게 한다
+      flow.style.transition = 'transform .35s ease, opacity .35s ease';
+      flow.style.transform = `translateX(${x}px)`;
+      flow.style.opacity = '1';
+      $('#pageno').textContent = `${spread + 1} / ${spreads}`;
+    } else {
+      flow.style.transform = `translateX(${x}px)`;
+      void flow.offsetWidth;
+      flow.style.transition = 'transform .35s ease, opacity .35s ease';
+      $('#pageno').textContent = `${spread + 1} / ${spreads}`;
+    }
   }
 
   function move() {
@@ -91,14 +108,14 @@
   function next() {
     if (spread < spreads - 1) { spread++; move(); return }
     const b = BOOKS.find(x => x.code === code), i = BOOKS.indexOf(b);
-    if (chap < b.ch) show(code, chap + 1);
-    else if (i < BOOKS.length - 1) show(BOOKS[i + 1].code, 1);
+    if (chap < b.ch) show(code, chap + 1, false, 'next');
+    else if (i < BOOKS.length - 1) show(BOOKS[i + 1].code, 1, false, 'next');
   }
   function prev() {
     if (spread > 0) { spread--; move(); return }
     const b = BOOKS.find(x => x.code === code), i = BOOKS.indexOf(b);
-    if (chap > 1) show(code, chap - 1, true);
-    else if (i > 0) show(BOOKS[i - 1].code, BOOKS[i - 1].ch, true);
+    if (chap > 1) show(code, chap - 1, true, 'prev');
+    else if (i > 0) show(BOOKS[i - 1].code, BOOKS[i - 1].ch, true, 'prev');
   }
 
   // 표지 색
