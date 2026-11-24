@@ -240,7 +240,7 @@ def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = Non
 <body data-root="{R}">
 <header class="top">
   {'<button class="btn menu-btn" id="menuBtn" aria-label="서가 열기">목차</button>' if 서가 else ''}
-  <a class="brand" href="{R}">{e(SITE['name'])}<small>{e(SITE['full'])} · 베타</small></a>
+  <a class="brand" href="{R}">{e(SITE['name'])}<small>{e(SITE['full'])} · AI 초벌 번역판</small></a>
   <nav class="gnav">{nav}</nav>
   <div class="seg theme" role="group" aria-label="색 모드"><button class="btn" data-theme-set="light">라이트</button><button class="btn" data-theme-set="dark">다크</button><button class="btn" data-theme-set="reading">리딩</button></div>
 </header>
@@ -252,7 +252,7 @@ def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = Non
 
 
 def 바닥(R: str) -> str:
-    return (f'<footer class="foot">{e(SITE["name"])} {e(SITE["full"])} · 번역문 CC0 1.0 · AI 번역 베타판(신학 감수 전) · '
+    return (f'<footer class="foot">{e(SITE["name"])} {e(SITE["full"])} · 번역문 CC0 1.0 · AI 초벌 번역판 · 신학 감수 전 · '
             f'<a href="{R}about/principles/">원칙</a> · <a href="{R}about/contribute/">오류 제보</a> · 기준일 {기준일}</footer>')
 
 
@@ -274,7 +274,7 @@ def 저작주소(w) -> str:
 
 
 def PDF링크(w, v, 꼴="btn") -> str:
-    """권별 베타판 PDF 내려받기 링크. work.json 의 volumes[].pdf 에 파일 이름을 적는다"""
+    """권별 AI 초벌 번역판 PDF 내려받기 링크. work.json 의 volumes[].pdf 에 파일 이름을 적는다"""
     f = v.get("pdf")
     if not isinstance(f, str):
         return ""
@@ -287,7 +287,7 @@ def PDF링크(w, v, 꼴="btn") -> str:
     if 꼴 == "mini":
         return f'<a class="dl mini" href="{주소}" download>{v["no"]}권 PDF 내려받기</a>'
     return (f'<p><a class="btn dl" href="{주소}" download>{v["no"]}권 PDF 내려받기</a> '
-            f'<span class="mini">베타판 · {쪽}{크기} · AI 번역, 신학 감수 전 · CC0</span></p>')
+            f'<span class="mini">AI 초벌 번역판 · 신학 감수 전 · {쪽}{크기} · CC0</span></p>')
 
 
 def 단위주소(w, n) -> str:
@@ -343,7 +343,7 @@ def 홈():
 <h2>이 도서관이 지키는 세 가지</h2><div class="cards">
 <div class="card"><h3>원문과 나란히</h3><p>모든 번역은 원문과 원전 쪽수(예: CO 34:1)로 맞대어 놓아, 누구나 원문을 확인할 수 있습니다.</p></div>
 <div class="card"><h3>조건 없는 공개</h3><p>원전은 공유 저작물만, 번역문은 CC0 1.0으로 공개합니다. 복제, 배포, 수정, 출판 모두 자유입니다.</p></div>
-<div class="card"><h3>투명한 베타</h3><p>AI로 초벌 번역했고 신학 감수 전입니다. 오류 제보를 받아 고치고, 고친 이력을 남깁니다.</p></div></div>
+<div class="card"><h3>투명한 초벌 번역</h3><p>AI로 초벌 번역했고 신학 감수 전입니다. 오류 제보를 받아 고치고, 고친 이력을 남깁니다.</p></div></div>
 <h2>소식</h2><table class="t"><tr><th style="width:120px">날짜</th><th>내용</th></tr>{소식}</table>
 <p><a href="{{R}}about/news/">소식 전체 보기</a></p>"""
     쪽들["index.html"] = 틀("index.html", "", 본문)
@@ -722,14 +722,16 @@ def 읽기쪽(w, u):
     구절 = 구절목록(u["ref"], 책) if 책 else None
     칼빈본문 = (f'<div class="ko calvin"><span class="lbl">칼빈이 읽은 본문 · 프랑스어에서 옮김 (Claude 번역)</span>'
               f'{각주표시(e(둥근따옴표(u["box"])))}</div>')
-    if 구절:
+    if not 구절 and not u["box"].strip():
+        h += '<div class="verse">'
+    elif 구절:
         개역 = " ".join(f'<sup class="vn">{k}</sup>{e(책[k])}' for k in 구절)
         h += (f'<div class="verse"><div class="vgrid"><div class="ko krv"><span class="lbl">성경 본문 · 개역한글판</span>{개역}</div>'
               f'{칼빈본문}</div>')
     else:
         h += f'<div class="verse">{칼빈본문}'
     h += ((f'<div class="fr frbox" lang="fr"><span class="lbl">{e(w["orig_label"])}</span>{e(u["origbox"])}</div>' if u["origbox"] else "") + "</div>")
-    h += ('<div class="notice">AI 번역 베타판입니다. 신학 감수 전이므로 학술 인용 때는 원문을 함께 확인해 주십시오.'
+    h += ('<div class="notice">AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문(CO 권:쪽)을 확인해 주십시오.'
           + ("" if 원문있음 else " 이 글은 아직 원문 대역이 연결되지 않았습니다.") + "</div>")
     for idx, p in enumerate(sorted(u["pages"])):
         ko = "".join(
@@ -791,7 +793,7 @@ def 소개쪽들():
 <dt>문체</dt><dd>설교는 합쇼체로 옮깁니다. 성경 본문은 저작재산권이 소멸한 『성경전서 개역한글판』(1961)으로 통일합니다.</dd>
 <dt>설교 첫머리 본문 상자</dt><dd>개역한글판 본문과, 칼빈이 설교 때 읽은 프랑스어 성경 본문을 옮긴 문장을 나란히 둡니다. 칼빈은 자기가 읽은 본문의 낱말을 짚어 설교하므로 두 본문을 함께 보아야 설교가 잘 이해됩니다. 칼빈 본문의 번역은 Claude가 프랑스어에서 옮긴 것이며, 원문은 그 아래에 그대로 둡니다.</dd>
 <dt>함께 싣는 성경 번역본</dt><dd>개역한글판 외에 제네바 성경(1599), 흠정역(KJV), World English Bible, Berean Standard Bible을 함께 싣습니다. 모두 저작권이 없는 퍼블릭 도메인 본문이며, 외국어 번역본은 대조용 참고 자료입니다. 외경(제2경전)은 싣지 않습니다.</dd>
-<dt>AI 활용과 베타판</dt><dd>초벌 번역에 생성형 AI(Claude)를 썼고, 신학 전문가의 감수는 거치지 않았습니다. 그래서 모든 번역은 베타판입니다. 학술 인용 때는 원문을 함께 확인해 주십시오.</dd></dl>
+<dt>AI 초벌 번역판</dt><dd>초벌 번역에 생성형 AI(Claude)를 썼고, 신학 전문가의 감수는 거치지 않았습니다. 그래서 모든 번역은 「AI 초벌 번역판 · 신학 감수 전」입니다. 인용할 때는 원문(CO 권:쪽)을 확인해 주십시오.</dd></dl>
 <h2>이용 조건</h2><div class="box">번역문은 CC0 1.0 퍼블릭 도메인 기증으로 공개합니다. 누구나 허락 없이 복제, 배포, 수정, 출판할 수 있습니다. 출처를 밝혀 주시면 고맙지만 의무는 아닙니다.</div>
 <h2>고침과 기록</h2><p>오류 제보는 <a href="{R}about/contribute/">참여와 오류 제보</a> 쪽의 방법으로 받습니다. 고친 내용은 판 번호와 함께 기록해, 어느 판을 인용했는지 알 수 있게 합니다.</p>"""
     gh, em = SITE["contact"].get("github"), SITE["contact"].get("email")
