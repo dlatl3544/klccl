@@ -130,7 +130,8 @@ def 원고읽기(경로: Path) -> dict:
     if "intro" in 쪽별:
         첫 = min(k for k in 쪽별 if k != "intro")
         쪽별[첫] = 쪽별.pop("intro") + 쪽별[첫]
-    vol = int(정보.get("CO", "0:0").split(":")[0])
+    _c = 정보.get("CO", "0:0")
+    vol = int(_c.split(":")[0]) if ":" in _c else 0
     return {"no": int(정보["번호"]), "title": 정보.get("제목", ""), "ref": 정보.get("구절", ""),
             "co": 정보.get("CO", ""), "vol": vol, "box": 정보.get("본문", ""), "pages": 쪽별, "notes": 각주}
 
@@ -296,6 +297,32 @@ def PDF링크(w, v, 꼴="btn") -> str:
             f'<span class="mini">AI 초벌 번역판 · 신학 감수 전 · {쪽}{크기} · CC0</span></p>')
 
 
+def 원전권(w, v) -> str:
+    """권·저작의 원전 표시. CO 저작은 'CO n', 그 밖은 work.json 의 source_short(예: '1932년판')"""
+    if w.get("source", "co") == "co":
+        return f'CO {v["co"]}' if isinstance(v, dict) else "CO " + ", ".join(str(x) for x in w["co"])
+    return w.get("source_short", "원서")
+
+
+def 쪽앞뒤(w, u) -> tuple:
+    """인용 표기 앞뒤: CO 저작은 ('CO 34:', ''), 그 밖은 ('원서 ', '쪽')"""
+    if w.get("source", "co") == "co":
+        return f'CO {u["vol"]}:', ""
+    return w.get("page_prefix", "원서 "), "쪽"
+
+
+def 쪽범위(w, u) -> str:
+    """머리에 보일 원전 범위: 'CO 8:543–566' 또는 '원서 77–154쪽'"""
+    if w.get("source", "co") == "co":
+        return f'CO {u["co"]}'
+    return f'{w.get("page_prefix", "원서 ")}{u["co"]}쪽'
+
+
+def 고지(w) -> str:
+    return ("AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문("
+            + ("CO 권:쪽" if w.get("source", "co") == "co" else "원서 쪽") + ")을 확인해 주십시오.")
+
+
 def 단위주소(w, n) -> str:
     return f"{w['author_dir']}/{w['id']}/{n:03d}.html"
 
@@ -414,7 +441,7 @@ def 저자쪽():
             for w in 여기:
                 it = 저작항목(w)
                 b += (f'<tr><td><a href="{{R}}{저작주소(w)}"><b>「{e(w["title"])}」</b></a><br><span class="mini">{e(w["summary"])}</span></td>'
-                      f'<td class="mini">CO {", ".join(str(x) for x in w["co"])}</td><td>{막대(it)}<span class="mini">{요약(it)}</span></td></tr>')
+                      f'<td class="mini">{e(원전권(w, None))}</td><td>{막대(it)}<span class="mini">{요약(it)}</span></td></tr>')
             b += "</table>"
         쪽들[경로] = 틀(경로, a["name"], b, "authors", [("", SITE["name"]), ("authors/", "저자"), (None, a["name"])])
 
@@ -602,7 +629,7 @@ def 찾기쪽():
         a = 저자이름[w["author"]]["name"]
         색인.append({"t": f'{a}, 「{w["title"]}」', "s": "저작", "u": 저작주소(w), "x": w["summary"]})
         for n, u in sorted(w["units"].items()):
-            색인.append({"t": f'「{w["title"]}」 제{n}{w["unit"]} {u["title"]}', "s": f'{a} · {u["ref"]} · CO {u["co"]}',
+            색인.append({"t": f'「{w["title"]}」 제{n}{w["unit"]} {u["title"]}', "s": f'{a} · {u["ref"]} · {쪽범위(w, u)}',
                        "u": 단위주소(w, n)})
     for b in BIBLE["books"]:
         색인.append({"t": b["name"], "s": "성경", "u": f'bible/{b["code"]}/', "x": b["abbr"]})
@@ -628,7 +655,7 @@ def 총서():
             줄 = "".join(
                 f'<tr><td>{권표(v)[3:] if 권표(v).startswith("CR") else 권표(v)}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
                 f'<span class="mini">{v["from"]}–{v["to"]} ({len(v["items"])}{e(w["unit"])})</span>'
-                f'{PDF링크(w, v, "tag")}</td><td class="mini">CO {v["co"]}</td>'
+                f'{PDF링크(w, v, "tag")}</td><td class="mini">{e(원전권(w, v))}</td>'
                 f'<td>{막대(v["items"])}<span class="mini">{요약(v["items"])}</span></td></tr>'
                 for w, v in sorted(vols, key=lambda x: x[1]["no"]))
             본문 += f'<table class="t"><tr><th style="width:64px">CR</th><th>제목</th><th style="width:80px">저본</th><th style="width:230px">진행</th></tr>{줄}</table>'
@@ -643,7 +670,7 @@ def 진행():
     본문 = f'<h1>진행 현황</h1><p class="lead">원고 파일에서 자동으로 만든 표입니다. 기준일 {기준일}.</p><div class="legend">{범례}</div>'
     for w in WORKS:
         for v in w["volumes"]:
-            본문 += f'<h2>{e(v["title"])} <span class="mini">CO {v["co"]}</span></h2>'
+            본문 += f'<h2>{e(v["title"])} <span class="mini">{e(원전권(w, v))}</span></h2>'
             본문 += f'{막대(v["items"])}<div class="mini">{요약(v["items"])}</div><div class="grid">'
             for x in v["items"]:
                 제 = f'제{x["no"]}{w["unit"]} {x["title"]} · {상태이름[x["s"]]}'
@@ -661,15 +688,15 @@ def 저작쪽(w):
     a = 저자이름[w["author"]]
     본문 = f'<h1>{e(a["name"])}, 「{e(w["title"])}」</h1><p class="lead">{e(w["summary"])}</p>'
     for v in w["volumes"]:
-        본문 += f'<h2>{권표(v)} 『{e(v["title"])}』 <span class="mini">CO {v["co"]}</span></h2>'
+        본문 += f'<h2>{권표(v)} 『{e(v["title"])}』 <span class="mini">{e(원전권(w, v))}</span></h2>'
         본문 += f'{막대(v["items"])}<div class="mini" style="margin-bottom:8px">{요약(v["items"])}</div>'
         본문 += PDF링크(w, v)
         공개 = [x for x in v["items"] if x["s"] in (2, 3)]
         if 공개:
             본문 += (f'<details class="units"><summary>편 목록 펼치기 <span class="mini">(공개 {len(공개)}{e(w["unit"])})</span></summary>'
                      '<table class="t"><tr><th style="width:80px">편</th><th>제목</th><th style="width:110px">상태</th></tr>') + "".join(
-                f'<tr><td>제{x["no"]}{e(w["unit"])}</td><td><a href="{{R}}{단위주소(w, x["no"])}">{e(x["title"])}</a> '
-                f'<span class="mini">({e(w["units"][x["no"]]["ref"])})</span></td>'
+                f'<tr><td>제{x["no"]}{e(w["unit"])}</td><td><a href="{{R}}{단위주소(w, x["no"])}">{e(x["title"])}</a> ' +
+                (f'<span class="mini">({e(w["units"][x["no"]]["ref"])})</span>' if w["units"][x["no"]]["ref"] else "") + '</td>' +
                 f'<td><span class="tag">{"대역" if x["s"] == 3 else "한국어"}</span></td></tr>' for x in 공개) + "</table></details>"
         남음 = [x for x in v["items"] if x["s"] not in (2, 3)]
         if 남음:
@@ -721,9 +748,9 @@ def 읽기쪽(w, u):
          f'<input class="search" id="q" type="search" placeholder="이 글에서 찾기 (한국어·원문)"><span class="hits" id="hits"></span>'
          f'<button class="btn" id="copyText">본문 복사</button></div>')
     h += (f'<article class="reader" id="reader" data-author="{e(a["name"])}" data-cite-title="{e(w["cite_title"])}" data-no="{u["no"]}" '
-          f'data-unit="{e(w["unit"])}" data-vol="{u["vol"]}" data-site="{e(SITE["name"])}">')
-    h += (f'<div class="head"><div class="no">제{u["no"]}{e(w["unit"])}</div><div class="sub">{e(u["title"])} ({e(u["ref"])})</div>'
-          f'<div class="co">CO {e(u["co"])}</div></div>')
+          f'data-unit="{e(w["unit"])}" data-vol="{u["vol"]}" data-cite-pre="{e(쪽앞뒤(w, u)[0])}" data-cite-post="{쪽앞뒤(w, u)[1]}" data-site="{e(SITE["name"])}">')
+    h += (f'<div class="head"><div class="no">제{u["no"]}{e(w["unit"])}</div><div class="sub">{e(u["title"])}{" (" + e(u["ref"]) + ")" if u["ref"] else ""}</div>'
+          f'<div class="co">{e(쪽범위(w, u))}</div></div>')
     책 = KRV.get(w.get("krv_book", ""), {}).get("verses", {})
     구절 = 구절목록(u["ref"], 책) if 책 else None
     칼빈본문 = (f'<div class="ko calvin"><span class="lbl">칼빈이 읽은 본문 · 프랑스어에서 옮김 (Claude 번역)</span>'
@@ -737,7 +764,7 @@ def 읽기쪽(w, u):
     else:
         h += f'<div class="verse">{칼빈본문}'
     h += ((f'<div class="fr frbox" lang="fr"><span class="lbl">{e(w["orig_label"])}</span>{e(u["origbox"])}</div>' if u["origbox"] else "") + "</div>")
-    h += ('<div class="notice">AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문(CO 권:쪽)을 확인해 주십시오.'
+    h += ('<div class="notice">' + 고지(w)
           + ("" if 원문있음 else " 이 글은 아직 원문 대역이 연결되지 않았습니다.") + "</div>")
     for idx, p in enumerate(sorted(u["pages"])):
         ko = "".join(
@@ -748,7 +775,7 @@ def 읽기쪽(w, u):
             오른쪽 = f'<div class="fr">{"<div class=lang>" + e(w["orig_label"]) + "</div>" if idx == 0 else ""}{fr}</div>'
         else:
             오른쪽 = '<div class="fr-missing">원문 대역은 준비 중입니다.</div>' if idx == 0 else "<div class=fr></div>"
-        h += (f'<section class="row" id="p{p}"><div class="pg">CO {u["vol"]}:{p}<button data-cite="{p}" title="인용 표기 복사">인용</button></div>'
+        h += (f'<section class="row" id="p{p}"><div class="pg">{쪽앞뒤(w, u)[0]}{p}{쪽앞뒤(w, u)[1]}<button data-cite="{p}" title="인용 표기 복사">인용</button></div>'
               f'<div class="ko">{"<div class=lang>한국어 번역</div>" if idx == 0 else ""}{ko}</div>{오른쪽}</section>')
     if u["notes"]:
         h += '<div class="notes"><h4>각주</h4><ol>' + "".join(
@@ -765,9 +792,10 @@ def 읽기쪽(w, u):
         f'<a href="{{R}}{단위주소(w, 앞["no"])}"><small>이전</small>제{앞["no"]}{e(w["unit"])} {e(앞["title"])}</a>' if 앞 else '<span style="flex:1"></span>') + (
         f'<a class="next" href="{{R}}{단위주소(w, 뒤["no"])}"><small>다음</small>제{뒤["no"]}{e(w["unit"])} {e(뒤["title"])}</a>' if 뒤 else '<span style="flex:1"></span>') + "</div>"
     h += "</article>"
-    빵 = [("", SITE["name"]), ("expositions/", "주석·설교"), (f'{a["id"]}/', a["name"]), (저작주소(w), w["title"]), (None, f'제{u["no"]}{w["unit"]}')]
-    쪽들[경로] = 틀(경로, f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]}', h, "expositions", 빵, 서가(w, u["no"]),
-                  설명=f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]} {u["title"]}({u["ref"]}) 한국어 번역과 원문 대역')
+    강해 = w.get("genre") in ("sermons", "commentaries")
+    빵 = [("", SITE["name"]), ("expositions/", "주석·설교") if 강해 else ("books/", "도서"), (f'{a["id"]}/', a["name"]), (저작주소(w), w["title"]), (None, f'제{u["no"]}{w["unit"]}')]
+    쪽들[경로] = 틀(경로, f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]}', h, "expositions" if 강해 else "books", 빵, 서가(w, u["no"]),
+                  설명=f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]} {u["title"]}' + (f'({u["ref"]})' if u["ref"] else "") + ' 한국어 번역과 원문 대역')
 
 
 def 소개쪽들():

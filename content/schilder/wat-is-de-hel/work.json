@@ -1,0 +1,39 @@
+{
+  "id": "wat-is-de-hel",
+  "author": "schilder",
+  "series": "reformed",
+  "branch": "treatises",
+  "title": "지옥이란 무엇인가?",
+  "cite_title": "지옥이란 무엇인가?",
+  "orig_lang": "nl",
+  "orig_label": "원문 (네덜란드어, 1932년 제3판, DBNL)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "source": "book",
+  "source_short": "1932년 제3판",
+  "page_prefix": "원서 ",
+  "summary": "클라스 스킬더(1890–1952)가 1919년 블라르딩언 강연을 바탕으로 쓰고 1932년에 크게 보충한 제3판. 지옥에 관한 성경의 가르침을 개혁파 신학의 자리에서 풀고 반론에 답합니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "지옥이란 무엇인가?",
+      "from": 1,
+      "to": 7,
+      "co": null,
+      "labels": [
+        "머리말",
+        "1장",
+        "2장",
+        "3장",
+        "4장",
+        "5장",
+        "6장"
+      ]
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "treatises",
+  "lang": "네덜란드어"
+}

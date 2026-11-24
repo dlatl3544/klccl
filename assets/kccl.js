@@ -125,7 +125,7 @@
     }
     pop.style.display = 'none';
     const c = e.target.closest('[data-cite]');
-    if (c) copy(`${info.author}, 「${info.citeTitle}」 제${info.no}${info.unit}, CO ${info.vol}:${c.dataset.cite}. ${info.site} 한국어판(CC0).`, '인용 표기를 복사했습니다');
+    if (c) copy(`${info.author}, 「${info.citeTitle}」 제${info.no}${info.unit}, ${info.citePre || ('CO ' + info.vol + ':')}${c.dataset.cite}${info.citePost || ''}. ${info.site} 한국어판(CC0).`, '인용 표기를 복사했습니다');
     const m = e.target.closest('[data-mode]');
     if (m) { mode = m.dataset.mode; store.set('mode', mode); apply() }
     const f = e.target.closest('[data-fs]');
