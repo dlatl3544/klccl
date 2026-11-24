@@ -1,4 +1,5 @@
-# 권별 PDF 표지에 "CR nn (CO nn)" 네모 상자를 덧찍는다
+# 권별 PDF 표지에 "CR nn (CO nn)" 네모 상자를 덧찍는다(표지의 금색 #B0894F 사용)
+# 원본은 상자가 없는 PDF여야 한다(두 번 찍지 않도록)
 # 사용: python3 pdf_cr_box.py 원본.pdf 출력.pdf <CO 권수>
 import subprocess, sys, tempfile
 from pathlib import Path
@@ -12,9 +13,9 @@ w_pt = float(r.pages[0].mediabox.width); h_pt = float(r.pages[0].mediabox.height
 tex = rf"""\documentclass{{article}}
 \usepackage[paperwidth={w_pt}bp,paperheight={h_pt}bp,margin=0pt]{{geometry}}
 \usepackage{{fontspec}}\setmainfont{{Noto Serif CJK KR}}
-\usepackage{{tikz}}\pagestyle{{empty}}
+\usepackage{{tikz}}\pagestyle{{empty}}\definecolor{{gold}}{{HTML}}{{B0894F}}
 \begin{{document}}\begin{{tikzpicture}}[remember picture,overlay]
-\node[draw=black!80,line width=0.6pt,inner xsep=9pt,inner ysep=5pt,font=\fontsize{{11}}{{13}}\selectfont]
+\node[draw=gold,text=gold,line width=0.6pt,inner xsep=9pt,inner ysep=5pt,font=\fontsize{{11}}{{13}}\selectfont]
   at ([yshift=-175bp]current page.north) {{{표시}}};
 \end{{tikzpicture}}\end{{document}}"""
 with tempfile.TemporaryDirectory() as d:
