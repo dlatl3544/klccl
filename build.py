@@ -273,6 +273,12 @@ def 저작주소(w) -> str:
     return f"{w['author_dir']}/{w['id']}/"
 
 
+def 권표(v) -> str:
+    """권 표시: CO 권수에 28을 더한 CR(Corpus Reformatorum) 권수. CO 값이 없으면 저작 안의 권 번호"""
+    co = v.get("co")
+    return f"CR {int(co) + 28}" if isinstance(co, int) or str(co).isdigit() else f'{v["no"]}권'
+
+
 def PDF링크(w, v, 꼴="btn") -> str:
     """권별 AI 초벌 번역판 PDF 내려받기 링크. work.json 의 volumes[].pdf 에 파일 이름을 적는다"""
     f = v.get("pdf")
@@ -285,8 +291,8 @@ def PDF링크(w, v, 꼴="btn") -> str:
     if 꼴 == "tag":
         return f' <a class="tag" href="{주소}" download>PDF</a>'
     if 꼴 == "mini":
-        return f'<a class="dl mini" href="{주소}" download>{v["no"]}권 PDF 내려받기</a>'
-    return (f'<p><a class="btn dl" href="{주소}" download>{v["no"]}권 PDF 내려받기</a> '
+        return f'<a class="dl mini" href="{주소}" download>{권표(v)} PDF 내려받기</a>'
+    return (f'<p><a class="btn dl" href="{주소}" download>{권표(v)} PDF 내려받기</a> '
             f'<span class="mini">AI 초벌 번역판 · 신학 감수 전 · {쪽}{크기} · CC0</span></p>')
 
 
@@ -620,12 +626,12 @@ def 총서():
                 본문 += '<p class="mini">대상 선정 중입니다. <a href="{R}sources/co/">칼빈 전집 지도</a>에서 범위를 볼 수 있습니다.</p>'
                 continue
             줄 = "".join(
-                f'<tr><td>{v["no"]}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
+                f'<tr><td>{권표(v)[3:] if 권표(v).startswith("CR") else 권표(v)}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
                 f'<span class="mini">{v["from"]}–{v["to"]} ({len(v["items"])}{e(w["unit"])})</span>'
                 f'{PDF링크(w, v, "tag")}</td><td class="mini">CO {v["co"]}</td>'
                 f'<td>{막대(v["items"])}<span class="mini">{요약(v["items"])}</span></td></tr>'
                 for w, v in sorted(vols, key=lambda x: x[1]["no"]))
-            본문 += f'<table class="t"><tr><th style="width:48px">권</th><th>제목</th><th style="width:80px">저본</th><th style="width:230px">진행</th></tr>{줄}</table>'
+            본문 += f'<table class="t"><tr><th style="width:64px">CR</th><th>제목</th><th style="width:80px">저본</th><th style="width:230px">진행</th></tr>{줄}</table>'
     본문 += '<div class="card soon" style="margin-top:20px"><h3>다른 총서 (예정)</h3><p>교부, 종교개혁자, 청교도의 공유 저작물로 총서를 더합니다.</p></div>'
     쪽들["series/index.html"] = 틀("series/index.html", "총서", 본문, "books", [("", SITE["name"]), ("books/", "도서"), (None, "총서")], 하위="series", 하위목록=도서하위)
 
@@ -655,7 +661,7 @@ def 저작쪽(w):
     a = 저자이름[w["author"]]
     본문 = f'<h1>{e(a["name"])}, 「{e(w["title"])}」</h1><p class="lead">{e(w["summary"])}</p>'
     for v in w["volumes"]:
-        본문 += f'<h2>{v["no"]}권 『{e(v["title"])}』 <span class="mini">CO {v["co"]}</span></h2>'
+        본문 += f'<h2>{권표(v)} 『{e(v["title"])}』 <span class="mini">CO {v["co"]}</span></h2>'
         본문 += f'{막대(v["items"])}<div class="mini" style="margin-bottom:8px">{요약(v["items"])}</div>'
         본문 += PDF링크(w, v)
         공개 = [x for x in v["items"] if x["s"] in (2, 3)]
@@ -680,7 +686,7 @@ def 서가(w, 현재번호: int) -> str:
     h += f'<div class="series"><a href="{{R}}{저작주소(w)}" style="text-decoration:none">「{e(w["title"])}」</a></div>'
     for v in w["volumes"]:
         여기 = v["from"] <= 현재번호 <= v["to"]
-        제목 = f'{v["no"]}권 『{e(v["title"])}』 {v["from"]}–{v["to"]}'
+        제목 = f'{권표(v)} 『{e(v["title"])}』 {v["from"]}–{v["to"]}'
         공개 = [x for x in v.get("items", []) if x["s"] in (2, 3)]
         if not 공개:
             # 공개된 편이 없는 권은 접을 것이 없으므로 제목만 둔다
