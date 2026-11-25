@@ -293,3 +293,9 @@ details.voltog>summary.vol::after{content:"";flex:none;width:7px;height:7px;marg
 details.voltog[open]>summary.vol::after{transform:rotate(45deg)}
 details.voltog>summary.vol:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 .vol.soon{opacity:.6}
+/* 주석·설교: 성경 책별 찾기 */
+h3.testament{font-family:var(--serif);margin:14px 0 6px;font-size:1rem}
+.bkminis{display:flex;flex-wrap:wrap;gap:6px}
+.bkmini{padding:4px 10px;border:1px solid var(--line,#ddd);border-radius:14px;font-size:.88rem;color:var(--muted);opacity:.6}
+a.bkmini.on{opacity:1;color:var(--ink,inherit);border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,transparent);font-weight:600;text-decoration:none}
+a.bkmini.on:hover{background:color-mix(in srgb,var(--gold) 28%,transparent)}

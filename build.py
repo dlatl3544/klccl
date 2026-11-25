@@ -202,8 +202,8 @@ def 모든항목():
 #    위쪽 탭은 저자나 원전 하나에 묶이지 않게 도서관 전체 기준으로 나눈다.
 #    서가(모든 저작) · 저자 · 총서 · 성경 · 원전 · 찾기 · 소개
 # ------------------------------------------------------------------
-메뉴 = [("bible/", "성경", "bible"), ("expositions/", "주석·설교", "expositions"), ("books/", "도서", "books"),
-       ("psalter/", "시편찬송", "psalter"), ("authors/", "저자", "authors"), ("sources/", "원전", "sources"),
+메뉴 = [("", "홈", "home"), ("bible/", "성경", "bible"), ("expositions/", "주석·설교", "expositions"), ("books/", "도서", "books"),
+       ("psalter/", "시편찬송", "psalter"), ("authors/", "저자", "authors"),
        ("search/", "찾기", "search"), ("about/", "소개", "about")]
 도서하위 = [("books/", "전체 도서", "books"), ("series/", "총서", "series")]
 소개하위 = [("about/", "도서관 소개", "about"), ("about/principles/", "원칙", "principles"), ("about/progress/", "진행 현황", "progress"),
@@ -218,7 +218,7 @@ def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = Non
     """경로는 docs/ 기준 상대 경로(예: 'sources/co/index.html'). 링크는 모두 상대 경로로 만든다"""
     깊이 = 경로.count("/")
     R = "../" * 깊이
-    nav = "".join(f'<a href="{R}{h}"{" class=on" if k == 현재 else ""}>{t}</a>' for h, t, k in 메뉴)
+    nav = "".join(f'<a href="{(R + h) or "./"}"{" class=on" if k == 현재 else ""}>{t}</a>' for h, t, k in 메뉴)
     빵글 = ""
     if 빵:
         빵글 = '<div class="crumb">' + " › ".join(
@@ -352,12 +352,11 @@ def 홈():
     시작 = 대역[0] if 대역 else (공개[0] if 공개 else None)
     시작단추 = (f'<a class="btn on" href="{{R}}{단위주소(*시작)}">대역 읽기 시작: 칼빈 「{e(시작[0]["title"])}」 제{시작[1]}편</a> '
             if 시작 else "")
-    둘러보기 = [("bible/", "성경", "개역한글판 66권 전체를 읽고, 장마다 이 도서관의 설교와 주석을 함께 봅니다."),
-            ("expositions/", "주석·설교", "성경 66권 차례로 정리한 주석과 설교입니다."),
+    둘러보기 = [("bible/", "성경", "개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다."),
+            ("expositions/", "주석·설교", "번역된 주석과 설교를 성경 책별로 찾아 읽습니다."),
             ("books/", "도서", "교리서, 신조, 서신, 경건 서적과 총서를 갈래·시대·원어로 골라 봅니다."),
             ("psalter/", "시편찬송", "제네바 시편가 원문과 시편 150편, 한국어 운율 번역(예정)입니다."),
-            ("authors/", "저자", "교부부터 종교개혁자, 청교도까지 저자별로 봅니다."),
-            ("sources/", "원전", "칼빈 전집(CO) 같은 원전 전집의 권별 지도와 번역 진행입니다.")]
+            ("authors/", "저자", "교부부터 종교개혁자, 청교도까지 저자별로 봅니다.")]
     카드 = "".join(f'<a class="card" href="{{R}}{h}"><h3>{t}</h3><p>{d}</p></a>' for h, t, d in 둘러보기)
     소식 = "".join(f"<tr><td>{e(d)}</td><td>{e(t)}</td></tr>" for d, t in LIB["news"][:4])
     co진행 = sum(1 for v in CO["volumes"] if CO진행(v["vol"]) > 0)
@@ -372,14 +371,14 @@ def 홈():
 <h2>둘러보기</h2><div class="cards">{카드}</div>
 <h2>지금의 목표: 칼빈 전집 59권</h2>
 <p>첫 목표는 19세기에 간행된 칼빈 전집(CO, 1863–1900) 59권 전체를 원문에서 한국어로 옮기는 것입니다. 번역에는 오랜 시간이 걸리므로, 마치는 대로 한 편씩 더합니다. 그다음에는 다른 종교개혁자와 교부, 청교도의 공유 저작물로 서가를 넓힙니다.</p>
-<p><a class="btn" href="{{R}}sources/co/">칼빈 전집 59권 지도</a> <a class="btn" href="{{R}}about/progress/">진행 현황</a></p>
+<p><a class="btn" href="{{R}}about/progress/">진행 현황</a></p>
 <h2>이 도서관이 지키는 세 가지</h2><div class="cards">
 <div class="card"><h3>원문과 나란히</h3><p>모든 번역은 원문과 원전 쪽수(예: CO 34:1)로 맞대어 놓아, 누구나 원문을 확인할 수 있습니다.</p></div>
 <div class="card"><h3>조건 없는 공개</h3><p>원전은 공유 저작물만, 번역문은 CC0 1.0으로 공개합니다. 복제, 배포, 수정, 출판 모두 자유입니다.</p></div>
 <div class="card"><h3>투명한 초벌 번역</h3><p>AI로 초벌 번역했고 신학 감수 전입니다. 오류 제보를 받아 고치고, 고친 이력을 남깁니다.</p></div></div>
 <h2>소식</h2><table class="t"><tr><th style="width:120px">날짜</th><th>내용</th></tr>{소식}</table>
 <p><a href="{{R}}about/news/">소식 전체 보기</a></p>"""
-    쪽들["index.html"] = 틀("index.html", "", 본문)
+    쪽들["index.html"] = 틀("index.html", "", 본문, "home")
 
 
 def 서가쪽():
@@ -430,9 +429,6 @@ def 저자쪽():
         저작 = [w for w in WORKS if w["author"] == a["id"]]
         원전 = [s for s in LIB["sources"] if s["author"] == a["id"]]
         b = f'<h1>{e(a["name"])} <span class="mini">{e(a["life"])}</span></h1><p class="lead">{e(a["desc"])}</p>'
-        if 원전:
-            b += "<h2>원전</h2><ul>" + "".join(
-                f'<li><a href="{{R}}sources/{s["id"]}/">{e(s["name"])}</a> <span class="mini">{e(s["full"])}, {e(s["years"])}</span></li>' for s in 원전) + "</ul>"
         for g in LIB["genres"]:
             여기 = [w for w in 저작 if w.get("genre") == g["id"]]
             if not 여기:
@@ -522,7 +518,7 @@ def 성경쪽():
                   f'{"<small>이 도서관의 글 " + str(수) + "편</small>" if 수 else ""}</a>')
         본문 += f"<h2>{약}</h2><div class='bible'>{칸}</div>"
     본문 += f'<p class="mini">{e(BIBLE["note"])} 성경 본문은 저작재산권이 소멸한 『성경전서 개역한글판』입니다.</p>'
-    쪽들["bible/index.html"] = 틀("bible/index.html", "성경", 본문, "bible", [("", SITE["name"]), (None, "성경")])
+    # (예전 66권 목록 쪽은 쓰지 않는다. 성경 탭은 펼쳐 읽기 화면만 보인다)
 
     for b in BIBLE["books"]:
         책 = KRV.get(b["abbr"], {}).get("verses", {})
@@ -538,7 +534,7 @@ def 성경쪽():
         if 장색인 and any(k[0] == b["abbr"] for k in 장색인):
             h += '<p class="mini">색이 칠해진 장은 이 도서관에 그 장을 다룬 글이 있습니다.</p>'
         경로 = f'bible/{b["code"]}/index.html'
-        쪽들[경로] = 틀(경로, b["name"], h, "bible", [("", SITE["name"]), ("bible/", "성경"), (None, b["name"])])
+        쪽들[경로] = 틀(경로, b["name"], h, "expositions", [("", SITE["name"]), ("expositions/", "주석·설교"), (None, b["name"])])
         for c in range(1, 장수 + 1):
             절들 = sorted((int(k.split(":")[1]), t) for k, t in 책.items() if int(k.split(":")[0]) == c)
             본 = "".join(f'<p class="v" id="v{v}"><sup class="vn">{v}</sup>{e(t)}</p>' for v, t in 절들)
@@ -554,8 +550,8 @@ def 성경쪽():
             h = (f'<h1>{e(b["name"])} {c}장</h1><p class="mini">성경전서 개역한글판(1961) · <a href="{{R}}bible/read/#{b["code"]}/{c}">책으로 펼쳐 읽기</a></p>'
                  f'<div class="krvtext">{본}</div>{옆}{앞뒤}')
             경로 = f'bible/{b["code"]}/{c}.html'
-            쪽들[경로] = 틀(경로, f'{b["name"]} {c}장', h, "bible",
-                          [("", SITE["name"]), ("bible/", "성경"), (f'bible/{b["code"]}/', b["name"]), (None, f"{c}장")],
+            쪽들[경로] = 틀(경로, f'{b["name"]} {c}장', h, "expositions",
+                          [("", SITE["name"]), ("expositions/", "주석·설교"), (f'bible/{b["code"]}/', b["name"]), (None, f"{c}장")],
                           설명=f'{b["name"]} {c}장 개역한글판 본문')
 
 
@@ -578,29 +574,30 @@ def 성경책쪽():
           f'<div class="pages"><div class="runhead" id="runhead"></div><div id="viewport"><div id="flow"></div></div><div class="pageno" id="pageno"></div></div></div>'
           f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};window.KLCCL_VERSIONS={json.dumps(VERSIONS, ensure_ascii=False)};</script>'
           f'<script src="{{R}}assets/reader.js" defer></script>')
-    경로 = "bible/read/index.html"
-    h = 틀(경로, "성경 읽기", 본문, "bible", [("", SITE["name"]), ("bible/", "성경"), (None, "책으로 읽기")])
-    # 책 화면은 넓게 쓰도록 본문 여백 틀을 걷어 낸다
-    h = h.replace('<div class="layout single"><main>', '<div class="layout single wide"><main>').replace('<div class="page">', '<div>', 1)
-    쪽들[경로] = h
+    for 경로 in ("bible/index.html", "bible/read/index.html"):   # 예전 주소(bible/read/)도 그대로 열리게
+        h = 틀(경로, "성경", 본문, "bible")
+        # 책 화면은 넓게 쓰도록 본문 여백 틀을 걷어 낸다
+        h = h.replace('<div class="layout single"><main>', '<div class="layout single wide"><main>').replace('<div class="page">', '<div>', 1)
+        쪽들[경로] = h
 
 
 def 강해쪽():
-    """주석·설교: 성경 66권 차례. 책마다 이 도서관의 주석·설교와 칼빈 전집에 남은 것을 보인다"""
-    종류 = {"주석": "k-c", "설교": "k-s", "주석·설교": "k-cs", "확인 중": "k-q", "없음": ""}
+    """주석·설교: 번역된 저작 카드 + 성경 책별 찾기(번역이 있는 책만 진하게)"""
     강해 = [w for w in WORKS if w.get("genre") in ("sermons", "commentaries")]
-    본문 = ('<h1>주석·설교</h1><p class="lead">성경 66권 차례로 이 도서관의 주석과 설교를 모았습니다. 책을 누르면 그 책의 본문과 장별 설교·주석으로 갑니다.</p>'
-          '<div class="legend"><span>칼빈 전집에 남은 것:</span><span><i class="kind k-c">주석</i></span><span><i class="kind k-s">설교</i></span>'
-          '<span><i class="kind k-cs">주석·설교</i></span><span><i class="kind">없음</i></span></div>')
+    카드 = "".join(
+        f'<a class="card" href="{{R}}{저작주소(w)}"><h3>「{e(w["title"])}」</h3>'
+        f'<p>{e(저자이름[w["author"]]["name"])} · {e(갈래이름.get(w["genre"], ""))}</p>'
+        f'{막대(저작항목(w))}<span class="mini">{요약(저작항목(w))}</span></a>' for w in 강해)
+    본문 = ('<h1>주석·설교</h1><p class="lead">번역된 주석과 설교입니다. 성경 책으로 찾으려면 아래에서 책을 고르십시오.</p>'
+          f'<div class="cards">{카드}</div><h2>성경 책별로 찾기</h2>')
     for 약 in ("구약", "신약"):
         칸 = ""
         for b in [x for x in BIBLE["books"] if x["testament"] == 약]:
-            글 = [w for w in 강해 if b["abbr"] in w.get("bible", [])]
-            목록 = "".join(f'<small>{e(저자이름[w["author"]]["name"])}, 「{e(w["title"])}」 · {요약(저작항목(w))}</small>' for w in 글)
-            칸 += (f'<a class="bk{" has" if 글 else ""}" href="{{R}}bible/{b["code"]}/"><b>{e(b["name"])}</b> '
-                  f'<i class="kind {종류.get(b["kind"], "")}">칼빈 {e(b["kind"])}</i>{목록}</a>')
-        본문 += f"<h2>{약}</h2><div class='bible'>{칸}</div>"
-    본문 += '<p class="mini">테두리가 진한 책은 이 도서관에 번역이 있는 책입니다. 저자가 늘면 같은 자리에 함께 모입니다.</p>'
+            있음 = any(b["abbr"] in w.get("bible", []) for w in 강해)
+            칸 += (f'<a class="bkmini on" href="{{R}}bible/{b["code"]}/">{e(b["name"])}</a>' if 있음
+                  else f'<span class="bkmini">{e(b["name"])}</span>')
+        본문 += f'<h3 class="testament">{약}</h3><div class="bkminis">{칸}</div>'
+    본문 += '<p class="mini">진한 책에 번역된 주석·설교가 있습니다. 번역이 늘면 차례로 진해집니다.</p>'
     쪽들["expositions/index.html"] = 틀("expositions/index.html", "주석·설교", 본문, "expositions", [("", SITE["name"]), (None, "주석·설교")])
 
 
@@ -650,7 +647,7 @@ def 총서():
             vols = [(w, v) for w in WORKS if w["series"] == s["id"] and w["branch"] == b["id"] for v in w["volumes"]]
             본문 += f'<h3 style="font-family:var(--serif);margin:18px 0 4px">갈래: {e(b["name"])}</h3><p class="mini">{e(b["note"])}</p>'
             if not vols:
-                본문 += '<p class="mini">대상 선정 중입니다. <a href="{R}sources/co/">칼빈 전집 지도</a>에서 범위를 볼 수 있습니다.</p>'
+                본문 += '<p class="mini">대상 선정 중입니다.</p>'
                 continue
             줄 = "".join(
                 f'<tr><td>{권표(v)[3:] if 권표(v).startswith("CR") else 권표(v)}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
@@ -941,7 +938,7 @@ show(location.hash.slice(1) || 'index.html');
 
 
 if __name__ == "__main__":
-    홈(); 서가쪽(); 저자쪽(); 총서(); 성경쪽(); 강해쪽(); 성경책쪽(); 시편찬송쪽(); 원전쪽(); 찾기쪽(); 진행(); 소개쪽들()
+    홈(); 서가쪽(); 저자쪽(); 총서(); 성경쪽(); 강해쪽(); 성경책쪽(); 시편찬송쪽(); 찾기쪽(); 진행(); 소개쪽들()
     for w in WORKS:
         저작쪽(w)
         for n in sorted(w["units"]):
