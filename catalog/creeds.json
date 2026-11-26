@@ -8,7 +8,14 @@
    {"title": "칼케돈 신앙 정의", "en": "The Definition of Chalcedon", "year": "451", "lang": "그리스어", "source": "Schaff 2권", "work": "ecumenical/ancient-creeds", "no": 4, "en_year": "451", "en_lang": "Greek", "en_source": "Schaff vol. 2"},
    {"title": "아타나시우스 신경", "en": "The Athanasian Creed", "year": "5–6세기", "lang": "라틴어", "source": "Schaff 2권", "work": "ecumenical/ancient-creeds", "no": 5, "en_year": "5th–6th c.", "en_lang": "Latin", "en_source": "Schaff vol. 2"}
   ]},
-  {"id": "geneva", "name": "칼빈과 제네바", "en": "Calvin and Geneva", "items": [
+  {"id": "early-reformation", "name": "종교개혁 초기 신앙고백", "en": "Early Reformation Confessions", "items": [
+   {"title": "츠빙글리 67개 조항", "en": "Zwingli's Sixty-seven Articles", "year": "1523", "lang": "독일어", "source": "Schaff 3권", "en_year": "1523", "en_lang": "German", "en_source": "Schaff vol. 3"},
+   {"title": "베른 논제", "en": "The Ten Theses of Bern", "year": "1528", "lang": "독일어·라틴어", "source": "Schaff 3권, Müller", "en_year": "1528", "en_lang": "German & Latin", "en_source": "Schaff vol. 3, Müller"},
+   {"title": "테트라폴리탄 신앙고백", "en": "Tetrapolitan Confession", "year": "1530", "lang": "독일어·라틴어", "source": "Niemeyer, Müller", "en_year": "1530", "en_lang": "German & Latin", "en_source": "Niemeyer, Müller"},
+   {"title": "제1 바젤 신앙고백", "en": "First Confession of Basel", "year": "1534", "lang": "독일어", "source": "Müller", "en_year": "1534", "en_lang": "German", "en_source": "Müller"},
+   {"title": "아우크스부르크 신앙고백 변경판", "en": "Augsburg Confession (Variata)", "year": "1540", "lang": "라틴어", "source": "CR 26 (멜란히톤 전집)", "en_year": "1540", "en_lang": "Latin", "en_source": "CR 26 (Melanchthon)"}
+  ]},
+  {"id": "geneva","name": "칼빈과 제네바", "en": "Calvin and Geneva", "items": [
    {"title": "제네바 교리 교육과 신앙고백", "en": "Geneva Instruction and Confession of Faith", "year": "1537", "lang": "프랑스어", "source": "CO 22", "en_year": "1537", "en_lang": "French", "en_source": "CO 22"},
    {"title": "제네바 교리문답", "en": "Geneva Catechism", "year": "1542/1545", "lang": "프랑스어·라틴어", "source": "CO 6", "en_year": "1542/1545", "en_lang": "French & Latin", "en_source": "CO 6"},
    {"title": "취리히 합의", "en": "Consensus Tigurinus", "year": "1549", "lang": "라틴어", "source": "CO 7", "en_year": "1549", "en_lang": "Latin", "en_source": "CO 7"},
@@ -25,10 +32,16 @@
    {"title": "제2 스위스 신앙고백", "en": "Second Helvetic Confession", "year": "1566", "lang": "라틴어", "source": "Schaff 3권", "work": "reformed/second-helvetic-confession", "no": 1, "en_year": "1566", "en_lang": "Latin", "en_source": "Schaff vol. 3"},
    {"title": "스위스 일치 신조", "en": "Helvetic Consensus Formula", "year": "1675", "lang": "라틴어", "source": "Müller", "work": "reformed/helvetic-consensus", "no": 1, "en_year": "1675", "en_lang": "Latin", "en_source": "Müller"}
   ]},
+  {"id": "england-ireland", "name": "잉글랜드와 아일랜드", "en": "English and Irish Articles", "items": [
+   {"title": "39개 신조", "en": "The Thirty-nine Articles", "year": "1563/1571", "lang": "라틴어·영어", "source": "Schaff 3권", "en_year": "1563/1571", "en_lang": "Latin & English", "en_source": "Schaff vol. 3"},
+   {"title": "아일랜드 신조", "en": "The Irish Articles", "year": "1615", "lang": "영어", "source": "Schaff 3권", "en_year": "1615", "en_lang": "English", "en_source": "Schaff vol. 3"}
+  ]},
   {"id": "westminster", "name": "웨스트민스터 표준문서", "en": "The Westminster Standards", "items": [
    {"title": "웨스트민스터 신앙고백", "en": "Westminster Confession of Faith", "year": "1646/47", "lang": "영어", "source": "초판, Schaff 3권", "en_year": "1646/47", "en_lang": "English", "en_source": "first ed., Schaff vol. 3"},
    {"title": "웨스트민스터 대요리문답", "en": "Westminster Larger Catechism", "year": "1648", "lang": "영어", "source": "초판, Müller", "en_year": "1648", "en_lang": "English", "en_source": "first ed., Müller"},
-   {"title": "웨스트민스터 소요리문답", "en": "Westminster Shorter Catechism", "year": "1648", "lang": "영어", "source": "초판, Schaff 3권", "en_year": "1648", "en_lang": "English", "en_source": "first ed., Schaff vol. 3"}
+   {"title": "웨스트민스터 소요리문답", "en": "Westminster Shorter Catechism", "year": "1648", "lang": "영어", "source": "초판, Schaff 3권", "en_year": "1648", "en_lang": "English", "en_source": "first ed., Schaff vol. 3"},
+   {"title": "웨스트민스터 공예배 모범", "en": "Directory for the Public Worship of God", "year": "1645", "lang": "영어", "source": "초판", "en_year": "1645", "en_lang": "English", "en_source": "first ed."},
+   {"title": "웨스트민스터 장로교회 정치 형태", "en": "Form of Presbyterial Church-Government", "year": "1645", "lang": "영어", "source": "초판", "en_year": "1645", "en_lang": "English", "en_source": "first ed."}
   ]}
  ]
 }
