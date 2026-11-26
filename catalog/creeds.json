@@ -20,10 +20,10 @@
    {"title": "도르트 신조", "en": "Canons of Dort", "year": "1619", "lang": "라틴어", "source": "Schaff 3권", "work": "reformed/canons-of-dort", "no": 1, "en_year": "1619", "en_lang": "Latin", "en_source": "Schaff vol. 3"}
   ]},
   {"id": "swiss-scots", "name": "스위스와 스코틀랜드", "en": "Swiss and Scottish Confessions", "items": [
-   {"title": "제1 스위스 신앙고백", "en": "First Helvetic Confession", "year": "1536", "lang": "라틴어·독일어", "source": "Niemeyer, Müller", "en_year": "1536", "en_lang": "Latin & German", "en_source": "Niemeyer, Müller"},
-   {"title": "스코틀랜드 신앙고백", "en": "Scots Confession", "year": "1560", "lang": "스코트어", "source": "Schaff 3권", "en_year": "1560", "en_lang": "Scots", "en_source": "Schaff vol. 3"},
-   {"title": "제2 스위스 신앙고백", "en": "Second Helvetic Confession", "year": "1566", "lang": "라틴어", "source": "Niemeyer, Müller", "en_year": "1566", "en_lang": "Latin", "en_source": "Niemeyer, Müller"},
-   {"title": "스위스 일치 신조", "en": "Helvetic Consensus Formula", "year": "1675", "lang": "라틴어", "source": "Niemeyer", "en_year": "1675", "en_lang": "Latin", "en_source": "Niemeyer"}
+   {"title": "제1 스위스 신앙고백", "en": "First Helvetic Confession", "year": "1536", "lang": "라틴어·독일어", "source": "Schaff 3권", "work": "reformed/first-helvetic-confession", "no": 1, "en_year": "1536", "en_lang": "Latin & German", "en_source": "Schaff vol. 3"},
+   {"title": "스코틀랜드 신앙고백", "en": "Scots Confession", "year": "1560", "lang": "스코트어", "source": "Schaff 3권", "work": "reformed/scots-confession", "no": 1, "en_year": "1560", "en_lang": "Scots", "en_source": "Schaff vol. 3"},
+   {"title": "제2 스위스 신앙고백", "en": "Second Helvetic Confession", "year": "1566", "lang": "라틴어", "source": "Schaff 3권", "work": "reformed/second-helvetic-confession", "no": 1, "en_year": "1566", "en_lang": "Latin", "en_source": "Schaff vol. 3"},
+   {"title": "스위스 일치 신조", "en": "Helvetic Consensus Formula", "year": "1675", "lang": "라틴어", "source": "Müller", "work": "reformed/helvetic-consensus", "no": 1, "en_year": "1675", "en_lang": "Latin", "en_source": "Müller"}
   ]},
   {"id": "westminster", "name": "웨스트민스터 표준문서", "en": "The Westminster Standards", "items": [
    {"title": "웨스트민스터 신앙고백", "en": "Westminster Confession of Faith", "year": "1646/47", "lang": "영어", "source": "초판, Schaff 3권", "en_year": "1646/47", "en_lang": "English", "en_source": "first ed., Schaff vol. 3"},

@@ -1,0 +1,37 @@
+{
+  "id": "first-helvetic-confession",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "swiss-scots",
+  "title": "제1 스위스 신앙고백",
+  "cite_title": "제1 스위스 신앙고백",
+  "orig_lang": "la",
+  "orig_label": "원문 (라틴어·독일어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "1536년 바젤에 모인 스위스 개혁교회 신학자들(불링거, 그리나이우스, 미코니우스 등)이 작성한 신앙고백 28조. Schaff 판의 라틴어 본문에서 옮기고, 레오 유트의 독일어판(고지독일어)을 원문 칸에 함께 실어 조 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "제1 스위스 신앙고백",
+      "from": 1,
+      "to": 1,
+      "labels": [
+        "28조"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "라틴어·독일어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 3권 (1919년 4판)",
+  "page_prefix": "제",
+  "page_suffix": "조",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds3 (iv.iv) 텍스트, Schaff 3권 211–231쪽"
+}

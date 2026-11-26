@@ -1,0 +1,38 @@
+{
+  "id": "scots-confession",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "swiss-scots",
+  "title": "스코틀랜드 신앙고백",
+  "cite_title": "스코틀랜드 신앙고백",
+  "orig_lang": "sco",
+  "orig_label": "원문 (스코트어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "1560년 존 녹스 등이 작성해 스코틀랜드 의회가 승인한 신앙고백. 제목과 머리말, 본문 25조를 Schaff 판(Dunlop 판 재인쇄)의 옛 스코트어 원문과 조항 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "스코틀랜드 신앙고백",
+      "from": 1,
+      "to": 2,
+      "labels": [
+        "머리말",
+        "25조"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "스코트어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 3권 (1919년 4판)",
+  "page_prefix": "제",
+  "page_suffix": "항",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds3 (iv.ix) 텍스트, Schaff 3권 437–479쪽. 라틴어 역(1572)은 원문 칸에 싣지 않음"
+}

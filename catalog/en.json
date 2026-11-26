@@ -115,6 +115,10 @@
     "three-forms": {
      "name": "The Three Forms of Unity",
      "note": "The Belgic Confession (French), the Heidelberg Catechism (German), and the Canons of Dort (Latin), from Schaff, vol. 3."
+    },
+    "swiss-scots": {
+     "name": "Swiss and Scottish Confessions",
+     "note": "The First and Second Helvetic Confessions (Latin) and the Scots Confession (Scots) from Schaff, vol. 3; the Helvetic Consensus Formula (Latin) from Müller's edition."
     }
    }
   }
@@ -153,7 +157,8 @@
   "스킬더 『하이델베르크 요리문답 해설』 1권(제1–4주일, 문 1–11) 머리말과 33편(§1–32) 원문 대역 공개, PDF(722쪽, 부록 4종) 함께 제공. 2–4권은 차례로 이어서 공개": "Schilder, Commentary on the Heidelberg Catechism, vol. 1 (Lord's Days 1–4, Q&A 1–11): foreword and §§1–32 published with the Dutch original, plus PDF (722 pages, four appendices). Volumes 2–4 to follow",
   "스킬더 『하이델베르크 요리문답 해설』 2권(제5–7주일, 문 12–23) §33–57 원문 대역 공개, PDF(875쪽, 부록 4종). 1권도 저자 정오표를 반영한 새 판(722쪽)으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vol. 2 (Lord's Days 5–7, Q&A 12–23): §§33–57 published with the Dutch original, plus PDF (875 pages, four appendices). Vol. 1 replaced with a new edition incorporating the author's errata (722 pages)",
   "스킬더 『하이델베르크 요리문답 해설』 3권(제8–9주일, 문 24–26)과 4권(제10주일, 문 27–28) 원문 대역 공개, PDF(709쪽·429쪽, 부록 4종). 네 권 전체(§1–82) 완간, 1·2권도 엮은이 정오를 반영한 새 판으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vols. 3 (Lord's Days 8–9, Q&A 24–26) and 4 (Lord's Day 10, Q&A 27–28) published with the Dutch original, plus PDFs (709 and 429 pages, four appendices). All four volumes (§§1–82) are now complete; vols. 1–2 replaced with new editions incorporating the editor's late errata",
-  "신조 탭에 세 일치 신조 공개: 벨기에 신앙고백 37조(프랑스어), 하이델베르크 요리문답 129문(1563년 독일어), 도르트 신조(라틴어 공인 본문, 서문·다섯 교리의 조항과 오류 배척·결론 10편)를 Schaff 3권 원문과 조항 단위 대역으로": "The Three Forms of Unity on the Creeds tab: the Belgic Confession in 37 articles (French), the Heidelberg Catechism in 129 questions (German, 1563), and the Canons of Dort (official Latin text: preface, the articles and rejections of errors of the five heads, and conclusion, in 10 parts), article by article alongside the original text in Schaff, vol. 3"
+  "신조 탭에 세 일치 신조 공개: 벨기에 신앙고백 37조(프랑스어), 하이델베르크 요리문답 129문(1563년 독일어), 도르트 신조(라틴어 공인 본문, 서문·다섯 교리의 조항과 오류 배척·결론 10편)를 Schaff 3권 원문과 조항 단위 대역으로": "The Three Forms of Unity on the Creeds tab: the Belgic Confession in 37 articles (French), the Heidelberg Catechism in 129 questions (German, 1563), and the Canons of Dort (official Latin text: preface, the articles and rejections of errors of the five heads, and conclusion, in 10 parts), article by article alongside the original text in Schaff, vol. 3",
+  "신조 탭에 스위스와 스코틀랜드 신앙고백 4종 공개: 제1 스위스 신앙고백 28조(라틴어·독일어), 스코틀랜드 신앙고백 머리말과 25조(스코트어), 제2 스위스 신앙고백 서문과 30장(라틴어, 31편), 스위스 일치 신조 머리말과 법규 26조(라틴어, Müller 판)를 원문과 조항 단위 대역으로": "Four Swiss and Scottish confessions on the Creeds tab: the First Helvetic Confession in 28 articles (Latin and German), the Scots Confession with its preface and 25 articles (Scots), the Second Helvetic Confession with its preface and 30 chapters (Latin, 31 parts), and the Helvetic Consensus Formula with its preface and 26 canons (Latin, Müller's edition), article by article alongside the original"
  },
  "works": {
   "ecumenical/ancient-creeds": {
@@ -288,6 +293,54 @@
    "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
    "volumes": {
     "1": "The Canons of Dort"
+   }
+  },
+  "reformed/first-helvetic-confession": {
+   "title": "The First Helvetic Confession",
+   "cite_title": "The First Helvetic Confession",
+   "summary": "The confession in 28 articles drawn up at Basel in 1536 by Swiss Reformed divines (Bullinger, Grynaeus, Myconius, and others), translated from the Latin text in Schaff's edition, with Leo Jud's German version (in High German) set beside it in the original column.",
+   "orig_label": "Original (Latin and German)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The First Helvetic Confession"
+   }
+  },
+  "reformed/scots-confession": {
+   "title": "The Scots Confession",
+   "cite_title": "The Scots Confession",
+   "summary": "The confession drawn up in 1560 by John Knox and others and approved by the Scottish Parliament: title, preface, and 25 articles, read alongside the original Scots text in Schaff's edition (a reprint of Dunlop).",
+   "orig_label": "Original (Scots)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Scots Confession"
+   }
+  },
+  "reformed/second-helvetic-confession": {
+   "title": "The Second Helvetic Confession",
+   "cite_title": "The Second Helvetic Confession",
+   "summary": "The confession in 30 chapters written by Heinrich Bullinger and adopted by the Swiss Reformed churches in 1566, with the preface, the imperial edict, and the Creed of Damasus, read paragraph by paragraph alongside the Latin text in Schaff's edition.",
+   "orig_label": "Original (Latin)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Second Helvetic Confession"
+   }
+  },
+  "reformed/helvetic-consensus": {
+   "title": "The Helvetic Consensus Formula",
+   "cite_title": "The Helvetic Consensus Formula",
+   "summary": "The consensus formula of the Swiss Reformed churches drawn up in 1675 by Heidegger, Turretin, and Gerler against the teaching of the school of Saumur: the preface and 26 canons, read alongside the Latin text in Müller's edition (1903).",
+   "orig_label": "Original (Latin)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Müller, Die Bekenntnisschriften der reformierten Kirche (1903)",
+   "volumes": {
+    "1": "The Helvetic Consensus Formula"
    }
   }
  },

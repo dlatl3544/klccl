@@ -1,0 +1,38 @@
+{
+  "id": "helvetic-consensus",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "swiss-scots",
+  "title": "스위스 일치 신조",
+  "cite_title": "스위스 일치 신조",
+  "orig_lang": "la",
+  "orig_label": "원문 (라틴어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "1675년 하이데거, 튀레틴, 게를러가 소뮈르 학파의 가르침에 맞서 작성한 스위스 개혁교회의 일치 신조. 머리말과 법규 26조를 Müller 판(1903)의 라틴어 본문과 조항 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "스위스 일치 신조",
+      "from": 1,
+      "to": 2,
+      "labels": [
+        "머리말",
+        "법규 26조"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "라틴어",
+  "source": "muller",
+  "source_short": "Müller, Die Bekenntnisschriften der reformierten Kirche (1903)",
+  "page_prefix": "제",
+  "page_suffix": "항",
+  "range_prefix": "Müller ",
+  "check_label": "Müller 판 쪽",
+  "source_note": "archive.org diebekenntnissc01mlgoog OCR 텍스트(Müller 861–870쪽)를 바로잡아 씀. Schaff 3권에는 실려 있지 않음"
+}
