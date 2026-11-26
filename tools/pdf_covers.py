@@ -2,10 +2,13 @@
 """
 권별 PDF에 KLCCL 표지를 붙인다.
 
-  1면  겉표지(남색 천 장정, 표지 시안 B)
+  1면  겉표지(천 장정 꼴, 바탕색은 저자별: 칼빈 남색, 스킬더 포도주색)
   2면  공백
-  3면  내표지(백지·금색 띠, 표지 시안 A)  ← 원래 1면(옛 표지)을 이것으로 바꾼다
-  4면~ 원래 2면부터 그대로(차례 링크와 책갈피는 원래 쪽을 가리키므로 그대로 작동)
+  3면  내표지(백지·금색 띠)  ← 조판본의 1면(옛 표지)을 이것으로 바꾼다
+  4면~ 조판본 2면부터 그대로(차례 링크와 책갈피는 원래 쪽을 가리키므로 그대로 작동)
+  끝   공백 · 펴낸 곳 정보 · 공백 · 뒷표지(겉표지와 같은 색)
+
+이미 KLCCL 표지가 붙은 PDF에 다시 돌리면, 전에 붙인 쪽을 떼고 새로 붙인다.
 
   python tools/pdf_covers.py              # tools/pdf_covers.json 의 모든 권
   python tools/pdf_covers.py --check      # 표지만 covers_preview.pdf 로 만들어 본다
@@ -27,7 +30,9 @@ import pikepdf
 from playwright.sync_api import sync_playwright
 
 뿌리 = Path(__file__).resolve().parent.parent
-자료 = json.loads((뿌리 / "tools" / "pdf_covers.json").read_text(encoding="utf-8"))["covers"]
+설정 = json.loads((뿌리 / "tools" / "pdf_covers.json").read_text(encoding="utf-8"))
+자료 = 설정["covers"]
+저자색 = 설정["authors"]
 KST = timezone(timedelta(hours=9))
 e = lambda s: html.escape(str(s), quote=True)
 
@@ -55,12 +60,13 @@ def 제목크기(t: str, 기본: int, 폭: int) -> int:
 
 
 def 겉표지(c) -> str:
+    색 = 저자색[c["author_id"]]
     큰 = min(제목크기(x, 48, 420) for x in c["title_b"])
     제목 = "<br>".join(e(x) for x in c["title_b"])
     부제 = "<br>".join(e(x) for x in c["sub"])
-    return f"""<div class="pg serif" style="background:#1f2a44;padding:28px">
+    return f"""<div class="pg serif" style="background:{색["bg"]};padding:28px">
 <div style="width:100%;height:100%;box-sizing:border-box;border:1px solid #c9a96a;padding:6px">
-<div style="width:100%;height:100%;box-sizing:border-box;border:1px solid #6f6a5c;padding:40px 30px 34px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div style="width:100%;height:100%;box-sizing:border-box;border:1px solid {색["line"]};padding:40px 30px 34px;display:flex;flex-direction:column;align-items:center;text-align:center">
 <div class="sans" style="font-size:12px;letter-spacing:.2em;color:#d8c08e">{e(c["series"])}</div>
 <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
 <div class="lat" style="font-size:15px;letter-spacing:.24em;color:#d8c08e">{e(c["badge_b"])}</div>
@@ -99,9 +105,51 @@ def 내표지(c) -> str:
 </div></div>"""
 
 
+def 판권(c, 펴낸날: str) -> str:
+    """펴낸 곳 정보 쪽(판권면). 아래쪽에 모아 둔다"""
+    줄 = [("총서", c["series"]), ("지은이", 저자색[c["author_id"]]["name"]),
+         ("옮김", "AI 초벌 번역(Claude) · 신학 감수 전"), ("저본", c["source"]),
+         ("펴낸 날", f"{펴낸날} (이 판)"), ("펴낸 곳", "KLCCL 한국어 기독교 고전 도서관"),
+         ("누리집", "https://klccl.org"), ("오류 제보", "github.com/dlatl3544/klccl/issues"),
+         ("이용 조건", "번역문은 CC0 1.0 퍼블릭 도메인으로 공개합니다. 누구나 허락 없이 복제, 배포, 수정, 출판할 수 있습니다.")]
+    표 = "".join(f'<tr><td style="width:64px;vertical-align:top;padding:4px 10px 4px 0;color:#7a6a52;white-space:nowrap">{e(k)}</td>'
+                f'<td style="vertical-align:top;padding:4px 0;color:#2b2620">{e(v)}</td></tr>' for k, v in 줄)
+    부제 = " · ".join(c["sub"])
+    return f"""<div class="pg serif" style="background:#fffdf8;padding:60px 56px 56px;display:flex;flex-direction:column;justify-content:flex-end">
+<div style="font-size:17px;font-weight:700;color:#2b2620">{e(c["title"])}</div>
+<div style="margin-top:4px;font-size:12.5px;color:#4a4036">{e(부제)}</div>
+<div style="margin:16px 0 12px;border-top:1px solid #a67c3d;border-bottom:1px solid #a67c3d;height:3px"></div>
+<table style="border-collapse:collapse;font-size:11.5px;line-height:1.6">{표}</table>
+<div style="margin-top:16px;border-top:1px solid #e6ddcc;padding-top:14px;display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:16px;font-weight:700;letter-spacing:.3em">KLCCL</span>
+<span class="sans" style="font-size:10.5px;color:#7a6a52">AI 초벌 번역판 · 신학 감수 전</span></div>
+</div>"""
+
+
+def 뒷표지(c) -> str:
+    색 = 저자색[c["author_id"]]
+    return f"""<div class="pg serif" style="background:{색["bg"]};padding:28px">
+<div style="width:100%;height:100%;box-sizing:border-box;border:1px solid #c9a96a;padding:6px">
+<div style="width:100%;height:100%;box-sizing:border-box;border:1px solid {색["line"]};padding:48px 40px 34px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div class="sans" style="font-size:12px;letter-spacing:.2em;color:#d8c08e">{e(c["series"])}</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+<div style="font-size:20px;font-weight:700;color:#f3ead8">{e(c["title"])}</div>
+<div style="width:56px;height:1px;background:#c9a96a;margin:20px 0 22px"></div>
+<div style="font-size:14px;line-height:1.95;color:#e9e0cd;text-align:left;max-width:360px">{e(c["blurb"])}</div>
+<div style="width:56px;height:1px;background:#c9a96a;margin:24px 0 18px"></div>
+<div class="sans" style="font-size:11.5px;line-height:1.8;color:#d8c08e">AI 초벌 번역판 · 신학 감수 전<br>번역문 CC0 1.0 · 누구나 조건 없이 쓸 수 있습니다</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="font-size:22px;font-weight:700;letter-spacing:.34em;padding-left:.34em;color:#e5cd97">KLCCL</div>
+<div class="sans" style="font-size:11px;color:#c9bfae;letter-spacing:.06em">한국어 기독교 고전 도서관 · klccl.org</div>
+</div></div></div></div>"""
+
+
 def 표지pdf(c, 출력: Path, 브라우저):
-    """겉표지·내표지 두 쪽짜리 PDF"""
-    글 = f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>{공통css}</style></head><body>{겉표지(c)}{내표지(c)}</body></html>'
+    """겉표지·내표지·판권·뒷표지 네 쪽짜리 PDF"""
+    펴낸날 = datetime.now(KST).strftime("%Y년 %-m월 %-d일")
+    글 = (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>{공통css}</style></head><body>'
+          f'{겉표지(c)}{내표지(c)}{판권(c, 펴낸날)}{뒷표지(c)}</body></html>')
     h = 출력.with_suffix(".html")
     h.write_text(글, encoding="utf-8")
     p = 브라우저.new_page()
@@ -112,35 +160,57 @@ def 표지pdf(c, 출력: Path, 브라우저):
     h.unlink()
 
 
+표시 = pikepdf.Name("/KLCCLPage")   # 이 도구가 붙인 쪽에 다는 표시(다시 돌릴 때 떼어 내려고)
+
+
 def 붙이기(원본: Path, 표지: Path, 새것: Path) -> int:
-    """1면 겉표지, 2면 공백, 3면 내표지(옛 1면을 대신), 그 뒤는 원래 2면부터"""
+    """앞: 겉표지·공백·내표지 / 뒤: 공백·판권·공백·뒷표지"""
     pdf = pikepdf.open(원본)
     t = pikepdf.open(표지)
-    상자 = pdf.pages[0].mediabox
-    옛표지 = pdf.pages[0]
-    pdf.pages.insert(0, t.pages[0])                                   # 겉표지
-    빈쪽 = pikepdf.Page(pikepdf.Dictionary(Type=pikepdf.Name.Page, MediaBox=상자, Resources=pikepdf.Dictionary()))
-    pdf.pages.insert(1, 빈쪽)                                          # 공백
-    pdf.pages.insert(2, t.pages[1])                                   # 내표지
-    옛번호 = pdf.pages[3].obj.objgen
-    pdf.pages.remove(pdf.pages[3])                                    # 옛 표지
-    # 옛 표지를 가리키던 곳(이름 붙은 목적지 Doc-Start·cover.0·page.1, 문서 열 때 첫 화면)은 새 겉표지로 옮긴다
+    # 1) 떼어 낼 쪽: 전에 이 도구가 붙인 쪽(표시가 있는 쪽). 표시가 없으면 조판본의 1면(옛 표지).
+    #    2026-11-26 첫 판은 표시 없이 앞 세 쪽(겉표지·공백·내표지)만 붙였으므로, 1면에 KLCCL 글자가 있고 3면에도 있으면 그 세 쪽을 뗀다.
+    떼기 = [i for i, pg in enumerate(pdf.pages) if 표시 in pg.obj]
+    if not 떼기:
+        떼기 = [0, 1, 2] if 옛판(원본) else [0]
+    상자 = pdf.pages[max(떼기) + 1 if max(떼기) + 1 < len(pdf.pages) else 0].mediabox
+    없앨번호 = {pdf.pages[i].obj.objgen for i in 떼기}
+    for i in sorted(떼기, reverse=True):
+        del pdf.pages[i]
+
+    def 빈쪽():
+        return pikepdf.Page(pikepdf.Dictionary(Type=pikepdf.Name.Page, MediaBox=상자, Resources=pikepdf.Dictionary()))
+
+    앞 = [t.pages[0], 빈쪽(), t.pages[1]]
+    for i, pg in enumerate(앞):
+        pdf.pages.insert(i, pg)
+    for pg in (빈쪽(), t.pages[2], 빈쪽(), t.pages[3]):
+        pdf.pages.append(pg)
+    n = len(pdf.pages)
+    for i in (0, 1, 2, n - 4, n - 3, n - 2, n - 1):
+        pdf.pages[i].mediabox = 상자
+        pdf.pages[i].obj[표시] = True
+    # 2) 떼어 낸 쪽을 가리키던 목적지(Doc-Start, cover.0, page.1)와 문서 열기 동작은 새 겉표지로
     새첫쪽 = pdf.pages[0].obj
+
     def 옮김(d):
         if isinstance(d, pikepdf.Dictionary):
             d = d.get("/D")
-        if isinstance(d, pikepdf.Array) and len(d) and getattr(d[0], "objgen", None) == 옛번호:
+        if isinstance(d, pikepdf.Array) and len(d) and getattr(d[0], "objgen", None) in 없앨번호:
             d[0] = 새첫쪽
     if "/Names" in pdf.Root and "/Dests" in pdf.Root.Names:
         for _, v in pikepdf.NameTree(pdf.Root.Names.Dests).items():
             옮김(v)
     if "/OpenAction" in pdf.Root:
         옮김(pdf.Root.OpenAction)
-    for i in (0, 2):                                                  # 표지 쪽 크기를 본문과 같게
-        pdf.pages[i].mediabox = 상자
-    n = len(pdf.pages)
     pdf.save(새것)
     return n
+
+
+def 옛판(원본: Path) -> bool:
+    """표시 없이 앞 세 쪽만 붙였던 첫 판인가: 1면과 3면 글에 KLCCL이 있으면 그렇다"""
+    import subprocess
+    글 = lambda k: subprocess.run(["pdftotext", "-f", str(k), "-l", str(k), str(원본), "-"], capture_output=True, text=True).stdout
+    return "KLCCL" in 글(1) and "KLCCL" in 글(3)
 
 
 def 시각() -> str:
