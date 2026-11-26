@@ -501,15 +501,26 @@ def 단위장들(w, u) -> list:
 쪽들 = {}   # 경로 -> HTML
 
 
+def 공개신조문서수() -> int:
+    """신조 탭 문서 목록에서 공개된 편(링크가 걸리는 문서)의 수. 신조쪽()의 '있음' 판정과 같은 기준"""
+    저작별 = {f'{w["author_dir"]}/{w["id"]}': w for w in WORKS}
+    목록 = json.loads((뿌리 / "catalog" / "creeds.json").read_text(encoding="utf-8"))["groups"]
+    return sum(1 for g in 목록 for x in g["items"]
+               if (w := 저작별.get(x.get("work", ""))) is not None and x.get("no") in w["units"])
+
+
 def 홈():
     it = 모든항목()
     c = 집계(it)
     # 웹에 공개된 도서 권수: 공개된 편(웹 또는 대역)이 하나라도 있는 권
     공개권 = sum(1 for w in WORKS if w.get("genre") != "catechisms" for v in w["volumes"] if any(x["s"] in (2, 3) for x in v["items"]))
-    # 웹에 공개된 신조 편수 (신조는 도서 권수에 넣지 않고 따로 센다)
     # 웹에 공개된 시편찬송 곡수: 나눠 부르는 시편은 부분마다 한 곡(장)으로 센다(시편 150편 → 186장)
     공개시편 = sum(len(x["parts"]) if x.get("parts") else 1 for x in PSALTER if x.get("verses"))
-    공개신조 = sum(1 for w in WORKS if w.get("genre") == "catechisms" for v in w["volumes"] for x in v["items"] if x["s"] in (2, 3))
+    # 웹에 공개된 신조 편수 (신조는 도서 권수에 넣지 않고 따로 센다)
+    # 본문 파일(장·조항) 수가 아니라 신조 탭 「실을 문서」 목록(catalog/creeds.json)의 문서 단위로 센다.
+    # 고대 교회 신경처럼 한 저작에 여러 문서가 묶이면 문서마다 하나로 세고,
+    # 제2 스위스 신앙고백처럼 한 문서가 여러 파일로 나뉘어도 하나로 센다.
+    공개신조 = 공개신조문서수()
     둘러보기 = [("bible/", T("성경", "Bible"), T("개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다.",
                                              "Read all 66 books of the Korean Revised Version laid open like a book, side by side with English translations.")),
             ("creeds/", T("신조", "Creeds"), T("신경과 신앙고백, 요리문답을 원문과 나란히 읽습니다.",
