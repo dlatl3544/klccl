@@ -43,6 +43,7 @@
   "pg": {"name": "Patrologia Graeca (PG)"}
  },
  "news": {
+  "PDF 7권 새 판: KLCCL 표지 적용(1면 겉표지, 2면 공백, 3면 내표지). 본문과 차례는 그대로": "New editions of seven PDFs with KLCCL covers (page 1 outer cover, page 2 blank, page 3 title page). Text and table of contents unchanged",
   "한국어 제네바 시편가 150편 공개: 제네바 곡조와 구디멜 화성(1564)에 개역한글 시편 편역 가사, 곡마다 악보 PDF와 MusicXML 제공": "Korean Genevan Psalter, all 150 psalms, published: Genevan tunes with Goudimel's harmonizations (1564) set to metrical Korean lyrics adapted from the Korean Revised Version; score PDF and MusicXML for every tune",
   "칼빈 전집 2권 『기독교 강요』 1559년판 90편 원문 대역 공개, PDF(1,938쪽, 부록 4종) 함께 제공": "CO 2, the 1559 Institutes: 90 parts published with the parallel original text, plus a PDF (1,938 pages, four appendices)",
   "칼빈 전집 1권 『기독교 강요』 1536년판과 1539–1554년판 85편 원문 대역 공개, PDF(1,936쪽, 부록 4종) 함께 제공": "CO 1, the 1536 and 1539–1554 Institutes: 85 parts published with the parallel original text, plus a PDF (1,936 pages, four appendices)",
