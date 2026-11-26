@@ -461,7 +461,7 @@ def 쪽앞뒤(w, u) -> tuple:
     if w.get("source", "co") == "co":
         return f'CO {u["vol"]}:', ""
     if "page_suffix" in w:   # 신조처럼 쪽이 아니라 조항 단위로 맞대는 저작: '제3항' / '§3'
-        return T(w.get("page_prefix", ""), "§"), T(w["page_suffix"], "")
+        return T(w.get("page_prefix", ""), w.get("page_prefix_en", "§")), T(w["page_suffix"], "")
     return w.get("page_prefix", T("원서 ", "p. ")), T("쪽", "")
 
 

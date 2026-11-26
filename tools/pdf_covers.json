@@ -211,6 +211,25 @@
    "source": "K. Schilder, Heidelbergsche Catechismus. Toelichting op Zondag 10. Goes: Oosterbaan & Le Cointre, 1951. DBNL 전자판(schi008heid05) 기준.",
    "author_id": "schilder",
    "blurb": "클라스 스킬더(1890–1952)의 하이델베르크 요리문답 해설 넷째 권이자 마지막 권입니다. 제10주일(문 27–28)의 섭리를 11개 절에서 풀며, 보존과 일반 은혜, 오래 참으심, 하나님의 현존과 협력을 다룹니다. 저자가 세상을 떠나 해설은 여기서 그쳤습니다. 네덜란드어 원문에서 옮겼습니다."
+  },
+  {
+   "pdf": "content/luther/95-theses/pdf/*.pdf",
+   "series": "종교개혁 고전 · 루터 저작 · 루터 논고 1",
+   "badge": "WA 1",
+   "badge_b": "WA 1 · 233–238쪽",
+   "title": "면벌부의 효력을 밝히기 위한 논제",
+   "title_b": [
+    "면벌부의 효력을",
+    "밝히기 위한 논제"
+   ],
+   "sub": [
+    "95개조 · 1517년"
+   ],
+   "latin": "Disputatio pro declaratione virtutis indulgentiarum · Wittenberg 1517",
+   "author": "마르틴 루터 지음",
+   "source": "D. Martin Luthers Werke. Kritische Gesamtausgabe, 1. Band, Weimar 1883, 233–238쪽(WA 1:233–238) 기준.",
+   "author_id": "luther",
+   "blurb": "마르틴 루터(1483–1546)가 1517년 비텐베르크에서 면벌부의 효력을 두고 학술 논쟁을 청하며 내건 라틴어 논제 95개입니다. 바이마르판 루터 전집 1권의 라틴어 원문에서 옮겼습니다."
   }
  ],
  "authors": {
@@ -223,6 +242,11 @@
    "name": "클라스 스킬더",
    "bg": "#4a1e29",
    "line": "#7a5a5c"
+  },
+  "luther": {
+   "name": "마르틴 루터",
+   "bg": "#3b2a1a",
+   "line": "#6e5c48"
   }
  }
 }

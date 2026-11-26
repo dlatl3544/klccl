@@ -38,6 +38,10 @@
   "reformed": {
    "name": "The Reformed Churches",
    "desc": "Confessions and catechisms publicly adopted by the Reformed churches through their synods and assemblies after the Reformation. These are not the work of a single author but documents the church has confessed together."
+  },
+  "luther": {
+   "name": "Martin Luther",
+   "desc": "Reformer of Wittenberg. His Ninety-five Theses of 1517 began the indulgence controversy, and he left treatises, sermons, biblical lectures, and letters in Latin and German. His collected works are the Weimar edition (WA, 1883–2009)."
   }
  },
  "eras": {
@@ -121,6 +125,32 @@
      "note": "The First and Second Helvetic Confessions (Latin) and the Scots Confession (Scots) from Schaff, vol. 3; the Helvetic Consensus Formula (Latin) from Müller's edition."
     }
    }
+  },
+  "luther": {
+   "name": "Reformation Classics · Works of Luther",
+   "desc": "A series translating Martin Luther's works into Korean from the Latin and German texts of the Weimar edition (WA). Luther's theology is rendered as it stands, not adjusted toward Reformed theology.",
+   "branches": {
+    "treatises": {
+     "name": "Luther's Treatises",
+     "note": "Theses, treatises, catechisms, and similar works"
+    },
+    "sermons": {
+     "name": "Luther's Sermons",
+     "note": "Latin and German sermons"
+    },
+    "lectures": {
+     "name": "Luther's Commentaries & Lectures",
+     "note": "Biblical lectures and commentaries"
+    },
+    "letters": {
+     "name": "Luther's Letters",
+     "note": "WA Briefwechsel"
+    },
+    "tabletalk": {
+     "name": "Luther's Table Talk",
+     "note": "WA Tischreden"
+    }
+   }
   }
  },
  "sources": {
@@ -158,7 +188,8 @@
   "스킬더 『하이델베르크 요리문답 해설』 2권(제5–7주일, 문 12–23) §33–57 원문 대역 공개, PDF(875쪽, 부록 4종). 1권도 저자 정오표를 반영한 새 판(722쪽)으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vol. 2 (Lord's Days 5–7, Q&A 12–23): §§33–57 published with the Dutch original, plus PDF (875 pages, four appendices). Vol. 1 replaced with a new edition incorporating the author's errata (722 pages)",
   "스킬더 『하이델베르크 요리문답 해설』 3권(제8–9주일, 문 24–26)과 4권(제10주일, 문 27–28) 원문 대역 공개, PDF(709쪽·429쪽, 부록 4종). 네 권 전체(§1–82) 완간, 1·2권도 엮은이 정오를 반영한 새 판으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vols. 3 (Lord's Days 8–9, Q&A 24–26) and 4 (Lord's Day 10, Q&A 27–28) published with the Dutch original, plus PDFs (709 and 429 pages, four appendices). All four volumes (§§1–82) are now complete; vols. 1–2 replaced with new editions incorporating the editor's late errata",
   "신조 탭에 세 일치 신조 공개: 벨기에 신앙고백 37조(프랑스어), 하이델베르크 요리문답 129문(1563년 독일어), 도르트 신조(라틴어 공인 본문, 서문·다섯 교리의 조항과 오류 배척·결론 10편)를 Schaff 3권 원문과 조항 단위 대역으로": "The Three Forms of Unity on the Creeds tab: the Belgic Confession in 37 articles (French), the Heidelberg Catechism in 129 questions (German, 1563), and the Canons of Dort (official Latin text: preface, the articles and rejections of errors of the five heads, and conclusion, in 10 parts), article by article alongside the original text in Schaff, vol. 3",
-  "신조 탭에 스위스와 스코틀랜드 신앙고백 4종 공개: 제1 스위스 신앙고백 28조(라틴어·독일어), 스코틀랜드 신앙고백 머리말과 25조(스코트어), 제2 스위스 신앙고백 서문과 30장(라틴어, 31편), 스위스 일치 신조 머리말과 법규 26조(라틴어, Müller 판)를 원문과 조항 단위 대역으로": "Four Swiss and Scottish confessions on the Creeds tab: the First Helvetic Confession in 28 articles (Latin and German), the Scots Confession with its preface and 25 articles (Scots), the Second Helvetic Confession with its preface and 30 chapters (Latin, 31 parts), and the Helvetic Consensus Formula with its preface and 26 canons (Latin, Müller's edition), article by article alongside the original"
+  "신조 탭에 스위스와 스코틀랜드 신앙고백 4종 공개: 제1 스위스 신앙고백 28조(라틴어·독일어), 스코틀랜드 신앙고백 머리말과 25조(스코트어), 제2 스위스 신앙고백 서문과 30장(라틴어, 31편), 스위스 일치 신조 머리말과 법규 26조(라틴어, Müller 판)를 원문과 조항 단위 대역으로": "Four Swiss and Scottish confessions on the Creeds tab: the First Helvetic Confession in 28 articles (Latin and German), the Scots Confession with its preface and 25 articles (Scots), the Second Helvetic Confession with its preface and 30 chapters (Latin, 31 parts), and the Helvetic Consensus Formula with its preface and 26 canons (Latin, Müller's edition), article by article alongside the original",
+  "루터 저작 시작: 「종교개혁 고전 · 루터 저작」 총서를 열고, 첫 책으로 「면벌부의 효력을 밝히기 위한 논제」(95개조, 1517년)를 바이마르판(WA 1:233–238) 라틴어 원문과 쪽 단위 대역으로 공개, PDF": "Luther begins: the new series Reformation Classics · Works of Luther opens with the Disputation on the Power of Indulgences (the Ninety-five Theses, 1517), published page by page alongside the Latin text of the Weimar edition (WA 1:233–238), with a PDF"
  },
  "works": {
   "ecumenical/ancient-creeds": {
@@ -341,6 +372,19 @@
    "source_short": "Müller, Die Bekenntnisschriften der reformierten Kirche (1903)",
    "volumes": {
     "1": "The Helvetic Consensus Formula"
+   }
+  },
+  "luther/95-theses": {
+   "title": "Disputation on the Power of Indulgences (Ninety-five Theses)",
+   "cite_title": "Ninety-five Theses",
+   "summary": "The ninety-five Latin theses that Martin Luther (1483–1546) posted in Wittenberg in 1517, calling for an academic disputation on the power of indulgences. Read page by page alongside the text of the Weimar edition (WA), vol. 1, pp. 233–238.",
+   "orig_label": "Original (Latin, WA 1, 1883)",
+   "source_short": "WA 1 (1883)",
+   "page_prefix": "WA 1:",
+   "unit": "Part",
+   "units": "parts",
+   "volumes": {
+    "1": "Disputation on the Power of Indulgences (Ninety-five Theses)"
    }
   }
  },

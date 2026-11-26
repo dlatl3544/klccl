@@ -1,0 +1,40 @@
+{
+  "id": "95-theses",
+  "author": "luther",
+  "series": "luther",
+  "branch": "treatises",
+  "title": "면벌부의 효력을 밝히기 위한 논제(95개조)",
+  "cite_title": "95개조",
+  "orig_lang": "la",
+  "orig_label": "원문 (라틴어, WA 1, 1883)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "마르틴 루터(1483–1546)가 1517년 비텐베르크에서 면벌부의 효력을 두고 학술 논쟁을 청하며 내건 라틴어 논제 95개입니다. 바이마르판 루터 전집(WA) 1권 233–238쪽의 본문과 WA 쪽 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "면벌부의 효력을 밝히기 위한 논제(95개조)",
+      "from": 1,
+      "to": 1,
+      "co": null,
+      "labels": [
+        "95개조"
+      ],
+      "pdf": "2611270032_루터의_95개조_WA01_초벌번역판.pdf",
+      "pdf_pages": 33
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "treatises",
+  "lang": "라틴어",
+  "source": "wa",
+  "source_short": "WA 1 (1883)",
+  "page_prefix": "WA 1:",
+  "page_prefix_en": "WA 1:",
+  "page_suffix": "",
+  "range_prefix": "WA 1:",
+  "check_label": "WA 권:쪽",
+  "source_note": "CCEL(ccel.org/ccel/luther/theses) 라틴어 텍스트를 archive.org werkekritischege01luthuoft(WA 1, 1883, 토론토 대학 소장본) OCR과 대조해 오탈자 10곳을 바로잡고 WA 쪽 표시(233–238)를 넣음"
+}
