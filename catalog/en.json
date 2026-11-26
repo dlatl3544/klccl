@@ -5,6 +5,10 @@
   "tagline": "A free, open library for reading public-domain Christian classics side by side in the original language and in Korean translation. The translations are released under CC0, so anyone may use them without conditions."
  },
  "authors": {
+  "ecumenical": {
+   "name": "The Ancient Church",
+   "desc": "The ecumenical creeds left by the councils of Nicaea, Constantinople, and Chalcedon and by the Western church. These are not the work of a single author but documents the church has confessed together."
+  },
   "calvin": {
    "name": "John Calvin",
    "desc": "Reformer of Geneva. He left sermons, commentaries, the Institutes of the Christian Religion, treatises, and letters; his collected works (CO) were published in 59 volumes in 1863–1900."
@@ -95,6 +99,16 @@
      "note": "Translated from the original languages in the formal Korean polite style."
     }
    }
+  },
+  "creeds": {
+   "name": "Creeds",
+   "desc": "Translations of the creeds, confessions, and catechisms the church has confessed, from the original texts in public-domain editions (Schaff, Niemeyer, Müller, Calvin's collected works).",
+   "branches": {
+    "ancient": {
+     "name": "Ancient creeds",
+     "note": "Translated from the Latin and Greek originals in Schaff, vol. 2."
+    }
+   }
   }
  },
  "sources": {
@@ -113,6 +127,7 @@
   }
  },
  "news": {
+  "신조 탭 신설. 첫 문서로 고대 교회 신경 5편(사도신경, 니케아-콘스탄티노플 신경 동방·서방 공인본, 칼케돈 신앙 정의, 아타나시우스 신경)을 Schaff 판 원문과 조항 단위 대역으로 공개": "New Creeds tab. The first documents: five ancient creeds (the Apostles' Creed, the Niceno-Constantinopolitan Creed in its Eastern and Western received forms, the Definition of Chalcedon, and the Athanasian Creed), published article by article alongside the original text in Schaff's edition",
   "PDF 7권 새 판: KLCCL 표지 적용(앞 겉표지·공백·내표지, 뒤 공백·펴낸 곳 정보·공백·뒷표지, 저자별 표지 색). 본문과 차례는 그대로": "New editions of seven PDFs with KLCCL covers (front: outer cover, blank, title page; back: blank, colophon, blank, back cover; cover color by author). Text and table of contents unchanged",
   "한국어 제네바 시편가 150편 공개: 제네바 곡조와 구디멜 화성(1564)에 개역한글 시편 편역 가사, 곡마다 악보 PDF와 MusicXML 제공": "Korean Genevan Psalter, all 150 psalms, published: Genevan tunes with Goudimel's harmonizations (1564) set to metrical Korean lyrics adapted from the Korean Revised Version; score PDF and MusicXML for every tune",
   "칼빈 전집 2권 『기독교 강요』 1559년판 90편 원문 대역 공개, PDF(1,938쪽, 부록 4종) 함께 제공": "CO 2, the 1559 Institutes: 90 parts published with the parallel original text, plus a PDF (1,938 pages, four appendices)",
@@ -131,6 +146,18 @@
   "스킬더 『하이델베르크 요리문답 해설』 2권(제5–7주일, 문 12–23) §33–57 원문 대역 공개, PDF(875쪽, 부록 4종). 1권도 저자 정오표를 반영한 새 판(722쪽)으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vol. 2 (Lord's Days 5–7, Q&A 12–23): §§33–57 published with the Dutch original, plus PDF (875 pages, four appendices). Vol. 1 replaced with a new edition incorporating the author's errata (722 pages)"
  },
  "works": {
+  "ecumenical/ancient-creeds": {
+   "title": "The Creeds of the Ancient Church",
+   "cite_title": "The Creeds of the Ancient Church",
+   "summary": "The Apostles' Creed, the Niceno-Constantinopolitan Creed (Eastern and Western received forms), the Definition of Chalcedon, and the Athanasian Creed, read article by article alongside the Latin and Greek texts in Schaff's edition.",
+   "orig_label": "Original (Latin and Greek)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 2 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Creeds of the Ancient Church"
+   }
+  },
   "calvin/co01-institutio": {
    "title": "Institutes of the Christian Religion, 1536 and 1539–1554 Editions (CO 1)",
    "cite_title": "Calvin's Collected Works, vol. 1, Institutes",
