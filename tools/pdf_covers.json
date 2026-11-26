@@ -1,0 +1,26 @@
+{
+ "_note": "권별 PDF 표지 자료. tools/pdf_covers.py 가 1면 겉표지(남색 천 장정), 2면 공백, 3면 내표지(백지·금색 띠)를 만들어 PDF 앞에 붙인다.",
+ "covers": [
+  {"pdf": "content/calvin/job-sermons/pdf/*욥기설교_1권*.pdf", "series": "열린 제네바 총서 · 칼빈 설교 1", "badge": "CR 61 (CO 33)", "badge_b": "CR 61 · CO 33",
+   "title": "칼빈의 욥기 설교", "title_b": ["칼빈의", "욥기 설교"], "sub": ["제1권 · 설교 제1–61편"], "latin": "Ioannis Calvini Opera, vol. 33", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 33 (Corpus Reformatorum 61), Brunsvigae 1887, pp. 21–768. CCEL 디지털본(ccel.org/ccel/calvin/sermons) 기준, 결락 부분(45–46쪽)은 1563년 제네바 초판으로 보충."},
+  {"pdf": "content/calvin/job-sermons/pdf/*욥기설교_2권*.pdf", "series": "열린 제네바 총서 · 칼빈 설교 2", "badge": "CR 62 (CO 34)", "badge_b": "CR 62 · CO 34",
+   "title": "칼빈의 욥기 설교", "title_b": ["칼빈의", "욥기 설교"], "sub": ["제2권 · 설교 제62–118편"], "latin": "Ioannis Calvini Opera, vol. 34", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 34 (Corpus Reformatorum 62), Brunsvigae 1887. CCEL 디지털본(ccel.org/ccel/calvin/sermons) 기준, 판독이 의심스러운 곳은 1563년 제네바 초판으로 확인."},
+  {"pdf": "content/calvin/job-sermons/pdf/*욥기설교_3권*.pdf", "also": "content/calvin/hezekiah-isaiah-sermons/pdf/", "series": "열린 제네바 총서 · 칼빈 설교 3", "badge": "CR 63 (CO 35)", "badge_b": "CR 63 · CO 35",
+   "title": "칼빈의 욥기 설교", "title_b": ["칼빈의", "욥기 설교"], "sub": ["제3권 · 욥기 설교 제119–159편", "히스기야의 노래와 이사야 53장 설교"], "latin": "Ioannis Calvini Opera, vol. 35", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 35 (Corpus Reformatorum 63), Brunsvigae 1887. CCEL 디지털본(ccel.org/ccel/calvin/sermons) 기준."},
+  {"pdf": "content/calvin/co01-institutio/pdf/*.pdf", "series": "열린 제네바 총서 · 칼빈 논고 1", "badge": "CR 29 (CO 1)", "badge_b": "CR 29 · CO 1",
+   "title": "칼빈의 기독교강요 1권", "title_b": ["칼빈의", "기독교강요 1권"], "sub": ["1536년판, 1539–1554년판 · 칼빈 전집 1권"], "latin": "Ioannis Calvini Opera, vol. 1", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 1 (Corpus Reformatorum 29), Brunsvigae 1863, coll. 1–1152. archive.org 구글 스캔본(ioanniscalvinio05calvgoog) OCR 기준."},
+  {"pdf": "content/calvin/co02-institutio/pdf/*.pdf", "series": "열린 제네바 총서 · 칼빈 논고 2", "badge": "CR 30 (CO 2)", "badge_b": "CR 30 · CO 2",
+   "title": "칼빈의 기독교강요 2권", "title_b": ["칼빈의", "기독교강요 2권"], "sub": ["1559년판 · 칼빈 전집 2권"], "latin": "Ioannis Calvini Opera, vol. 2", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 2 (Corpus Reformatorum 30), Brunsvigae 1864, coll. 1–1118. archive.org 구글 스캔본(ioanniscalvinio10calvgoog) OCR 기준, 빠진 쪽은 1869년 재간본(ioanniscalvinii00cunigoog)으로 보충."},
+  {"pdf": "content/calvin/co08-tractatus/pdf/*.pdf", "series": "열린 제네바 총서 · 칼빈 논고 4", "badge": "CR 36 (CO 8)", "badge_b": "CR 36 · CO 8",
+   "title": "칼빈의 논고 4", "title_b": ["칼빈의", "논고 4"], "sub": ["칼빈 전집 8권"], "latin": "Ioannis Calvini Opera, vol. 8", "author": "존 칼빈 지음",
+   "source": "Ioannis Calvini Opera quae supersunt omnia, vol. 8 (Corpus Reformatorum 36), Brunsvigae 1870, coll. 1–872. archive.org 구글 스캔본(ioanniscalvinio02reusgoog) OCR 기준."},
+  {"pdf": "content/schilder/wat-is-de-hel/pdf/*.pdf", "series": "개혁파 고전 · 교리·논고 1", "badge": "1932년 제3판", "badge_b": "1932년 제3판",
+   "title": "지옥이란 무엇인가?", "title_b": ["지옥이란", "무엇인가?"], "sub": ["클라스 스킬더 · 1932년 제3판"], "latin": "K. Schilder, Wat is de hel? · Kampen 1932", "author": "클라스 스킬더 지음",
+   "source": "K. Schilder, Wat is de hel? Derde, herziene en uitgebreide druk. Kampen: J. H. Kok, 1932. DBNL 전자판(schi008wati04) 기준."}
+ ]
+}
