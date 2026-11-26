@@ -384,7 +384,7 @@ def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = Non
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script>try{{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="icon" href="{A}assets/icons/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="32x32" href="{A}assets/icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="{A}assets/icons/favicon-16x16.png">
-<link rel="apple-touch-icon" href="{A}assets/icons/apple-touch-icon.png"><link rel="manifest" href="{A}assets/icons/site.webmanifest"><meta name="theme-color" content="#fcce47">
+<link rel="apple-touch-icon" href="{A}assets/icons/apple-touch-icon.png"><link rel="manifest" href="{A}assets/icons/site.webmanifest"><meta name="theme-color" content="#07144b">
 <link rel="stylesheet" href="{A}assets/kccl.css"></head>
 <body data-root="{R}" data-assets="{A}">
 <header class="top">
