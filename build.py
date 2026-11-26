@@ -423,6 +423,8 @@ def 쪽앞뒤(w, u) -> tuple:
     """인용 표기 앞뒤: CO 저작은 ('CO 34:', ''), 그 밖은 ('원서 ', '쪽')"""
     if w.get("source", "co") == "co":
         return f'CO {u["vol"]}:', ""
+    if "page_suffix" in w:   # 신조처럼 쪽이 아니라 조항 단위로 맞대는 저작: '제3항' / '§3'
+        return T(w.get("page_prefix", ""), "§"), T(w["page_suffix"], "")
     return w.get("page_prefix", T("원서 ", "p. ")), T("쪽", "")
 
 
@@ -430,15 +432,17 @@ def 쪽범위(w, u) -> str:
     """머리에 보일 원전 범위: 'CO 8:543–566' 또는 '원서 77–154쪽'"""
     if w.get("source", "co") == "co":
         return f'CO {u["co"]}'
+    if "range_prefix" in w:   # 예: 'Schaff 2:57–58'
+        return f'{w["range_prefix"]}{u["co"]}'
     return T(f'{w.get("page_prefix", "원서 ")}{u["co"]}쪽', f'pp. {u["co"]}')
 
 
 def 고지(w) -> str:
     co = w.get("source", "co") == "co"
     return T("AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문("
-             + ("CO 권:쪽" if co else "원서 쪽") + ")을 확인해 주십시오.",
+             + ("CO 권:쪽" if co else w.get("check_label", "원서 쪽")) + ")을 확인해 주십시오.",
              "This is a draft translation made with AI and has not been theologically reviewed. When quoting, please check the original ("
-             + ("CO volume:page" if co else "page of the original edition") + ").")
+             + ("CO volume:page" if co else ("the original text and the page of the source edition" if "check_label" in w else "page of the original edition")) + ").")
 
 
 def 단위주소(w, n) -> str:
@@ -749,22 +753,33 @@ def 강해쪽():
 
 
 def 신조쪽():
-    """신조: 신경·신앙고백·요리문답(갈래 catechisms) 저작 + 칼빈 전집 안에서 신조를 담은 권"""
+    """신조: 공개된 신조 저작 카드 + catalog/creeds.json 의 실을 문서 목록(공개된 편은 링크, 나머지는 예정)"""
     글들 = [w for w in WORKS if w.get("genre") == "catechisms"]
     카드 = "".join(
         f'<a class="card" href="{{R}}{저작주소(w)}"><h3>{T("「" + e(w["title"]) + "」", "<i>" + e(w["title"]) + "</i>")}</h3>'
-        f'<p>{e(저자이름[w["author"]]["name"])} · {e(w.get("lang", ""))}</p>'
+        f'<p>{e(w["summary"])}</p>'
         f'{막대(저작항목(w))}<span class="mini">{요약(저작항목(w))}</span></a>' for w in 글들)
-    본문 = T('<h1>신조</h1><p class="lead">교회가 고백해 온 신경과 신앙고백, 요리문답입니다. 원문과 한국어 번역을 나란히 싣습니다.</p>',
-             '<h1>Creeds</h1><p class="lead">The creeds, confessions, and catechisms the church has confessed, in Korean translation side by side with the original.</p>')
-    본문 += (f'<div class="cards">{카드}</div>' if 카드 else
-             f'<p class="mini">{T("아직 웹에 올린 신조가 없습니다. 번역을 마치는 대로 이곳에 더합니다.", "No creeds are on the web yet. They will be added here as translations are finished.")}</p>')
-    권들 = [v for v in CO["volumes"] if any(k in 원자료["CO"]["volumes"][CO["volumes"].index(v)]["title"] for k in ("교리문답", "신앙고백", "신조"))]
-    if 권들:
-        본문 += (f'<h2>{T("칼빈 전집 안의 신조", "Creeds in Calvin\'s collected works")}</h2>'
-                 f'<p>{T("칼빈이 쓰거나 다듬은 교리문답과 신앙고백은 칼빈 전집(CO)의 다음 권에 실려 있습니다.", "The catechisms and confessions that Calvin wrote or revised are found in these volumes of Calvin\'s collected works (CO).")}</p>'
-                 f'<table class="t"><tr><th style="width:90px">{T("권", "Volume")}</th><th>{T("내용", "Contents")}</th><th style="width:140px">{T("원어", "Language")}</th></tr>'
-                 + "".join(f'<tr><td>CO {v["vol"]}</td><td>{e(v["title"])}</td><td>{e(v["lang"])}</td></tr>' for v in 권들) + "</table>")
+    본문 = T('<h1>신조</h1><p class="lead">교회가 고백해 온 신경과 신앙고백, 요리문답입니다. 공유 저작물 판본의 원문과 AI 번역을 조항 단위로 나란히 놓아, 누구나 원문을 확인할 수 있게 합니다. 번역문은 CC0입니다.</p>',
+             '<h1>Creeds</h1><p class="lead">The creeds, confessions, and catechisms the church has confessed. The AI translation is set article by article beside the original text from public-domain editions, so that anyone can check the original. The translations are released under CC0.</p>')
+    if 카드:
+        본문 += f'<div class="cards">{카드}</div>'
+    저작별 = {f'{w["author_dir"]}/{w["id"]}': w for w in WORKS}
+    목록 = json.loads((뿌리 / "catalog" / "creeds.json").read_text(encoding="utf-8"))["groups"]
+    본문 += f'<h2>{T("실을 문서", "Documents in this collection")}</h2>'
+    for g in 목록:
+        줄 = ""
+        for x in g["items"]:
+            w = 저작별.get(x.get("work", ""))
+            있음 = w is not None and x.get("no") in w["units"]
+            이름 = T(x["title"], x.get("en", x["title"]))
+            제목칸 = f'<a href="{{R}}{단위주소(w, x["no"])}">{e(이름)}</a>' if 있음 else e(이름)
+            상태 = (f'<span class="tag">{T("대역", "Parallel")}</span>' if 있음 and w["units"][x["no"]]["orig"]
+                  else (f'<span class="tag">{T("한국어", "Korean")}</span>' if 있음 else f'<span class="mini">{T("예정", "Planned")}</span>'))
+            줄 += f'<tr><td>{제목칸}</td><td>{e(T(x["year"], x.get("en_year", x["year"])))}</td><td>{e(T(x["lang"], x.get("en_lang", x["lang"])))}</td><td>{e(T(x["source"], x.get("en_source", x["source"])))}</td><td>{상태}</td></tr>'
+        본문 += (f'<h3>{e(T(g["name"], g.get("en", g["name"])))}</h3><table class="t"><tr><th>{T("문서", "Document")}</th><th style="width:110px">{T("연도", "Year")}</th>'
+                 f'<th style="width:150px">{T("원어", "Language")}</th><th style="width:170px">{T("저본", "Source edition")}</th><th style="width:70px">{T("상태", "Status")}</th></tr>{줄}</table>')
+    본문 += T('<p class="mini">저본은 Schaff, <i>The Creeds of Christendom</i>(1877, 1919년 4판), Niemeyer, <i>Collectio confessionum</i>(1840), Müller, <i>Die Bekenntnisschriften der reformierten Kirche</i>(1903), 칼빈 전집(CO), 웨스트민스터 문서 초판처럼 저작권이 소멸한 판본만 씁니다. 저작권이 있는 기존 한국어 번역은 참고하지 않고 원문에서 새로 옮깁니다.</p>',
+              '<p class="mini">Only public-domain editions are used: Schaff, <i>The Creeds of Christendom</i> (1877; 4th ed. 1919), Niemeyer, <i>Collectio confessionum</i> (1840), Müller, <i>Die Bekenntnisschriften der reformierten Kirche</i> (1903), Calvin\'s collected works (CO), and the first editions of the Westminster documents. Existing Korean translations under copyright are not consulted; everything is translated afresh from the original.</p>')
     쪽들["creeds/index.html"] = 틀("creeds/index.html", T("신조", "Creeds"), 본문, "creeds",
                                 [("", SITE["name"]), (None, T("신조", "Creeds"))],
                                 설명=T("신경과 신앙고백, 요리문답을 원문과 한국어 번역으로 나란히 읽습니다.", "Creeds, confessions, and catechisms in Korean translation side by side with the original."))
@@ -990,8 +1005,10 @@ def 저작쪽(w):
             c = 집계(남음)
             본문 += T(f'<p class="mini">웹 연결 대기 {편수(c[1], w)}, 원고 확보 필요 {편수(c["0x"], w)}, 번역 예정 {편수(c[0], w)}.</p>',
                      f'<p class="mini">Awaiting web publication: {c[1]}; source text needed: {c["0x"]}; translation planned: {c[0]}.</p>')
-    쪽들[경로] = 틀(경로, T(f'「{w["title"]}」', w["title"]), 본문, "books",
-                  [("", SITE["name"]), ("books/", T("도서", "Books")), (f'{a["id"]}/', a["name"]), (None, w["title"])])
+    신조 = w.get("genre") == "catechisms"
+    쪽들[경로] = 틀(경로, T(f'「{w["title"]}」', w["title"]), 본문, "creeds" if 신조 else "books",
+                  [("", SITE["name"]), ("creeds/", T("신조", "Creeds")) if 신조 else ("books/", T("도서", "Books")),
+                   (f'{a["id"]}/', a["name"]), (None, w["title"])])
 
 
 def 서가(w, 현재번호: int) -> str:
@@ -1044,7 +1061,8 @@ def 읽기쪽(w, u):
     칼빈본문 = (f'<div class="ko calvin"><span class="lbl">{T("칼빈이 읽은 본문 · 프랑스어에서 옮김 (Claude 번역)", "The text Calvin read · translated into Korean from the French (by Claude)")}</span>'
               f'{각주표시(e(둥근따옴표(u["box"])))}</div>')
     if not 구절 and not u["box"].strip():
-        h += '<div class="verse">'
+        # 본문 상자가 없는 글(신조 등)은 빈 상자를 숨긴다
+        h += '<div class="verse">' if u["origbox"] else '<div class="verse" style="display:none">'
     elif 구절:
         개역 = " ".join(f'<sup class="vn">{k}</sup>{e(책[k])}' for k in 구절)
         h += (f'<div class="verse"><div class="vgrid"><div class="ko krv"><span class="lbl">{T("성경 본문 · 개역한글판", "Bible text · Korean Revised Version")}</span>{개역}</div>'
@@ -1081,7 +1099,7 @@ def 읽기쪽(w, u):
         f'<a class="next" href="{{R}}{단위주소(w, 뒤["no"])}"><small>{T("다음", "Next")}</small>{e(제(뒤["no"], w))} {e(뒤["title"])}</a>' if 뒤 else '<span style="flex:1"></span>') + "</div>"
     h += "</article>"
     강해 = w.get("genre") in ("sermons", "commentaries")
-    빵 = [("", SITE["name"]), ("books/", T("도서", "Books"))] + ([("expositions/", T("주석·설교", "Commentaries & Sermons"))] if 강해 else []) + [
+    빵 = [("", SITE["name"]), ("creeds/", T("신조", "Creeds")) if w.get("genre") == "catechisms" else ("books/", T("도서", "Books"))] + ([("expositions/", T("주석·설교", "Commentaries & Sermons"))] if 강해 else []) + [
          (f'{a["id"]}/', a["name"]), (저작주소(w), w["title"]), (None, 제(u["no"], w))]
     쪽제목 = T(f'{a["name"]} 「{w["title"]}」 {제(u["no"], w)}', f'{a["name"]}, {w["title"]}, {제(u["no"], w)}')
     쪽들[경로] = 틀(경로, 쪽제목, h, "creeds" if w.get("genre") == "catechisms" else "books", 빵, 서가(w, u["no"]),
