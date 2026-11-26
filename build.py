@@ -555,9 +555,10 @@ def 홈():
 
 
 def 서가쪽():
-    """모든 저작을 한곳에서: 갈래·시대·원어 거르기 (앞으로 저자가 늘어도 그대로 쓴다)"""
+    """신조를 뺀 모든 저작: 갈래·시대·원어 거르기 (신조는 신조 탭에만 둔다)"""
     칸 = ""
-    for w in WORKS:
+    도서들 = [w for w in WORKS if w.get("genre") != "catechisms"]
+    for w in 도서들:
         a = 저자이름[w["author"]]
         it = 저작항목(w)
         c = 집계(it)
@@ -570,10 +571,10 @@ def 서가쪽():
     def 칩(종류, 목록):
         return (f'<div class="chips" data-filter="{종류}"><button class="btn on" data-v="">{T("전체", "All")}</button>'
                 + "".join(f'<button class="btn" data-v="{e(v)}">{e(t)}</button>' for v, t in 목록) + "</div>")
-    원어들 = sorted({w.get("lang", "") for w in WORKS if w.get("lang")})
-    본문 = (T('<h1>도서</h1><p class="lead">이 도서관에 오른 모든 저작입니다. 설교집과 주석, 교리서, 신조, 서신, 경건 서적을 갈래와 시대, 원어로 골라 볼 수 있습니다. 주석과 설교를 성경 책별로 찾으려면 위의 「주석·설교」를 누르십시오.</p>',
-              '<h1>Books</h1><p class="lead">All the works in this library. Sermons, commentaries, doctrinal works, creeds, letters, and devotional books can be filtered by genre, era, and original language. The translations are in Korean. To find commentaries and sermons by book of the Bible, choose "Commentaries &amp; Sermons" above.</p>')
-          + f'<div class="filters"><span>{T("갈래", "Genre")}</span>{칩("genre", [(g["id"], g["name"]) for g in LIB["genres"]])}'
+    원어들 = sorted({w.get("lang", "") for w in 도서들 if w.get("lang")})
+    본문 = (T('<h1>도서</h1><p class="lead">이 도서관에 오른 저작입니다(신조는 신조 탭에 따로 둡니다). 설교집과 주석, 교리서, 서신, 경건 서적을 갈래와 시대, 원어로 골라 볼 수 있습니다. 주석과 설교를 성경 책별로 찾으려면 위의 「주석·설교」를 누르십시오.</p>',
+              '<h1>Books</h1><p class="lead">The works in this library (the creeds are kept separately under Creeds). Sermons, commentaries, doctrinal works, letters, and devotional books can be filtered by genre, era, and original language. The translations are in Korean. To find commentaries and sermons by book of the Bible, choose "Commentaries &amp; Sermons" above.</p>')
+          + f'<div class="filters"><span>{T("갈래", "Genre")}</span>{칩("genre", [(g["id"], g["name"]) for g in LIB["genres"] if g["id"] != "catechisms"])}'
           f'<span>{T("시대", "Era")}</span>{칩("era", [(x["id"], x["name"]) for x in LIB["eras"]])}'
           f'<span>{T("원어", "Language")}</span>{칩("lang", [(x, x) for x in 원어들])}'
           f'<span>{T("상태", "Status")}</span>{칩("state", [("web", T("웹에서 읽기", "Read on the web")), ("done", T("번역 완료", "Translated")), ("plan", T("예정", "Planned"))])}</div>'
@@ -960,7 +961,7 @@ def 찾기쪽():
 def 총서():
     본문 = T('<h1>총서</h1><p class="lead">총서는 저자와 갈래별로 묶어 펴내는 번역 시리즈입니다. 권마다 진행 정도를 표시합니다.</p>',
             '<h1>Series</h1><p class="lead">The series are translation collections published by author and branch. Progress is shown for each volume.</p>')
-    for s in LIB["series"]:
+    for s in [x for x in LIB["series"] if x["id"] != "creeds"]:   # 신조는 신조 탭에만
         본문 += f"<h2>{e(s['name'])}</h2><p>{e(s['desc'])}</p>"
         for b in s["branches"]:
             vols = [(w, v) for w in WORKS if w["series"] == s["id"] and w["branch"] == b["id"] for v in w["volumes"]]
