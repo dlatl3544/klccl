@@ -1179,8 +1179,8 @@ def 소개쪽들():
     gh, em = SITE["contact"].get("github"), SITE["contact"].get("email")
     제보 = f"""<h1>참여와 오류 제보</h1><p class="lead">오역, 빠진 문장, 어색한 표현, 성경 구절 오류를 알려 주십시오. 신학 지식이 없어도 이상하게 읽히는 곳이면 충분합니다.</p>
 <h2>제보 방법</h2><table class="t"><tr><th style="width:160px">방법</th><th>안내</th></tr>
-<tr><td>GitHub 이슈</td><td>{f'<a href="{e(gh)}/issues" target="_blank" rel="noopener">저장소 이슈 쪽</a>에 새 글을 남겨 주십시오.' if gh else '공개 저장소를 열면 이곳에 주소를 적습니다.'}</td></tr>
-<tr><td>이메일</td><td>{e(em) if em else '운영자 주소를 정하면 이곳에 적습니다.'}</td></tr></table>
+{f'<tr><td>GitHub 이슈</td><td><a href="{e(gh)}/issues" target="_blank" rel="noopener">저장소 이슈 쪽</a>에 새 글을 남겨 주십시오.</td></tr>' if gh else ''}
+<tr><td>이메일</td><td>{f'<a href="mailto:{e(em)}">{e(em)}</a> 으로 보내 주십시오.' if em else '운영자 주소를 정하면 이곳에 적습니다.'}</td></tr></table>
 <h2>적어 주시면 좋은 것</h2><div class="box">저작: 칼빈 「욥기 설교」 제62편<br>쪽: CO 34:3 (쪽 표시 옆 「인용」 단추로 복사할 수 있습니다)<br>현재 번역: (문제가 되는 문장)<br>제안: (고친 문장, 있으면)<br>까닭: (원문 근거나 어색한 이유, 짧게)</div>
 <h2>함께하기</h2><p>원문을 읽을 수 있는 분의 감수, 신학 용어 검토, 원전 판본 조사를 환영합니다. 참여하신 분의 이름은 원하시면 고친 이력에 남깁니다.</p>"""
     소식 = '<h1>소식</h1><table class="t"><tr><th style="width:120px">날짜</th><th>내용</th></tr>' + "".join(
@@ -1230,8 +1230,8 @@ def 소개쪽들_영():
     gh, em = SITE["contact"].get("github"), SITE["contact"].get("email")
     제보 = f"""<h1>Contribute &amp; report errors</h1><p class="lead">Please let us know about mistranslations, omitted sentences, awkward expressions, or wrong Bible references. You do not need theological training; a place that reads oddly is enough.</p>
 <h2>How to report</h2><table class="t"><tr><th style="width:160px">Method</th><th>Details</th></tr>
-<tr><td>GitHub issues</td><td>{f'Please open a new issue on the <a href="{e(gh)}/issues" target="_blank" rel="noopener">repository issues page</a>.' if gh else 'The address will be given here once the repository is public.'}</td></tr>
-<tr><td>Email</td><td>{e(em) if em else 'The address will be given here once it is set.'}</td></tr></table>
+{f'<tr><td>GitHub issues</td><td>Please open a new issue on the <a href="{e(gh)}/issues" target="_blank" rel="noopener">repository issues page</a>.</td></tr>' if gh else ''}
+<tr><td>Email</td><td>{f'Please write to <a href="mailto:{e(em)}">{e(em)}</a>.' if em else 'The address will be given here once it is set.'}</td></tr></table>
 <h2>Helpful details</h2><div class="box">Work: Calvin, Sermons on Job, Sermon 62<br>Page: CO 34:3 (copy it with the "Cite" button next to the page marker)<br>Current translation: (the sentence in question)<br>Suggestion: (a corrected sentence, if you have one)<br>Reason: (the basis in the original or why it reads oddly, briefly)</div>
 <p>Reports may be written in English or Korean.</p>
 <h2>Join in</h2><p>Reviews by readers of the original languages, checks of theological terminology, and research on source editions are all welcome. If you wish, your name will be recorded in the correction history.</p>"""

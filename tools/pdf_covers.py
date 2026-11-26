@@ -110,7 +110,7 @@ def 판권(c, 펴낸날: str) -> str:
     줄 = [("총서", c["series"]), ("지은이", 저자색[c["author_id"]]["name"]),
          ("옮김", "AI 초벌 번역(Claude) · 신학 감수 전"), ("저본", c["source"]),
          ("펴낸 날", f"{펴낸날} (이 판)"), ("펴낸 곳", "KLCCL 한국어 기독교 고전 도서관"),
-         ("누리집", "https://klccl.org"), ("오류 제보", "github.com/dlatl3544/klccl/issues"),
+         ("누리집", "https://klccl.org"), ("오류 제보", "klccl.org@gmail.com"),
          ("이용 조건", "번역문은 CC0 1.0 퍼블릭 도메인으로 공개합니다. 누구나 허락 없이 복제, 배포, 수정, 출판할 수 있습니다.")]
     표 = "".join(f'<tr><td style="width:64px;vertical-align:top;padding:4px 10px 4px 0;color:#7a6a52;white-space:nowrap">{e(k)}</td>'
                 f'<td style="vertical-align:top;padding:4px 0;color:#2b2620">{e(v)}</td></tr>' for k, v in 줄)
