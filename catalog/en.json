@@ -1,0 +1,161 @@
+{
+ "_note": "영문판(/en/) 화면용 영어 자료. 한국어 자료(library.json, co.json, bible.json, work.json)에 덧씌운다. 여기 없는 값은 한국어 그대로 보인다. 새 소식이나 새 저작을 더하면 여기에도 영어를 적는다.",
+ "site": {
+  "full": "Korean-Language Christian Classics Library",
+  "tagline": "A free, open library for reading public-domain Christian classics side by side in the original language and in Korean translation. The translations are released under CC0, so anyone may use them without conditions."
+ },
+ "authors": {
+  "calvin": {"name": "John Calvin", "desc": "Reformer of Geneva. He left sermons, commentaries, the Institutes of the Christian Religion, treatises, and letters; his collected works (CO) were published in 59 volumes in 1863–1900."},
+  "beza": {"name": "Theodore Beza", "desc": "Calvin's successor in Geneva. The works to be included are being identified."},
+  "bullinger": {"name": "Heinrich Bullinger", "desc": "Reformer of Zurich. The Decades and other works are under review."},
+  "fathers": {"name": "Church Fathers", "life": "2nd–8th c.", "desc": "Latin and Greek patristic works, beginning with Augustine, are under review."},
+  "puritans": {"name": "Puritans", "life": "16th–17th c.", "desc": "Since their works were written in English, their translation priority is set separately."},
+  "schilder": {"name": "Klaas Schilder", "desc": "Dutch Reformed theologian. He taught at the Theological Seminary in Kampen and is known for his works on covenant theology and on the sufferings of Christ."}
+ },
+ "eras": {
+  "patristic": {"name": "Patristic", "range": "2nd–8th c."},
+  "medieval": {"name": "Medieval", "range": "9th–15th c."},
+  "reformation": {"name": "Reformation", "range": "16th c."},
+  "post-reformation": {"name": "Post-Reformation & Puritan", "range": "17th–18th c."},
+  "modern": {"name": "Modern", "range": "19th–20th c."}
+ },
+ "genres": {
+  "sermons": "Sermons", "commentaries": "Commentaries", "treatises": "Doctrine & Treatises",
+  "catechisms": "Creeds & Catechisms", "letters": "Letters", "devotional": "Devotion & Prayer", "history": "History & Biography"
+ },
+ "series": {
+  "geneva": {"name": "Open Geneva Series", "desc": "A series translating all 59 volumes of Calvin's collected works (CO) into Korean from the original languages. Each branch has its own volume numbering.",
+   "branches": {
+    "sermons": {"name": "Calvin's Sermons", "note": "French sermons, rendered in the formal Korean polite style."},
+    "commentaries": {"name": "Calvin's Commentaries", "note": "Latin commentaries, to be translated in order from CO 23–57."},
+    "treatises": {"name": "Calvin's Treatises", "note": "The Institutes, treatises, catechisms, and confessions (CO 1–9, 22)."},
+    "letters": {"name": "Calvin's Letters", "note": "Calvin's correspondence (CO 10–20)."}
+   }},
+  "reformed": {"name": "Reformed Classics", "desc": "Public-domain works of Reformed theologians after Calvin, translated from the original languages.",
+   "branches": {
+    "treatises": {"name": "Doctrine & Treatises", "note": "Translated from the original languages in the formal Korean polite style."}
+   }}
+ },
+ "sources": {
+  "co": {"name": "Calvin's Collected Works (CO)"},
+  "cr-bullinger": {"name": "Bullinger's Works", "full": "Public-domain editions under investigation"},
+  "pl": {"name": "Patrologia Latina (PL)"},
+  "pg": {"name": "Patrologia Graeca (PG)"}
+ },
+ "news": {
+  "한국어 제네바 시편가 150편 공개: 제네바 곡조와 구디멜 화성(1564)에 개역한글 시편 편역 가사, 곡마다 악보 PDF와 MusicXML 제공": "Korean Genevan Psalter, all 150 psalms, published: Genevan tunes with Goudimel's harmonizations (1564) set to metrical Korean lyrics adapted from the Korean Revised Version; score PDF and MusicXML for every tune",
+  "칼빈 전집 2권 『기독교 강요』 1559년판 90편 원문 대역 공개, PDF(1,938쪽, 부록 4종) 함께 제공": "CO 2, the 1559 Institutes: 90 parts published with the parallel original text, plus a PDF (1,938 pages, four appendices)",
+  "칼빈 전집 1권 『기독교 강요』 1536년판과 1539–1554년판 85편 원문 대역 공개, PDF(1,936쪽, 부록 4종) 함께 제공": "CO 1, the 1536 and 1539–1554 Institutes: 85 parts published with the parallel original text, plus a PDF (1,936 pages, four appendices)",
+  "PDF 5권 새 판: CO 33·34·35(욥기 3권과 히스기야·이사야 설교 합본)·8권, 스킬더. 누르면 이동하는 차례와 부록(신학 쟁점과 적용안, 용어 대조표, 성경 구절 색인, 인명 색인) 추가": "New editions of five PDFs: CO 33, 34, 35 (Job vol. 3 bound with the Hezekiah and Isaiah sermons), CO 8, and Schilder. Added a clickable table of contents and appendices (theological issues and decisions, glossary, Scripture index, index of names)",
+  "칼빈 전집 8권(논고 4) 51편 공개: 「삼위일체에 관한 정통 신앙의 변호」 외 7개 저작": "CO 8 (Treatises 4): 51 parts published, including the Defense of the Orthodox Faith concerning the Trinity and seven other works",
+  "클라스 스킬더 「지옥이란 무엇인가?」(1932년 제3판) 7장 원문 대역 공개": "Klaas Schilder, What Is Hell? (3rd ed., 1932): seven chapters published with the parallel original text",
+  "「욥기 설교」 3권(제119–159편)과 「히스기야의 노래와 이사야 53장 설교」(13편) 원문 대역 공개": "Sermons on Job vol. 3 (Sermons 119–159) and Sermons on the Song of Hezekiah and Isaiah 53 (13 parts) published with the parallel original text",
+  "욥기 설교 1–159편 전부 번역지침 v3로 원문과 다시 대조하고 용어 결정(v3.1)을 반영. 1–3권 PDF 새 판": "All of Sermons on Job 1–159 re-checked against the original under translation guidelines v3, with the v3.1 terminology decisions applied. New PDF editions of vols. 1–3",
+  "이름을 KLCCL로 바꾸고 서가·저자·총서·성경·원전·찾기·소개 일곱 갈래로 사이트를 넓힘. 개역한글판 성경 66권 전체 수록": "Renamed to KLCCL and expanded the site into seven sections (library, authors, series, Bible, sources, search, about). All 66 books of the Korean Revised Version included",
+  "사이트 틀 공개: CO 1–59 지도, 성경 66권 대조, 총서, 진행 현황": "Site framework released: CO 1–59 map, 66-book Bible table, series, progress",
+  "프로젝트 첫 목표 확정: 칼빈 전집(CO) 1–59권 전체 번역": "First project goal set: translating all of Calvin's collected works (CO 1–59)",
+  "「욥기 설교 2」 제62편 원문 대역 연결": "Sermons on Job 2, Sermon 62: parallel original text linked",
+  "「욥기 설교 1」(제1–61편) AI 초벌 번역판 PDF 완성": "Sermons on Job 1 (Sermons 1–61): AI draft translation PDF completed"
+ },
+ "works": {
+  "calvin/co01-institutio": {
+   "title": "Institutes of the Christian Religion, 1536 and 1539–1554 Editions (CO 1)",
+   "cite_title": "Calvin's Collected Works, vol. 1, Institutes",
+   "summary": "Volume 1 of Calvin's collected works (Institutio religionis christianae), in CO column order: the first edition of the Institutes (Basel, 1536: the dedicatory preface to Francis I and six chapters), and the 1539–1554 edition, which combines the 1539 Strasbourg edition with the additions of the 1543, 1545, 1550, 1553, and 1554 editions (the letter to the reader, the dedicatory preface, and 21 chapters).",
+   "orig_label": "Original (CO 1, 1863, uncorrected OCR)",
+   "unit": "Part", "units": "parts",
+   "volumes": {"1": "Institutes, 1536 and 1539–1554 Editions (CO 1)"}
+  },
+  "calvin/co02-institutio": {
+   "title": "Institutes of the Christian Religion, 1559 Edition (CO 2)",
+   "cite_title": "Calvin's Collected Works, vol. 2, Institutes",
+   "summary": "Volume 2 of Calvin's collected works (Institutio christianae religionis, 1559). The final Geneva edition of 1559, which Calvin thoroughly revised and rearranged into four books and 80 chapters, in CO column order from the letter to the reader and the dedicatory preface to Francis I through Book 4, Chapter 20, on civil government.",
+   "orig_label": "Original (CO 2, 1864, uncorrected OCR)",
+   "unit": "Part", "units": "parts",
+   "volumes": {"2": "Institutes, 1559 Edition (CO 2)"}
+  },
+  "calvin/co08-tractatus": {
+   "title": "Calvin's Treatises (CO 8)",
+   "cite_title": "Calvin's Collected Works, vol. 8, Treatises",
+   "summary": "Volume 8 of Calvin's collected works (Tractatus theologici minores 4), in CO column order: On Scandals (1550), the Congregation on Eternal Election (1551), the records of the Bolsec trial, On the Eternal Predestination of God (1552), Four Sermons (1552), the Defense of the Orthodox Faith concerning the Holy Trinity (1554), and thirty letters of Servetus with the records of his trial.",
+   "orig_label": "Original (CO 8, 1870, uncorrected OCR)",
+   "unit": "Part", "units": "parts",
+   "volumes": {"4": "Calvin's Treatises 4 (CO 8)"}
+  },
+  "calvin/hezekiah-isaiah-sermons": {
+   "title": "Sermons on the Song of Hezekiah and Isaiah 53",
+   "cite_title": "Sermons on the Song of Hezekiah and Isaiah 53",
+   "summary": "Four sermons on the Song of Hezekiah (Isaiah 38) and seven sermons on Isaiah 53, with the prefaces to the first editions of both collections.",
+   "orig_label": "Original (French)",
+   "unit": "Sermon", "units": "parts",
+   "volumes": {"4": "Sermons on the Song of Hezekiah and Isaiah 53"}
+  },
+  "calvin/job-sermons": {
+   "title": "Sermons on Job",
+   "cite_title": "Sermons on Job",
+   "summary": "The 159 sermons Calvin preached through the whole book of Job in Geneva in 1554–1555, first published in Geneva in 1563.",
+   "orig_label": "Original (French, 1563)",
+   "unit": "Sermon", "units": "sermons",
+   "volumes": {"1": "Sermons on Job 1", "2": "Sermons on Job 2", "3": "Sermons on Job 3"}
+  },
+  "schilder/wat-is-de-hel": {
+   "title": "What Is Hell?",
+   "cite_title": "What Is Hell?",
+   "summary": "The third edition (1932) by Klaas Schilder (1890–1952), based on his 1919 lecture in Vlaardingen and greatly expanded in 1932. It sets out the biblical teaching on hell from the standpoint of Reformed theology and answers objections.",
+   "orig_label": "Original (Dutch, 3rd ed. 1932, DBNL)",
+   "source_short": "3rd ed. 1932", "page_prefix": "p. ",
+   "unit": "Chapter", "units": "chapters",
+   "volumes": {"1": "What Is Hell?"}
+  }
+ },
+ "bible_books": {
+  "gen": "Genesis", "exo": "Exodus", "lev": "Leviticus", "num": "Numbers", "deu": "Deuteronomy", "jos": "Joshua", "jdg": "Judges", "rut": "Ruth",
+  "1sa": "1 Samuel", "2sa": "2 Samuel", "1ki": "1 Kings", "2ki": "2 Kings", "1ch": "1 Chronicles", "2ch": "2 Chronicles", "ezr": "Ezra", "neh": "Nehemiah",
+  "est": "Esther", "job": "Job", "psa": "Psalms", "pro": "Proverbs", "ecc": "Ecclesiastes", "sng": "Song of Songs", "isa": "Isaiah", "jer": "Jeremiah",
+  "lam": "Lamentations", "ezk": "Ezekiel", "dan": "Daniel", "hos": "Hosea", "jol": "Joel", "amo": "Amos", "oba": "Obadiah", "jon": "Jonah",
+  "mic": "Micah", "nam": "Nahum", "hab": "Habakkuk", "zep": "Zephaniah", "hag": "Haggai", "zec": "Zechariah", "mal": "Malachi",
+  "mat": "Matthew", "mrk": "Mark", "luk": "Luke", "jhn": "John", "act": "Acts", "rom": "Romans", "1co": "1 Corinthians", "2co": "2 Corinthians",
+  "gal": "Galatians", "eph": "Ephesians", "php": "Philippians", "col": "Colossians", "1th": "1 Thessalonians", "2th": "2 Thessalonians",
+  "1ti": "1 Timothy", "2ti": "2 Timothy", "tit": "Titus", "phm": "Philemon", "heb": "Hebrews", "jas": "James", "1pe": "1 Peter", "2pe": "2 Peter",
+  "1jn": "1 John", "2jn": "2 John", "3jn": "3 John", "jud": "Jude", "rev": "Revelation"
+ },
+ "versions": {
+  "krv": {"name": "Korean Revised Version", "note": "Korean Revised Version (Gaeyeok Hangeul, 1961), Korean Bible Society. Copyright expired (December 31, 2011)."},
+  "gnv": {"name": "Geneva Bible 1599", "note": "Geneva Bible 1599. A Reformed English Bible produced in Calvin's Geneva. Public domain."},
+  "kjv": {"name": "King James Version (KJV)", "note": "King James (Authorized) Version. Words in brackets, supplied by the translators, are shown in italics. Public domain."},
+  "webp": {"name": "World English Bible", "note": "World English Bible (66-book edition, LORD form). Public domain. \"World English Bible\" is a trademark."},
+  "bsb": {"name": "Berean Standard Bible", "note": "Berean Standard Bible. Dedicated to the public domain on April 30, 2023."}
+ },
+ "terms": {
+  "프랑스어": "French", "라틴어": "Latin", "네덜란드어": "Dutch", "라틴어·프랑스어": "Latin · French", "프랑스어·라틴어": "French · Latin",
+  "주석": "Commentary", "설교": "Sermons", "주석·설교": "Commentary & sermons", "확인 중": "Under review", "없음": "None",
+  "모세 네 책 조화(Harmonia)": "Harmony of the last four books of Moses (Harmonia)",
+  "모세 네 책 조화": "Harmony of the last four books of Moses",
+  "모세 네 책 조화, 신명기 설교": "Harmony of the last four books of Moses; sermons on Deuteronomy",
+  "설교가 전하나 CO 수록 여부 조사 중": "Sermons survive; whether they are in CO is being checked",
+  "설교는 CO에 없고 현대 간행본만 있어 쓰지 않음": "The sermons are not in CO and exist only in modern editions, so they are not used",
+  "욥기 설교 159편(CO 33–35)": "159 sermons on Job (CO 33–35)",
+  "38장(히스기야의 노래)·53장 설교": "Sermons on chapter 38 (Song of Hezekiah) and chapter 53",
+  "1–20장까지만": "Chapters 1–20 only",
+  "강의록": "Lectures",
+  "공관복음 조화": "Harmony of the Gospels",
+  "칼빈 전집(CO)에 실린 주석·설교 기준. 설교 수록 범위는 CO 조사표를 만들며 보완한다.": "Based on the commentaries and sermons in Calvin's collected works (CO). The coverage of sermons will be completed as the CO survey proceeds.",
+  "기독교 강요": "Institutes", "논고": "Treatises", "서신": "Letters", "연보": "Annals", "보유·색인": "Supplements & Index", "서지": "Bibliography",
+  "『기독교 강요』 여러 판(1536–1560)": "Institutes, various editions (1536–1560)",
+  "논고·교리문답·신앙고백": "Treatises, catechisms, confessions",
+  "서신(Thesaurus epistolicus)": "Letters (Thesaurus epistolicus)",
+  "칼빈 연보(Annales Calviniani)": "Annals of Calvin (Annales Calviniani)",
+  "초기 프랑스어 교리문답(1537)과 1–21권 색인": "Early French Catechism (1537) and index to vols. 1–21",
+  "주석·설교 (권별 내용 조사 중)": "Commentaries & sermons (contents being surveyed)",
+  "욥기 설교 제1–61편": "Sermons on Job 1–61",
+  "욥기 설교 제62–118편": "Sermons on Job 62–118",
+  "욥기 설교 제119–159편, 히스기야의 노래·이사야 53장 설교": "Sermons on Job 119–159; Sermons on the Song of Hezekiah and Isaiah 53",
+  "보유, 23–59권 색인": "Supplements; index to vols. 23–59",
+  "서지 목록(Catalogi bibliographici)": "Bibliography (Catalogi bibliographici)",
+  "판이 여럿이라 겹침이 많음. 1559 라틴어판·1560 프랑스어판 위주로 범위를 정함": "Many overlapping editions; the scope centers on the 1559 Latin and 1560 French editions",
+  "칼빈에게 온 편지도 함께 실림": "Includes letters written to Calvin",
+  "번역보다 참고 자료로 활용": "Used as reference material rather than translated",
+  "사이트 색인 자료로 활용": "Used as index data for the site",
+  "참고 자료": "Reference"
+ }
+}
