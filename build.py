@@ -625,8 +625,8 @@ def 시편찬송쪽():
     시편 = next(b for b in BIBLE["books"] if b["abbr"] == "시")
     칸 = "".join(f'<a class="cell" href="{{R}}bible/{시편["code"]}/{n}.html" title="시편 {n}편 (개역한글판)">{n}</a>' for n in range(1, 151))
     상태 = "공개(AI 초벌 편역 · 신학 감수 전)" if PSALTER else "예정"
-    본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>
-<h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
+    본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>"""
+    싣는것 = f"""<h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
 <tr><td>한국어 제네바 시편가</td><td>제네바 곡조(1539–1562)와 클로드 구디멜의 4성부 화성(1564)에 개역한글판 시편을 운율에 맞게 편역한 가사를 붙인 150편. 곡마다 악보 PDF와 MusicXML(출력용·반주용)을 내려받을 수 있습니다</td><td>{상태}</td></tr>
 <tr><td>제네바 시편가 원문</td><td>마로와 베자의 프랑스어 운율 시편(16세기, 공유 저작물)</td><td>예정</td></tr>
 <tr><td>칼빈의 서문</td><td>시편가에 붙인 칼빈의 서문(1542·1543)</td><td>예정</td></tr>
@@ -649,6 +649,7 @@ def 시편찬송쪽():
 <div class="grid">{격자}</div>"""
     else:
         본문 += f"""<h2>시편 150편 (개역한글판)</h2><div class="grid">{칸}</div>"""
+    본문 += 싣는것
     쪽들["psalter/index.html"] = 틀("psalter/index.html", "시편찬송", 본문, "psalter", [("", SITE["name"]), (None, "시편찬송")])
     for i, g in enumerate(곡들):
         p, gid, n = g["p"], g["id"], g["p"]["n"]
