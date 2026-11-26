@@ -609,6 +609,10 @@ PSALTER = (json.loads((PSALTER_DIR / "psalter.json").read_text(encoding="utf-8")
 def 절구성(글: str) -> dict:
     """'1절=1~3절, 2절=4~5절 앞' 같은 메모를 {가사 절: '시편 1~3절'} 로 푼다"""
     결과 = {}
+    # '1(성경 1~3), 2(4~6)' 또는 '1절(성경 1~3), 2절(4~6)' 꼴
+    괄호 = re.findall(r"(?:^|[,=]\s*)(\d+)절?\s*\((?:성경\s*)?([^)]*)\)", 글)
+    if len(괄호) >= 2:
+        return {int(k): v.strip() + "절" for k, v in 괄호}
     for 조각 in re.sub(r"\([^)]*\)", "", 글).split(","):
         m = re.match(r"\s*(\d+)절\s*=\s*(.+?)\s*$", 조각)
         if m:
@@ -628,46 +632,68 @@ def 시편찬송쪽():
 <tr><td>칼빈의 서문</td><td>시편가에 붙인 칼빈의 서문(1542·1543)</td><td>예정</td></tr>
 <tr><td>시편 본문</td><td>개역한글판 시편 150편 (곡별 쪽과 성경 메뉴에서 읽기)</td><td>공개</td></tr></table>
 <div class="box">오늘날 교회에서 쓰는 한국어 시편찬송가와 찬송가 가사·편곡은 대부분 저작권이 살아 있어 싣지 않습니다. 이 도서관은 16세기 원문과 곡조처럼 공유 저작물인 것만 싣고, 한국어 가사는 새로 옮겨 조건 없이 공개합니다. 선율과 화성은 genevanpsalter.com에 공개된 악보를 옮겼고, 한국어 가사와 편집 악보는 CC0로 공개합니다.</div>"""
+    # 곡 목록: 긴 시편은 뜻의 단락에 따라 A, B, C … 여러 곡으로 나눈다(psalter.json 의 parts)
+    곡들 = []
+    for p in PSALTER:
+        if p.get("parts"):
+            for q in p["parts"]:
+                곡들.append({"p": p, "id": q["id"], "이름": f'시편 {p["n"]}편 {q["label"]}', "표": f'{p["n"]}{q["label"]}',
+                           "시작": q["start"], "절": p["verses"][q["start"]:q["start"] + q["count"]], "형제": p["parts"]})
+        else:
+            곡들.append({"p": p, "id": f'{p["n"]:03d}', "이름": f'시편 {p["n"]}편', "표": str(p["n"]),
+                       "시작": 0, "절": p["verses"], "형제": None})
     if PSALTER:
-        격자 = "".join(f'<a class="cell" href="{{R}}psalter/{p["n"]:03d}.html" title="시편 {p["n"]}편 · {e(p["tune"])}">{p["n"]}</a>' for p in PSALTER)
+        격자 = "".join(f'<a class="cell" href="{{R}}psalter/{g["id"]}.html" title="{g["이름"]} · {e(g["p"]["tune"])}">{g["표"]}</a>' for g in 곡들)
         본문 += f"""<h2>한국어 제네바 시편가 150편</h2>
-<p class="mini">편 번호를 누르면 악보와 가사가 열립니다. 가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보에는 빠르기와 도돌이표를 표시하지 않았으니 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
+<p class="mini">번호를 누르면 악보와 가사가 열립니다. 절이 많은 긴 시편은 뜻의 단락을 따라 A, B, C …로 나누어 한 곡씩 실었습니다. 가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보에는 빠르기와 도돌이표를 표시하지 않았으니 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
 <div class="grid">{격자}</div>"""
     else:
         본문 += f"""<h2>시편 150편 (개역한글판)</h2><div class="grid">{칸}</div>"""
     쪽들["psalter/index.html"] = 틀("psalter/index.html", "시편찬송", 본문, "psalter", [("", SITE["name"]), (None, "시편찬송")])
-    for i, p in enumerate(PSALTER):
-        n = p["n"]
+    for i, g in enumerate(곡들):
+        p, gid, n = g["p"], g["id"], g["p"]["n"]
         구성 = 절구성(p.get("plan", ""))
         절들 = "".join(
             f'<div style="margin:0 0 14px"><b>{k}절</b>'
-            + (f' <span class="mini">(시편 {e(구성[k])})</span>' if k in 구성 else "")
+            + (f' <span class="mini">(시편 {e(구성[k + g["시작"]])})</span>' if k + g["시작"] in 구성 else "")
             + '<br>' + "<br>".join(e(x) for x in v) + "</div>"
-            for k, v in enumerate(p["verses"], 1))
-        쪽수 = len(list((PSALTER_DIR / "img").glob(f"ps{n:03d}-*.png")))
-        악보 = "".join(f'<img src="img/ps{n:03d}-{k}.png" alt="시편 {n}편 악보 {k}쪽" loading="{"eager" if k == 1 else "lazy"}" '
+            for k, v in enumerate(g["절"], 1))
+        쪽수 = len(list((PSALTER_DIR / "img").glob(f"ps{gid}-*.png")))
+        악보 = "".join(f'<img src="img/ps{gid}-{k}.png" alt="{g["이름"]} 악보 {k}쪽" loading="{"eager" if k == 1 else "lazy"}" '
                       f'style="width:100%;max-width:820px;display:block;margin:0 auto 12px;background:#fff;border:1px solid var(--line);border-radius:6px">'
                       for k in range(1, 쪽수 + 1))
-        음원 = PSALTER_DIR / "mp3" / f"ps{n:03d}.mp3"
+        음원 = PSALTER_DIR / "mp3" / f"ps{gid}.mp3"
         반주 = (f'<button class="btn" onclick="var a=document.getElementById(\'acc\');if(a.paused){{a.play();this.textContent=\'반주 멈춤\'}}else{{a.pause();this.textContent=\'반주 재생\'}}">반주 재생</button>'
-                f'<audio id="acc" preload="none" src="mp3/ps{n:03d}.mp3"></audio>') if 음원.exists() else \
+                f'<audio id="acc" preload="none" src="mp3/ps{gid}.mp3"></audio>') if 음원.exists() else \
                '<span class="btn" style="opacity:.45;cursor:default" title="반주 음원은 준비 중입니다">반주 재생(준비 중)</span>'
-        앞 = f'<a class="btn" href="{n-1:03d}.html">← 시편 {n-1}편</a> ' if i > 0 else ""
-        뒤 = f'<a class="btn" href="{n+1:03d}.html">시편 {n+1}편 →</a>' if i < len(PSALTER) - 1 else ""
-        본문 = f"""<h1>시편 {n}편</h1>
+        앞 = f'<a class="btn" href="{곡들[i-1]["id"]}.html">← {곡들[i-1]["이름"]}</a> ' if i > 0 else ""
+        뒤 = f'<a class="btn" href="{곡들[i+1]["id"]}.html">{곡들[i+1]["이름"]} →</a>' if i < len(곡들) - 1 else ""
+        나눔 = ""
+        if g["형제"]:
+            나눔 = (f'<p class="mini">시편 {n}편은 {len(g["형제"])}곡으로 나누어 실었습니다: '
+                    + " ".join((f'<b>{q["label"]}</b>' if q["id"] == gid else f'<a href="{q["id"]}.html">{q["label"]}</a>') for q in g["형제"])
+                    + f' · 이 곡은 시편 {n}편 가사의 {g["시작"] + 1}~{g["시작"] + len(g["절"])}번째 절입니다.</p>')
+        본문 = f"""<h1>{g["이름"]}</h1>
 <p class="lead">{e(p["tune"])} · {e(p["meter"])}</p>
-<p class="mini">곡조: {e(p["music"])} · 화성: {e(p["harm"])} · 가사: 개역한글판 시편 {n}편 편역(AI 초벌 편역판 · 신학 감수 전) · {len(p["verses"])}절</p>
-<p><a class="btn dl" href="pdf/ps{n:03d}.pdf">악보 PDF</a>
-<a class="btn" href="xml/ps{n:03d}.musicxml" download>MusicXML(출력용)</a>
-<a class="btn" href="xml/ps{n:03d}_accomp.musicxml" download>MusicXML(반주용, 전주·반복 포함)</a>
+<p class="mini">곡조: {e(p["music"])} · 화성: {e(p["harm"])} · 가사: 개역한글판 시편 {n}편 편역(AI 초벌 편역판 · 신학 감수 전) · {len(g["절"])}절</p>{나눔}
+<p><a class="btn dl" href="pdf/ps{gid}.pdf">악보 PDF</a>
+<a class="btn" href="xml/ps{gid}.musicxml" download>MusicXML(출력용)</a>
+<a class="btn" href="xml/ps{gid}_accomp.musicxml" download>MusicXML(반주용, 전주·반복 포함)</a>
 <a class="btn" href="{{R}}bible/{시편["code"]}/{n}.html">개역한글 시편 {n}편 읽기</a></p>
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:28px 0 14px;padding-bottom:8px"><h2 style="margin:0;border:0;padding:0">악보</h2>
 <span style="display:flex;gap:6px;flex-wrap:wrap">{앞}<a class="btn" href="./">목록</a>{반주}{뒤}</span></div>{악보}
 <h2>가사</h2><div style="font-family:var(--serif);font-size:17px;line-height:1.9">{절들}</div>
 """
-        쪽들[f"psalter/{n:03d}.html"] = 틀(f"psalter/{n:03d}.html", f"시편 {n}편 · 한국어 제네바 시편가", 본문, "psalter",
-                                       [("", SITE["name"]), ("psalter/", "시편찬송"), (None, f"시편 {n}편")],
-                                       설명=f"한국어 제네바 시편가 시편 {n}편: {p['tune']} 곡조의 악보 PDF, MusicXML, 가사")
+        쪽들[f"psalter/{gid}.html"] = 틀(f"psalter/{gid}.html", f'{g["이름"]} · 한국어 제네바 시편가', 본문, "psalter",
+                                      [("", SITE["name"]), ("psalter/", "시편찬송"), (None, g["이름"])],
+                                      설명=f'한국어 제네바 시편가 {g["이름"]}: {p["tune"]} 곡조의 악보 PDF, MusicXML, 가사')
+    # 나누기 전 주소(예: psalter/119.html)는 첫 곡으로 넘긴다
+    for p in PSALTER:
+        if p.get("parts"):
+            첫 = p["parts"][0]["id"]
+            쪽들[f'psalter/{p["n"]:03d}.html'] = (f'<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">'
+                f'<meta http-equiv="refresh" content="0; url={첫}.html"><link rel="canonical" href="{첫}.html"><title>시편 {p["n"]}편</title></head>'
+                f'<body><a href="{첫}.html">시편 {p["n"]}편 {p["parts"][0]["label"]}로 이동</a></body></html>')
 
 
 def 찾기쪽():
