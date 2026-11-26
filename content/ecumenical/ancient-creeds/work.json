@@ -1,0 +1,41 @@
+{
+  "id": "ancient-creeds",
+  "author": "ecumenical",
+  "series": "creeds",
+  "branch": "ancient",
+  "title": "고대 교회 신경",
+  "cite_title": "고대 교회 신경",
+  "orig_lang": "la",
+  "orig_label": "원문 (라틴어·그리스어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "사도신경, 니케아-콘스탄티노플 신경(동방 공인본과 서방 공인본), 칼케돈 신앙 정의, 아타나시우스 신경. Schaff 판의 라틴어·그리스어 본문과 조항 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "고대 교회 신경",
+      "from": 1,
+      "to": 5,
+      "labels": [
+        "사도신경",
+        "니케아(동방)",
+        "니케아(서방)",
+        "칼케돈",
+        "아타나시우스"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "라틴어·그리스어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 2권 (1919년 4판)",
+  "page_prefix": "제",
+  "page_suffix": "항",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds2 (iv.i.i.i, iv.i.ii.i, iv.i.ii.ii, iv.i.iii, iv.i.iv) 텍스트, CCEL 쪽 스캔 45, 57–59, 62–63, 66–70쪽과 대조"
+}
