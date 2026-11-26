@@ -2,6 +2,10 @@
 (function () {
   const $ = s => document.querySelector(s);
   const root = document.body.dataset.root || '';
+  // 성경 자료(data/)는 한국어판과 영문판이 함께 쓰므로 공용 뿌리(data-assets)에서 불러온다
+  const assets = document.body.dataset.assets ?? root;
+  const EN = document.documentElement.lang === 'en';
+  const T = (ko, en) => EN ? en : ko;
   const BOOKS = window.KLCCL_BOOKLIST;          // [{code, abbr, name, ch, t}]
   const store = {
     get(k, d) { try { return localStorage.getItem(k) ?? d } catch (e) { return d } },
@@ -11,7 +15,7 @@
   const cache = {};
   const VERS = window.KLCCL_VERSIONS || [{ id: 'krv', name: '개역한글판' }];
   let code = 'gen', chap = 1, spread = 0, spreads = 1, fs = +store.get('bfs', '19');
-  let ver = store.get('bver', 'krv'), par = store.get('bpar', '');
+  let ver = store.get('bver', 'krv'), par = store.get('bpar', window.KLCCL_DEFAULT_PAR || '');
   if (!VERS.find(v => v.id === ver)) ver = 'krv';
   // KJV 의 [ ] 는 번역자가 보충한 말: 기울임으로 표시
   const fmt = t => esc(t).replace(/\[([^\]]+)\]/g, '<i>$1</i>');
@@ -31,7 +35,7 @@
   async function load(v, c) {
     const k = v + '/' + c;
     if (cache[k]) return cache[k];
-    const r = await fetch(`${root}data/${v}/${c}.json`);
+    const r = await fetch(`${assets}data/${v}/${c}.json`);
     cache[k] = await r.json();
     return cache[k];
   }
@@ -49,14 +53,14 @@
     $('#flow').className = en ? 'en' : '';
     $('#flow').innerHTML =
       (chap === 1 ? `<h2 class="bk-title">${esc(b.name)}</h2>` : '') +
-      `<h3 class="ch-title">제 ${chap} 장</h3>` +
+      `<h3 class="ch-title">${T(`제 ${chap} 장`, `Chapter ${chap}`)}</h3>` +
       vs.map(([n, t]) => `<p class="bv${mark === `${code}/${chap}/${n}` ? ' marked' : ''}" data-v="${n}"><span class="n">${chap}:${n}</span> ${fmt(t)}` +
         (par && par !== ver ? `<span class="pv">${pv[n] !== undefined ? fmt(pv[n]) : '—'}</span>` : '') + '</p>').join('');
     const vn = (VERS.find(x => x.id === ver) || {}).name || '';
     const pn = par && par !== ver ? ' · ' + ((VERS.find(x => x.id === par) || {}).name || '') : '';
-    $('#runhead').textContent = `${vn}${pn} · ${b.name} ${chap}장`;
+    $('#runhead').textContent = `${vn}${pn} · ${b.name} ${chap}${T('장', '')}`;
     $('#bkSel').value = code;
-    $('#chSel').innerHTML = Array.from({ length: b.ch }, (_, i) => `<option value="${i + 1}">${i + 1}장</option>`).join('');
+    $('#chSel').innerHTML = Array.from({ length: b.ch }, (_, i) => `<option value="${i + 1}">${T(`${i + 1}장`, `Chapter ${i + 1}`)}</option>`).join('');
     $('#chSel').value = chap;
     document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x.dataset.code === code));
     history.replaceState(null, '', `#${code}/${chap}`);
@@ -119,7 +123,8 @@
   }
 
   // 표지 색
-  const COVERS = { navy: '남색 가죽', brown: '갈색 가죽', green: '녹색 천', wine: '포도주색', black: '검정' };
+  const COVERS = EN ? { navy: 'navy leather', brown: 'brown leather', green: 'green cloth', wine: 'wine red', black: 'black' }
+                     : { navy: '남색 가죽', brown: '갈색 가죽', green: '녹색 천', wine: '포도주색', black: '검정' };
   function cover(c) {
     document.querySelector('.bookwrap').dataset.cover = c; store.set('bcover', c);
     $('#coverSel').value = c;
@@ -127,7 +132,7 @@
 
   function init() {
     tabs(); selects();
-    $('#coverSel').innerHTML = Object.entries(COVERS).map(([k, v]) => `<option value="${k}">표지: ${v}</option>`).join('');
+    $('#coverSel').innerHTML = Object.entries(COVERS).map(([k, v]) => `<option value="${k}">${T('표지', 'Cover')}: ${v}</option>`).join('');
     cover(store.get('bcover', 'navy'));
     document.addEventListener('click', e => {
       const t = e.target.closest('.tabs button'); if (t) show(t.dataset.code, 1);
@@ -137,7 +142,7 @@
         const on = store.get('bmark', '') !== k;
         store.set('bmark', on ? k : '');
         document.querySelectorAll('#flow p.bv').forEach(p => p.classList.toggle('marked', on && p === v));
-        const tt = $('#toast'); if (tt) { tt.textContent = on ? '책갈피를 꽂았습니다' : '책갈피를 뺐습니다'; tt.classList.add('show'); setTimeout(() => tt.classList.remove('show'), 1400) }
+        const tt = $('#toast'); if (tt) { tt.textContent = on ? T('책갈피를 꽂았습니다', 'Bookmark set') : T('책갈피를 뺐습니다', 'Bookmark removed'); tt.classList.add('show'); setTimeout(() => tt.classList.remove('show'), 1400) }
       }
     });
     $('#nextBtn').onclick = next; $('#prevBtn').onclick = prev;
@@ -151,7 +156,7 @@
     $('#fsPlus').onclick = () => { fs = Math.min(28, fs + 1); store.set('bfs', fs); layout() };
     $('#markBtn').onclick = () => {
       const m = store.get('bmark', '');
-      if (!m) { const tt = $('#toast'); tt.textContent = '절을 누르면 책갈피가 꽂힙니다'; tt.classList.add('show'); setTimeout(() => tt.classList.remove('show'), 1600); return }
+      if (!m) { const tt = $('#toast'); tt.textContent = T('절을 누르면 책갈피가 꽂힙니다', 'Click a verse to set a bookmark'); tt.classList.add('show'); setTimeout(() => tt.classList.remove('show'), 1600); return }
       const [c, ch] = m.split('/'); show(c, +ch);
     };
     document.addEventListener('keydown', e => {

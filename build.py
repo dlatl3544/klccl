@@ -35,6 +35,19 @@ BIBLE = json.loads((뿌리 / "catalog" / "bible.json").read_text(encoding="utf-8
 KRV = {f.stem: json.loads(f.read_text(encoding="utf-8")) for f in (뿌리 / "catalog" / "krv").glob("*.json")}
 # 다른 번역본 목록 (catalog/versions.json). VPL 파일은 책 순서가 66권 차례와 같으므로 순서로 맞춘다
 VERSIONS = json.loads((뿌리 / "catalog" / "versions.json").read_text(encoding="utf-8"))["versions"]
+# 영문판(/en/) 화면용 영어 자료. 한국어 자료에 덧씌우고, 없는 값은 한국어 그대로 둔다
+EN = json.loads((뿌리 / "catalog" / "en.json").read_text(encoding="utf-8"))
+LANG = "ko"   # 지금 만드는 쪽의 화면 언어: "ko"(사이트 뿌리) 또는 "en"(docs/en/)
+
+
+def T(ko: str, en: str) -> str:
+    """화면 글: 한국어판이면 앞의 것, 영문판이면 뒤의 것"""
+    return en if LANG == "en" else ko
+
+
+def 영(s):
+    """자료 값(언어 이름, 성경 갈래, CO 권 제목 등)을 영문판에서 영어로. 대조표에 없으면 그대로"""
+    return EN["terms"].get(s, s) if LANG == "en" and isinstance(s, str) else s
 
 
 def VPL읽기(경로: Path) -> dict:
@@ -212,12 +225,95 @@ def 모든항목():
 갈래이름 = {g["id"]: g["name"] for g in LIB["genres"]}
 시대이름 = {x["id"]: x for x in LIB["eras"]}
 책코드 = {b["abbr"]: b for b in BIBLE["books"]}
+원자료 = {"SITE": SITE, "LIB": LIB, "CO": CO, "BIBLE": BIBLE, "WORKS": WORKS, "VERSIONS": VERSIONS}
+
+
+def 저작영(w) -> dict:
+    """저작 하나를 영문판 화면용으로 복사한다. 편 원고(제목, 본문)는 한국어 그대로 둔다"""
+    x = EN["works"].get(f'{w["author_dir"]}/{w["id"]}', {})
+    w2 = dict(w)
+    for k in ("title", "cite_title", "summary", "orig_label", "unit", "source_short", "page_prefix"):
+        if k in x:
+            w2[k] = x[k]
+    w2["units_word"] = x.get("units", "parts")
+    w2["lang"] = 영(w.get("lang", ""))
+    w2["volumes"] = [dict(v, title=x.get("volumes", {}).get(str(v["no"]), v["title"])) for v in w["volumes"]]
+    return w2
+
+
+def 언어설정(lang: str):
+    """화면 언어를 바꾸고, 그 언어로 자료(사이트·저자·총서·성경·CO·저작)와 메뉴를 다시 짠다"""
+    global LANG, SITE, LIB, CO, BIBLE, WORKS, VERSIONS, 저자이름, 갈래이름, 시대이름, 책코드, 메뉴, 도서하위, 소개하위, 상태이름
+    LANG = lang
+    o = 원자료
+    if lang == "ko":
+        SITE, LIB, CO, BIBLE, WORKS, VERSIONS = o["SITE"], o["LIB"], o["CO"], o["BIBLE"], o["WORKS"], o["VERSIONS"]
+        메뉴 = [("", "홈", "home"), ("bible/", "성경", "bible"), ("expositions/", "주석·설교", "expositions"), ("books/", "도서", "books"),
+              ("psalter/", "시편찬송", "psalter"), ("authors/", "저자", "authors"),
+              ("search/", "찾기", "search"), ("about/", "소개", "about")]
+        도서하위 = [("books/", "전체 도서", "books"), ("series/", "총서", "series")]
+        소개하위 = [("about/", "도서관 소개", "about"), ("about/principles/", "원칙", "principles"), ("about/progress/", "진행 현황", "progress"),
+                ("about/news/", "소식", "news"), ("about/contribute/", "참여와 오류 제보", "contribute")]
+        상태이름 = {3: "원문 대역 연결", 2: "웹 게시(한국어)", 1: "번역 원고 완료", "0x": "원고 확보 필요", 0: "예정"}
+    else:
+        s = EN["site"]
+        SITE = dict(o["SITE"], full=s["full"], tagline=s["tagline"])
+        L = o["LIB"]
+        def 덧(d, k, 표):   # 사전 d 를 복사하고 표[d[k]] 의 값을 덧씌운다
+            return dict(d, **표.get(d[k], {}))
+        LIB = {
+            "authors": [dict(덧(a, "id", EN["authors"]), lang=영(a.get("lang", ""))) for a in L["authors"]],
+            "eras": [덧(x, "id", EN["eras"]) for x in L["eras"]],
+            "genres": [dict(g, name=EN["genres"].get(g["id"], g["name"])) for g in L["genres"]],
+            "series": [dict(sr, name=EN["series"].get(sr["id"], {}).get("name", sr["name"]),
+                            desc=EN["series"].get(sr["id"], {}).get("desc", sr["desc"]),
+                            branches=[덧(b, "id", EN["series"].get(sr["id"], {}).get("branches", {})) for b in sr["branches"]])
+                       for sr in L["series"]],
+            "news": [[d, EN["news"].get(t, t)] for d, t in L["news"]],
+            "sources": [덧(x, "id", EN["sources"]) for x in L["sources"]],
+        }
+        CO = dict(o["CO"], volumes=[dict(v, group=영(v["group"]), title=영(v["title"]), lang=영(v["lang"]), note=영(v["note"]))
+                                    for v in o["CO"]["volumes"]])
+        BIBLE = dict(o["BIBLE"], note=영(o["BIBLE"]["note"]),
+                     books=[dict(b, name=EN["bible_books"].get(b["code"], b["name"]), kind_ko=b["kind"], kind=영(b["kind"]),
+                                 note=영(b["note"])) for b in o["BIBLE"]["books"]])
+        WORKS = [저작영(w) for w in o["WORKS"]]
+        VERSIONS = [dict(v, **EN["versions"].get(v["id"], {})) for v in o["VERSIONS"]]
+        메뉴 = [("", "Home", "home"), ("bible/", "Bible", "bible"), ("expositions/", "Expositions", "expositions"),
+              ("books/", "Books", "books"), ("psalter/", "Psalter", "psalter"), ("authors/", "Authors", "authors"),
+              ("search/", "Search", "search"), ("about/", "About", "about")]
+        도서하위 = [("books/", "All books", "books"), ("series/", "Series", "series")]
+        소개하위 = [("about/", "About the library", "about"), ("about/principles/", "Principles", "principles"),
+                ("about/progress/", "Progress", "progress"), ("about/news/", "News", "news"),
+                ("about/contribute/", "Contribute & report errors", "contribute")]
+        상태이름 = {3: "Parallel original linked", 2: "On the web (Korean)", 1: "Translation draft done", "0x": "Source text needed", 0: "Planned"}
+    저자이름 = {a["id"]: a for a in LIB["authors"]}
+    갈래이름 = {g["id"]: g["name"] for g in LIB["genres"]}
+    시대이름 = {x["id"]: x for x in LIB["eras"]}
+    책코드 = {b["abbr"]: b for b in BIBLE["books"]}
+
+
+def 제(n, w) -> str:
+    """편 이름: '제62편' / 'Sermon 62'"""
+    return T(f'제{n}{w["unit"]}', f'{w["unit"]} {n}')
+
+
+def 편수(k, w) -> str:
+    """편 수: '61편' / '61 sermons'"""
+    return T(f'{k}{w["unit"]}', f'{k} {w["unit"].lower() if k == 1 else w.get("units_word", "parts")}')
+
+
+def 장이름(이름, c) -> str:
+    """'욥기 3장' / 'Job 3'"""
+    return T(f"{이름} {c}장", f"{이름} {c}")
 
 
 def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = None, 서가: str = "", 설명: str = "", 하위: str = "", 하위목록: list = None) -> str:
-    """경로는 docs/ 기준 상대 경로(예: 'sources/co/index.html'). 링크는 모두 상대 경로로 만든다"""
+    """경로는 언어별 사이트 뿌리 기준 상대 경로(예: 'sources/co/index.html'). 링크는 모두 상대 경로로 만든다.
+    {R}: 같은 언어 사이트의 뿌리(영문판은 docs/en/), {A}: 공용 자료(assets, data, PDF, 악보)가 있는 docs/ 뿌리"""
     깊이 = 경로.count("/")
     R = "../" * 깊이
+    A = R + ("../" if LANG == "en" else "")
     nav = "".join(f'<a href="{(R + h) or "./"}"{" class=on" if k == 현재 else ""}>{t}</a>' for h, t, k in 메뉴)
     빵글 = ""
     if 빵:
@@ -226,35 +322,53 @@ def 틀(경로: str, 제목: str, 본문: str, 현재: str = "", 빵: list = Non
     if 하위:
         본문 = ('<nav class="subnav">' + "".join(
             f'<a href="{R}{h}"{" class=on" if k == 하위 else ""}>{t}</a>' for h, t, k in (하위목록 or 소개하위)) + "</nav>") + 본문
-    본문 = 본문.replace("{R}", R)
-    서가 = 서가.replace("{R}", R)
+    본문 = 본문.replace("{R}", R).replace("{A}", A)
+    서가 = 서가.replace("{R}", R).replace("{A}", A)
     배치 = (f'<div class="layout"><aside id="shelf">{서가}</aside><main>{빵글}{본문}{바닥(R)}</main></div>' if 서가
           else f'<div class="layout single"><main>{빵글}<div class="page">{본문}</div>{바닥(R)}</main></div>')
     쪽제목 = f"{제목} · {SITE['name']} {SITE['full']}" if 제목 else f"{SITE['name']} {SITE['full']}"
+    # 언어 전환: 한국어판 쪽과 영문판(en/) 쪽은 경로가 1:1로 맞는다
+    p = 경로[:-len("index.html")] if 경로.endswith("index.html") else 경로
+    if 경로 == "404.html":   # 404 쪽은 어느 주소에서나 열리므로 절대 주소로
+        b0 = SITE.get("base_url", "").rstrip("/")
+        한주소, 영주소 = b0 + "/", b0 + "/en/"
+    elif LANG == "en":
+        한주소, 영주소 = A + p, (R + p) or "./"
+    else:
+        한주소, 영주소 = (R + p) or "./", R + "en/" + p
+    언어단추 = (f'<div class="seg lang" role="group" aria-label="Language / 언어">'
+             f'<a class="btn{" on" if LANG == "ko" else ""}" href="{한주소}" hreflang="ko" lang="ko">KOREAN</a>'
+             f'<a class="btn{" on" if LANG == "en" else ""}" href="{영주소}" hreflang="en" lang="en">ENGLISH</a></div>')
+    b = SITE.get("base_url", "").rstrip("/")
+    대체 = (f'<link rel="alternate" hreflang="ko" href="{b}/{p}"><link rel="alternate" hreflang="en" href="{b}/en/{p}">'
+          if b and 경로 != "404.html" else "")
     return f"""<!DOCTYPE html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(쪽제목)}</title><meta name="description" content="{e(설명 or SITE['tagline'])}">
+<html lang="{T('ko', 'en')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(쪽제목)}</title><meta name="description" content="{e(설명 or SITE['tagline'])}">{대체}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script>try{{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
-<link rel="stylesheet" href="{R}assets/kccl.css"></head>
-<body data-root="{R}">
+<link rel="stylesheet" href="{A}assets/kccl.css"></head>
+<body data-root="{R}" data-assets="{A}">
 <header class="top">
-  {'<button class="btn menu-btn" id="menuBtn" aria-label="서가 열기">목차</button>' if 서가 else ''}
-  <a class="brand" href="{R}">{e(SITE['name'])}<small>{e(SITE['full'])} · AI 초벌 번역판</small></a>
+  {f'<button class="btn menu-btn" id="menuBtn" aria-label="{T("서가 열기", "Open shelf")}">{T("목차", "Contents")}</button>' if 서가 else ''}
+  <a class="brand" href="{R or './'}">{e(SITE['name'])}<small>{e(SITE['full'])} · {T('AI 초벌 번역판', 'AI draft translation')}</small></a>
   <nav class="gnav">{nav}</nav>
-  <div class="seg theme" role="group" aria-label="색 모드"><button class="btn" data-theme-set="light">라이트</button><button class="btn" data-theme-set="dark">다크</button><button class="btn" data-theme-set="reading">리딩</button></div>
+  <div class="seg theme" role="group" aria-label="{T('색 모드', 'Color mode')}"><button class="btn" data-theme-set="light">{T('라이트', 'Light')}</button><button class="btn" data-theme-set="dark">{T('다크', 'Dark')}</button><button class="btn" data-theme-set="reading">{T('리딩', 'Reading')}</button></div>
+  {언어단추}
 </header>
 {배치}
 <div class="pop" id="pop"></div><div class="toast" id="toast"></div>
-<script src="{R}assets/kccl.js"></script>
+<script src="{A}assets/kccl.js"></script>
 </body></html>
 """
 
 
 def 바닥(R: str) -> str:
-    return (f'<footer class="foot">{e(SITE["name"])} {e(SITE["full"])} · 번역문 CC0 1.0 · AI 초벌 번역판 · 신학 감수 전 · '
-            f'<a href="{R}about/principles/">원칙</a> · <a href="{R}about/contribute/">오류 제보</a> · 기준일 {기준일}</footer>')
+    return T(f'<footer class="foot">{e(SITE["name"])} {e(SITE["full"])} · 번역문 CC0 1.0 · AI 초벌 번역판 · 신학 감수 전 · '
+             f'<a href="{R}about/principles/">원칙</a> · <a href="{R}about/contribute/">오류 제보</a> · 기준일 {기준일}</footer>',
+             f'<footer class="foot">{e(SITE["name"])} {e(SITE["full"])} · Translations CC0 1.0 · AI draft translation · not yet theologically reviewed · '
+             f'<a href="{R}about/principles/">Principles</a> · <a href="{R}about/contribute/">Report errors</a> · As of {기준일}</footer>')
 
 
 def 막대(items) -> str:
@@ -266,8 +380,9 @@ def 막대(items) -> str:
 def 요약(items) -> str:
     c = 집계(items)
     if not items:
-        return "준비 중"
-    return f"{c[1]+c[2]+c[3]}/{len(items)} 번역 · 웹 {c[2]+c[3]} · 대역 {c[3]}"
+        return T("준비 중", "In preparation")
+    return T(f"{c[1]+c[2]+c[3]}/{len(items)} 번역 · 웹 {c[2]+c[3]} · 대역 {c[3]}",
+             f"{c[1]+c[2]+c[3]}/{len(items)} translated · web {c[2]+c[3]} · parallel {c[3]}")
 
 
 def 저작주소(w) -> str:
@@ -277,7 +392,7 @@ def 저작주소(w) -> str:
 def 권표(v) -> str:
     """권 표시: CO 권수에 28을 더한 CR(Corpus Reformatorum) 권수. CO 값이 없으면 저작 안의 권 번호"""
     co = v.get("co")
-    return f"CR {int(co) + 28}" if isinstance(co, int) or str(co).isdigit() else f'{v["no"]}권'
+    return f"CR {int(co) + 28}" if isinstance(co, int) or str(co).isdigit() else T(f'{v["no"]}권', f'Vol. {v["no"]}')
 
 
 def PDF링크(w, v, 꼴="btn") -> str:
@@ -287,40 +402,43 @@ def PDF링크(w, v, 꼴="btn") -> str:
         return ""
     원본 = 뿌리 / "content" / w["author"] / w["id"] / "pdf" / f
     크기 = f"{원본.stat().st_size / 1048576:.1f}MB" if 원본.exists() else ""
-    쪽 = f'{v["pdf_pages"]}쪽, ' if v.get("pdf_pages") else ""
-    주소 = f'{{R}}{저작주소(w)}pdf/{f}'
+    쪽 = T(f'{v["pdf_pages"]}쪽, ', f'{v["pdf_pages"]:,} pages, ') if v.get("pdf_pages") else ""
+    주소 = f'{{A}}{저작주소(w)}pdf/{f}'
     if 꼴 == "tag":
         return f' <a class="tag" href="{주소}" download>PDF</a>'
     if 꼴 == "mini":
-        return f'<a class="dl mini" href="{주소}" download>{권표(v)} PDF 내려받기</a>'
-    return (f'<p><a class="btn dl" href="{주소}" download>{권표(v)} PDF 내려받기</a> '
-            f'<span class="mini">AI 초벌 번역판 · 신학 감수 전 · {쪽}{크기} · CC0</span></p>')
+        return f'<a class="dl mini" href="{주소}" download>{권표(v)} {T("PDF 내려받기", "PDF download")}</a>'
+    return (f'<p><a class="btn dl" href="{주소}" download>{권표(v)} {T("PDF 내려받기", "PDF download (Korean)")}</a> '
+            f'<span class="mini">{T("AI 초벌 번역판 · 신학 감수 전", "AI draft translation · not yet theologically reviewed")} · {쪽}{크기} · CC0</span></p>')
 
 
 def 원전권(w, v) -> str:
     """권·저작의 원전 표시. CO 저작은 'CO n', 그 밖은 work.json 의 source_short(예: '1932년판')"""
     if w.get("source", "co") == "co":
         return f'CO {v["co"]}' if isinstance(v, dict) else "CO " + ", ".join(str(x) for x in w["co"])
-    return w.get("source_short", "원서")
+    return w.get("source_short", T("원서", "Original"))
 
 
 def 쪽앞뒤(w, u) -> tuple:
     """인용 표기 앞뒤: CO 저작은 ('CO 34:', ''), 그 밖은 ('원서 ', '쪽')"""
     if w.get("source", "co") == "co":
         return f'CO {u["vol"]}:', ""
-    return w.get("page_prefix", "원서 "), "쪽"
+    return w.get("page_prefix", T("원서 ", "p. ")), T("쪽", "")
 
 
 def 쪽범위(w, u) -> str:
     """머리에 보일 원전 범위: 'CO 8:543–566' 또는 '원서 77–154쪽'"""
     if w.get("source", "co") == "co":
         return f'CO {u["co"]}'
-    return f'{w.get("page_prefix", "원서 ")}{u["co"]}쪽'
+    return T(f'{w.get("page_prefix", "원서 ")}{u["co"]}쪽', f'pp. {u["co"]}')
 
 
 def 고지(w) -> str:
-    return ("AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문("
-            + ("CO 권:쪽" if w.get("source", "co") == "co" else "원서 쪽") + ")을 확인해 주십시오.")
+    co = w.get("source", "co") == "co"
+    return T("AI로 옮긴 초벌 번역입니다. 신학 감수를 거치지 않았으니, 인용할 때는 원문("
+             + ("CO 권:쪽" if co else "원서 쪽") + ")을 확인해 주십시오.",
+             "This is a draft translation made with AI and has not been theologically reviewed. When quoting, please check the original ("
+             + ("CO volume:page" if co else "page of the original edition") + ").")
 
 
 def 단위주소(w, n) -> str:
@@ -350,16 +468,45 @@ def 홈():
     공개 = [(w, n) for w in WORKS for n in sorted(w["units"])]
     대역 = [(w, n) for w, n in 공개 if w["units"][n]["orig"]]
     시작 = 대역[0] if 대역 else (공개[0] if 공개 else None)
-    시작단추 = (f'<a class="btn on" href="{{R}}{단위주소(*시작)}">대역 읽기 시작: 칼빈 「{e(시작[0]["title"])}」 제{시작[1]}편</a> '
+    시작단추 = (f'<a class="btn on" href="{{R}}{단위주소(*시작)}">'
+            + T(f'대역 읽기 시작: 칼빈 「{e(시작[0]["title"])}」 제{시작[1]}편',
+                f'Start reading: Calvin, {e(시작[0]["title"])}, {e(제(시작[1], 시작[0]))}') + '</a> '
             if 시작 else "")
-    둘러보기 = [("bible/", "성경", "개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다."),
-            ("expositions/", "주석·설교", "번역된 주석과 설교를 성경 책별로 찾아 읽습니다."),
-            ("books/", "도서", "교리서, 신조, 서신, 경건 서적과 총서를 갈래·시대·원어로 골라 봅니다."),
-            ("psalter/", "시편찬송", "한국어 제네바 시편가 150편의 악보와 가사, 개역한글판 시편 150편입니다."),
-            ("authors/", "저자", "교부부터 종교개혁자, 청교도까지 저자별로 봅니다.")]
+    둘러보기 = [("bible/", T("성경", "Bible"), T("개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다.",
+                                             "Read all 66 books of the Korean Revised Version laid open like a book, side by side with English translations.")),
+            ("expositions/", T("주석·설교", "Commentaries & Sermons"), T("번역된 주석과 설교를 성경 책별로 찾아 읽습니다.",
+                                                                       "Find the translated commentaries and sermons by book of the Bible.")),
+            ("books/", T("도서", "Books"), T("교리서, 신조, 서신, 경건 서적과 총서를 갈래·시대·원어로 골라 봅니다.",
+                                           "Browse doctrinal works, creeds, letters, devotional books, and series by genre, era, and original language.")),
+            ("psalter/", T("시편찬송", "Psalter"), T("한국어 제네바 시편가 150편의 악보와 가사, 개역한글판 시편 150편입니다.",
+                                                 "Scores and lyrics of the 150 psalms of the Korean Genevan Psalter, and the 150 psalms of the Korean Revised Version.")),
+            ("authors/", T("저자", "Authors"), T("교부부터 종교개혁자, 청교도까지 저자별로 봅니다.",
+                                               "Browse by author, from the Church Fathers to the Reformers and the Puritans."))]
     카드 = "".join(f'<a class="card" href="{{R}}{h}"><h3>{t}</h3><p>{d}</p></a>' for h, t, d in 둘러보기)
     소식 = "".join(f"<tr><td>{e(d)}</td><td>{e(t)}</td></tr>" for d, t in LIB["news"][:4])
     co진행 = sum(1 for v in CO["volumes"] if CO진행(v["vol"]) > 0)
+    if LANG == "en":
+        본문 = f"""<div class="hero"><div class="en">{e(SITE['name'])}</div>
+<h1>{e(SITE['full'])}</h1><p class="lead">{e(SITE['tagline'])}</p>
+<p>{시작단추}<a class="btn" href="{{R}}about/principles/">Principles of this library</a></p>
+<div class="stats">
+<div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>authors in the library</span></div>
+<div class="stat"><b>{c[1]+c[2]+c[3]}</b><span>parts translated</span></div>
+<div class="stat"><b>{c[2]+c[3]}</b><span>parts readable on the web</span></div>
+<div class="stat"><b>{co진행}/59</b><span>volumes of Calvin's works begun</span></div></div></div>
+<div class="box">The English pages are for finding your way around the library. The translations themselves, the PDFs, and the psalter lyrics are in Korean, shown next to the original Latin, French, or Dutch text.</div>
+<h2>Explore</h2><div class="cards">{카드}</div>
+<h2>The current goal: the 59 volumes of Calvin's works</h2>
+<p>The first goal is to translate all 59 volumes of Calvin's collected works (CO, 1863–1900), published in the nineteenth century, from the original languages into Korean. Since this will take a long time, each part is added as soon as it is finished. After that, the shelves will grow with public-domain works of other Reformers, the Church Fathers, and the Puritans.</p>
+<p><a class="btn" href="{{R}}about/progress/">Progress</a></p>
+<h2>Three commitments of this library</h2><div class="cards">
+<div class="card"><h3>Side by side with the original</h3><p>Every translation is aligned with the original and its page in the source edition (e.g. CO 34:1), so anyone can check the original text.</p></div>
+<div class="card"><h3>Open without conditions</h3><p>Only public-domain sources are used, and the translations are released under CC0 1.0. Copying, distributing, modifying, and publishing are all free.</p></div>
+<div class="card"><h3>A transparent draft translation</h3><p>The draft translation was made with AI and has not yet been theologically reviewed. Error reports are received and corrected, and the corrections are recorded.</p></div></div>
+<h2>News</h2><table class="t"><tr><th style="width:120px">Date</th><th>Item</th></tr>{소식}</table>
+<p><a href="{{R}}about/news/">All news</a></p>"""
+        쪽들["index.html"] = 틀("index.html", "", 본문, "home")
+        return
     본문 = f"""<div class="hero"><div class="en">{e(SITE['en'])}</div>
 <h1>{e(SITE['name'])} {e(SITE['full'])}</h1><p class="lead">{e(SITE['tagline'])}</p>
 <p>{시작단추}<a class="btn" href="{{R}}about/principles/">이 도서관의 원칙</a></p>
@@ -389,26 +536,29 @@ def 서가쪽():
         it = 저작항목(w)
         c = 집계(it)
         상태 = "web" if c[2] + c[3] else ("done" if c[1] else "plan")
+        제목 = T(f'「{e(w["title"])}」', f'<i>{e(w["title"])}</i>')
         칸 += (f'<a class="card wk" href="{{R}}{저작주소(w)}" data-genre="{w.get("genre", "")}" data-era="{a["era"]}" '
               f'data-lang="{e(w.get("lang", ""))}" data-state="{상태}">'
               f'<div class="g">{e(a["name"])} · {e(갈래이름.get(w.get("genre"), ""))} · {e(w.get("lang", ""))}</div>'
-              f'<h3>「{e(w["title"])}」</h3><p>{e(w["summary"])}</p>{막대(it)}<span class="mini">{요약(it)}</span></a>')
+              f'<h3>{제목}</h3><p>{e(w["summary"])}</p>{막대(it)}<span class="mini">{요약(it)}</span></a>')
     def 칩(종류, 목록):
-        return (f'<div class="chips" data-filter="{종류}"><button class="btn on" data-v="">전체</button>'
+        return (f'<div class="chips" data-filter="{종류}"><button class="btn on" data-v="">{T("전체", "All")}</button>'
                 + "".join(f'<button class="btn" data-v="{e(v)}">{e(t)}</button>' for v, t in 목록) + "</div>")
     원어들 = sorted({w.get("lang", "") for w in WORKS if w.get("lang")})
-    본문 = (f'<h1>도서</h1><p class="lead">이 도서관에 오른 모든 저작입니다. 설교집과 주석, 교리서, 신조, 서신, 경건 서적을 갈래와 시대, 원어로 골라 볼 수 있습니다.</p>'
-          f'<div class="filters"><span>갈래</span>{칩("genre", [(g["id"], g["name"]) for g in LIB["genres"]])}'
-          f'<span>시대</span>{칩("era", [(x["id"], x["name"]) for x in LIB["eras"]])}'
-          f'<span>원어</span>{칩("lang", [(x, x) for x in 원어들])}'
-          f'<span>상태</span>{칩("state", [("web", "웹에서 읽기"), ("done", "번역 완료"), ("plan", "예정")])}</div>'
+    본문 = (T('<h1>도서</h1><p class="lead">이 도서관에 오른 모든 저작입니다. 설교집과 주석, 교리서, 신조, 서신, 경건 서적을 갈래와 시대, 원어로 골라 볼 수 있습니다.</p>',
+              '<h1>Books</h1><p class="lead">All the works in this library. Sermons, commentaries, doctrinal works, creeds, letters, and devotional books can be filtered by genre, era, and original language. The translations are in Korean.</p>')
+          + f'<div class="filters"><span>{T("갈래", "Genre")}</span>{칩("genre", [(g["id"], g["name"]) for g in LIB["genres"]])}'
+          f'<span>{T("시대", "Era")}</span>{칩("era", [(x["id"], x["name"]) for x in LIB["eras"]])}'
+          f'<span>{T("원어", "Language")}</span>{칩("lang", [(x, x) for x in 원어들])}'
+          f'<span>{T("상태", "Status")}</span>{칩("state", [("web", T("웹에서 읽기", "Read on the web")), ("done", T("번역 완료", "Translated")), ("plan", T("예정", "Planned"))])}</div>'
           f'<p class="mini" id="count"></p><div class="cards" id="works">{칸}</div>'
-          f'<p class="mini" id="empty" hidden>조건에 맞는 저작이 아직 없습니다. 서가는 번역이 끝나는 대로 늘어납니다.</p>')
-    쪽들["books/index.html"] = 틀("books/index.html", "도서", 본문, "books", [("", SITE["name"]), (None, "도서")], 하위="books", 하위목록=도서하위)
+          f'<p class="mini" id="empty" hidden>{T("조건에 맞는 저작이 아직 없습니다. 서가는 번역이 끝나는 대로 늘어납니다.", "No works match these filters yet. The shelves grow as translations are finished.")}</p>')
+    쪽들["books/index.html"] = 틀("books/index.html", T("도서", "Books"), 본문, "books", [("", SITE["name"]), (None, T("도서", "Books"))], 하위="books", 하위목록=도서하위)
 
 
 def 저자쪽():
-    본문 = '<h1>저자</h1><p class="lead">공유 저작물로 확인된 저자를 시대 순으로 싣습니다. 아직 번역이 없는 저자는 예정으로 표시합니다.</p>'
+    본문 = T('<h1>저자</h1><p class="lead">공유 저작물로 확인된 저자를 시대 순으로 싣습니다. 아직 번역이 없는 저자는 예정으로 표시합니다.</p>',
+            '<h1>Authors</h1><p class="lead">Authors whose works are confirmed to be in the public domain, in chronological order. Authors with no translations yet are marked as planned.</p>')
     for 시대 in LIB["eras"]:
         여기 = [a for a in LIB["authors"] if a["era"] == 시대["id"]]
         if not 여기:
@@ -418,28 +568,29 @@ def 저자쪽():
             저작수 = len([w for w in WORKS if w["author"] == a["id"]])
             머리 = f'<h3>{e(a["name"])} <span class="mini">{e(a["life"])}</span></h3><p>{e(a["desc"])}</p>'
             if a["ready"]:
-                본문 += f'<a class="card" href="{{R}}{a["id"]}/">{머리}<span class="mini">저작 {저작수}종</span></a>'
+                본문 += f'<a class="card" href="{{R}}{a["id"]}/">{머리}<span class="mini">{T(f"저작 {저작수}종", f"{저작수} work" + ("" if 저작수 == 1 else "s"))}</span></a>'
             else:
                 본문 += f'<div class="card soon">{머리}</div>'
         본문 += "</div>"
-    쪽들["authors/index.html"] = 틀("authors/index.html", "저자", 본문, "authors", [("", SITE["name"]), (None, "저자")])
+    쪽들["authors/index.html"] = 틀("authors/index.html", T("저자", "Authors"), 본문, "authors", [("", SITE["name"]), (None, T("저자", "Authors"))])
     # 저자별 쪽
     for a in [x for x in LIB["authors"] if x["ready"]]:
         경로 = f'{a["id"]}/index.html'
         저작 = [w for w in WORKS if w["author"] == a["id"]]
-        원전 = [s for s in LIB["sources"] if s["author"] == a["id"]]
         b = f'<h1>{e(a["name"])} <span class="mini">{e(a["life"])}</span></h1><p class="lead">{e(a["desc"])}</p>'
         for g in LIB["genres"]:
             여기 = [w for w in 저작 if w.get("genre") == g["id"]]
             if not 여기:
                 continue
-            b += f'<h2>{e(g["name"])}</h2><table class="t"><tr><th>저작</th><th style="width:90px">원전</th><th style="width:230px">진행</th></tr>'
+            b += (f'<h2>{e(g["name"])}</h2><table class="t"><tr><th>{T("저작", "Work")}</th><th style="width:90px">{T("원전", "Source")}</th>'
+                  f'<th style="width:230px">{T("진행", "Progress")}</th></tr>')
             for w in 여기:
                 it = 저작항목(w)
-                b += (f'<tr><td><a href="{{R}}{저작주소(w)}"><b>「{e(w["title"])}」</b></a><br><span class="mini">{e(w["summary"])}</span></td>'
+                제목 = T("「" + e(w["title"]) + "」", e(w["title"]))
+                b += (f'<tr><td><a href="{{R}}{저작주소(w)}"><b>{제목}</b></a><br><span class="mini">{e(w["summary"])}</span></td>'
                       f'<td class="mini">{e(원전권(w, None))}</td><td>{막대(it)}<span class="mini">{요약(it)}</span></td></tr>')
             b += "</table>"
-        쪽들[경로] = 틀(경로, a["name"], b, "authors", [("", SITE["name"]), ("authors/", "저자"), (None, a["name"])])
+        쪽들[경로] = 틀(경로, a["name"], b, "authors", [("", SITE["name"]), ("authors/", T("저자", "Authors")), (None, a["name"])])
 
 
 def CO진행(vol: int) -> int:
@@ -504,55 +655,47 @@ def 성경쪽():
         for n, u in w["units"].items():
             for 책, 장 in 단위장들(w, u):
                 장색인.setdefault((책, 장), []).append((w, u))
-    종류 = {"주석": "k-c", "설교": "k-s", "주석·설교": "k-cs", "확인 중": "k-q", "없음": ""}
-    본문 = ('<h1>성경</h1><p class="lead">개역한글판(1961) 66권 전체를 읽을 수 있습니다. 책마다 이 도서관에 있는 설교와 주석을 함께 모읍니다.</p>'
-          '<p><a class="btn on" href="{R}bible/read/">책으로 펼쳐 읽기</a></p>'
-          '<div class="legend"><span>칼빈 전집에 남은 것:</span><span><i class="kind k-c">주석</i></span><span><i class="kind k-s">설교</i></span>'
-          '<span><i class="kind k-cs">주석·설교</i></span><span><i class="kind k-q">확인 중</i></span><span><i class="kind">없음</i></span></div>')
-    for 약 in ("구약", "신약"):
-        칸 = ""
-        for b in [x for x in BIBLE["books"] if x["testament"] == 약]:
-            수 = len({id(u) for (책, _), l in 장색인.items() if 책 == b["abbr"] for _, u in l})
-            칸 += (f'<a class="bk" href="{{R}}bible/{b["code"]}/"><b>{e(b["name"])}</b> <i class="kind {종류.get(b["kind"], "")}">칼빈 {e(b["kind"])}</i>'
-                  f'{"<small>" + e(b["note"]) + "</small>" if b["note"] else ""}'
-                  f'{"<small>이 도서관의 글 " + str(수) + "편</small>" if 수 else ""}</a>')
-        본문 += f"<h2>{약}</h2><div class='bible'>{칸}</div>"
-    본문 += f'<p class="mini">{e(BIBLE["note"])} 성경 본문은 저작재산권이 소멸한 『성경전서 개역한글판』입니다.</p>'
     # (예전 66권 목록 쪽은 쓰지 않는다. 성경 탭은 펼쳐 읽기 화면만 보인다)
 
     for b in BIBLE["books"]:
         책 = KRV.get(b["abbr"], {}).get("verses", {})
         장수 = max((int(k.split(":")[0]) for k in 책), default=0)
         글들 = [w for w in WORKS if b["abbr"] in w.get("bible", [])]
-        h = f'<h1>{e(b["name"])}</h1><p class="lead">개역한글판 {장수}장. 칼빈 전집에 남은 것: {e(b["kind"])}{" (" + e(b["note"]) + ")" if b["note"] else ""}</p>'
+        남은것 = e(b["kind"]) + (" (" + e(b["note"]) + ")" if b["note"] else "")
+        h = (f'<h1>{e(b["name"])}</h1><p class="lead">'
+             + T(f'개역한글판 {장수}장. 칼빈 전집에 남은 것: {남은것}',
+                 f'{장수} chapters in the Korean Revised Version. In Calvin\'s collected works: {남은것}') + '</p>')
         if 글들:
-            h += "<h2>이 책을 다룬 저작</h2><ul>" + "".join(
-                f'<li><a href="{{R}}{저작주소(w)}">{e(저자이름[w["author"]]["name"])}, 「{e(w["title"])}」</a> <span class="mini">{요약(저작항목(w))}</span></li>' for w in 글들) + "</ul>"
-        h += '<h2>장</h2><div class="grid">' + "".join(
-            f'<a class="cell{" s2" if (b["abbr"], c) in 장색인 else ""}" href="{{R}}bible/{b["code"]}/{c}.html" title="{e(b["name"])} {c}장">{c}</a>'
+            h += f'<h2>{T("이 책을 다룬 저작", "Works on this book")}</h2><ul>' + "".join(
+                f'<li><a href="{{R}}{저작주소(w)}">{e(저자이름[w["author"]]["name"])}, {T("「" + e(w["title"]) + "」", "<i>" + e(w["title"]) + "</i>")}</a> '
+                f'<span class="mini">{요약(저작항목(w))}</span></li>' for w in 글들) + "</ul>"
+        h += f'<h2>{T("장", "Chapters")}</h2><div class="grid">' + "".join(
+            f'<a class="cell{" s2" if (b["abbr"], c) in 장색인 else ""}" href="{{R}}bible/{b["code"]}/{c}.html" title="{e(장이름(b["name"], c))}">{c}</a>'
             for c in range(1, 장수 + 1)) + "</div>"
         if 장색인 and any(k[0] == b["abbr"] for k in 장색인):
-            h += '<p class="mini">색이 칠해진 장은 이 도서관에 그 장을 다룬 글이 있습니다.</p>'
+            h += f'<p class="mini">{T("색이 칠해진 장은 이 도서관에 그 장을 다룬 글이 있습니다.", "Shaded chapters are treated in works in this library.")}</p>'
         경로 = f'bible/{b["code"]}/index.html'
-        쪽들[경로] = 틀(경로, b["name"], h, "expositions", [("", SITE["name"]), ("expositions/", "주석·설교"), (None, b["name"])])
+        쪽들[경로] = 틀(경로, b["name"], h, "expositions", [("", SITE["name"]), ("expositions/", T("주석·설교", "Commentaries & Sermons")), (None, b["name"])])
         for c in range(1, 장수 + 1):
             절들 = sorted((int(k.split(":")[1]), t) for k, t in 책.items() if int(k.split(":")[0]) == c)
             본 = "".join(f'<p class="v" id="v{v}"><sup class="vn">{v}</sup>{e(t)}</p>' for v, t in 절들)
             관련 = 장색인.get((b["abbr"], c), [])
             옆 = ""
             if 관련:
-                옆 = '<h2>이 장을 다룬 글</h2><ul>' + "".join(
-                    f'<li><a href="{{R}}{단위주소(w, u["no"])}">{e(저자이름[w["author"]]["name"])}, 「{e(w["title"])}」 제{u["no"]}{e(w["unit"])}</a> '
+                옆 = f'<h2>{T("이 장을 다룬 글", "Works on this chapter")}</h2><ul>' + "".join(
+                    f'<li><a href="{{R}}{단위주소(w, u["no"])}">{e(저자이름[w["author"]]["name"])}, '
+                    f'{T("「" + e(w["title"]) + "」", "<i>" + e(w["title"]) + "</i>,")} {e(제(u["no"], w))}</a> '
                     f'<span class="mini">({e(u["ref"])})</span></li>' for w, u in 관련) + "</ul>"
             앞뒤 = '<div class="pager">' + (
-                f'<a href="{{R}}bible/{b["code"]}/{c-1}.html"><small>이전 장</small>{e(b["name"])} {c-1}장</a>' if c > 1 else '<span style="flex:1"></span>') + (
-                f'<a class="next" href="{{R}}bible/{b["code"]}/{c+1}.html"><small>다음 장</small>{e(b["name"])} {c+1}장</a>' if c < 장수 else '<span style="flex:1"></span>') + "</div>"
-            h = (f'<h1>{e(b["name"])} {c}장</h1><p class="mini">성경전서 개역한글판(1961) · <a href="{{R}}bible/read/#{b["code"]}/{c}">책으로 펼쳐 읽기</a></p>'
-                 f'<div class="krvtext">{본}</div>{옆}{앞뒤}')
+                f'<a href="{{R}}bible/{b["code"]}/{c-1}.html"><small>{T("이전 장", "Previous chapter")}</small>{e(장이름(b["name"], c - 1))}</a>' if c > 1 else '<span style="flex:1"></span>') + (
+                f'<a class="next" href="{{R}}bible/{b["code"]}/{c+1}.html"><small>{T("다음 장", "Next chapter")}</small>{e(장이름(b["name"], c + 1))}</a>' if c < 장수 else '<span style="flex:1"></span>') + "</div>"
+            h = (f'<h1>{e(장이름(b["name"], c))}</h1><p class="mini">{T("성경전서 개역한글판(1961)", "Korean Revised Version (1961), in Korean")} · '
+                 f'<a href="{{R}}bible/read/#{b["code"]}/{c}">{T("책으로 펼쳐 읽기", "Open in the book reader")}</a></p>'
+                 f'<div class="krvtext" lang="ko">{본}</div>{옆}{앞뒤}')
             경로 = f'bible/{b["code"]}/{c}.html'
-            쪽들[경로] = 틀(경로, f'{b["name"]} {c}장', h, "expositions",
-                          [("", SITE["name"]), ("expositions/", "주석·설교"), (f'bible/{b["code"]}/', b["name"]), (None, f"{c}장")],
-                          설명=f'{b["name"]} {c}장 개역한글판 본문')
+            쪽들[경로] = 틀(경로, 장이름(b["name"], c), h, "expositions",
+                          [("", SITE["name"]), ("expositions/", T("주석·설교", "Commentaries & Sermons")), (f'bible/{b["code"]}/', b["name"]), (None, T(f"{c}장", f"Chapter {c}"))],
+                          설명=T(f'{b["name"]} {c}장 개역한글판 본문', f'{b["name"]} {c}, Korean Revised Version text'))
 
 
 def 성경책쪽():
@@ -560,22 +703,23 @@ def 성경책쪽():
     목록 = []
     for b in BIBLE["books"]:
         절 = KRV.get(b["abbr"], {}).get("verses", {})
-        목록.append({"code": b["code"], "abbr": b["abbr"], "name": b["name"], "t": b["testament"],
+        목록.append({"code": b["code"], "abbr": T(b["abbr"], b["code"].title()), "name": b["name"], "t": b["testament"],
                    "ch": max((int(k.split(":")[0]) for k in 절), default=1)})
     판목록 = "".join(f'<option value="{v["id"]}">{e(v["name"])}</option>' for v in VERSIONS)
-    본문 = (f'<div class="reader-bar"><select id="verSel" aria-label="번역본">{판목록}</select>'
-          f'<select id="parSel" aria-label="나란히 볼 번역본"><option value="">나란히 보기: 없음</option>{판목록}</select>'
-          f'<select id="bkSel" aria-label="책"></select><select id="chSel" aria-label="장"></select>'
-          f'<div class="seg"><button class="btn" id="fsMinus">가−</button><button class="btn" id="fsPlus">가+</button></div>'
-          f'<select id="coverSel" aria-label="표지 색"></select><button class="btn" id="markBtn">책갈피로 가기</button>'
-          f'<span class="mini">절을 누르면 책갈피, 키보드 ←→나 화면 밀기로 쪽을 넘깁니다.</span></div>'
+    본문 = (f'<div class="reader-bar"><select id="verSel" aria-label="{T("번역본", "Version")}">{판목록}</select>'
+          f'<select id="parSel" aria-label="{T("나란히 볼 번역본", "Parallel version")}"><option value="">{T("나란히 보기: 없음", "Parallel: none")}</option>{판목록}</select>'
+          f'<select id="bkSel" aria-label="{T("책", "Book")}"></select><select id="chSel" aria-label="{T("장", "Chapter")}"></select>'
+          f'<div class="seg"><button class="btn" id="fsMinus">{T("가−", "A−")}</button><button class="btn" id="fsPlus">{T("가+", "A+")}</button></div>'
+          f'<select id="coverSel" aria-label="{T("표지 색", "Cover color")}"></select><button class="btn" id="markBtn">{T("책갈피로 가기", "Go to bookmark")}</button>'
+          f'<span class="mini">{T("절을 누르면 책갈피, 키보드 ←→나 화면 밀기로 쪽을 넘깁니다.", "Click a verse to bookmark it; turn pages with the ← → keys or by swiping.")}</span></div>'
           f'<div class="bookwrap"><div class="tabs ot" id="tabsOT"></div><div class="tabs nt" id="tabsNT"></div>'
-          f'<button class="turn prev" id="prevBtn" aria-label="앞 쪽">‹</button><button class="turn next" id="nextBtn" aria-label="다음 쪽">›</button>'
+          f'<button class="turn prev" id="prevBtn" aria-label="{T("앞 쪽", "Previous page")}">‹</button><button class="turn next" id="nextBtn" aria-label="{T("다음 쪽", "Next page")}">›</button>'
           f'<div class="pages"><div class="runhead" id="runhead"></div><div id="viewport"><div id="flow"></div></div><div class="pageno" id="pageno"></div></div></div>'
-          f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};window.KLCCL_VERSIONS={json.dumps(VERSIONS, ensure_ascii=False)};</script>'
-          f'<script src="{{R}}assets/reader.js" defer></script>')
+          f'<script>window.KLCCL_BOOKLIST={json.dumps(목록, ensure_ascii=False)};window.KLCCL_VERSIONS={json.dumps(VERSIONS, ensure_ascii=False)};'
+          + ("window.KLCCL_DEFAULT_PAR='kjv';" if LANG == "en" else "") +
+          f'</script><script src="{{A}}assets/reader.js" defer></script>')
     for 경로 in ("bible/index.html", "bible/read/index.html"):   # 예전 주소(bible/read/)도 그대로 열리게
-        h = 틀(경로, "성경", 본문, "bible")
+        h = 틀(경로, T("성경", "Bible"), 본문, "bible")
         # 책 화면은 넓게 쓰도록 본문 여백 틀을 걷어 낸다
         h = h.replace('<div class="layout single"><main>', '<div class="layout single wide"><main>').replace('<div class="page">', '<div>', 1)
         쪽들[경로] = h
@@ -585,20 +729,22 @@ def 강해쪽():
     """주석·설교: 번역된 저작 카드 + 성경 책별 찾기(번역이 있는 책만 진하게)"""
     강해 = [w for w in WORKS if w.get("genre") in ("sermons", "commentaries")]
     카드 = "".join(
-        f'<a class="card" href="{{R}}{저작주소(w)}"><h3>「{e(w["title"])}」</h3>'
+        f'<a class="card" href="{{R}}{저작주소(w)}"><h3>{T("「" + e(w["title"]) + "」", "<i>" + e(w["title"]) + "</i>")}</h3>'
         f'<p>{e(저자이름[w["author"]]["name"])} · {e(갈래이름.get(w["genre"], ""))}</p>'
         f'{막대(저작항목(w))}<span class="mini">{요약(저작항목(w))}</span></a>' for w in 강해)
-    본문 = ('<h1>주석·설교</h1><p class="lead">번역된 주석과 설교입니다. 성경 책으로 찾으려면 아래에서 책을 고르십시오.</p>'
-          f'<div class="cards">{카드}</div><h2>성경 책별로 찾기</h2>')
+    본문 = (T('<h1>주석·설교</h1><p class="lead">번역된 주석과 설교입니다. 성경 책으로 찾으려면 아래에서 책을 고르십시오.</p>',
+              '<h1>Commentaries &amp; Sermons</h1><p class="lead">The translated commentaries and sermons (in Korean, with the original). To find them by book of the Bible, choose a book below.</p>')
+          + f'<div class="cards">{카드}</div><h2>{T("성경 책별로 찾기", "Find by book of the Bible")}</h2>')
     for 약 in ("구약", "신약"):
         칸 = ""
         for b in [x for x in BIBLE["books"] if x["testament"] == 약]:
             있음 = any(b["abbr"] in w.get("bible", []) for w in 강해)
             칸 += (f'<a class="bkmini on" href="{{R}}bible/{b["code"]}/">{e(b["name"])}</a>' if 있음
                   else f'<span class="bkmini">{e(b["name"])}</span>')
-        본문 += f'<h3 class="testament">{약}</h3><div class="bkminis">{칸}</div>'
-    본문 += '<p class="mini">진한 책에 번역된 주석·설교가 있습니다. 번역이 늘면 차례로 진해집니다.</p>'
-    쪽들["expositions/index.html"] = 틀("expositions/index.html", "주석·설교", 본문, "expositions", [("", SITE["name"]), (None, "주석·설교")])
+        본문 += f'<h3 class="testament">{T(약, "Old Testament" if 약 == "구약" else "New Testament")}</h3><div class="bkminis">{칸}</div>'
+    본문 += f'<p class="mini">{T("진한 책에 번역된 주석·설교가 있습니다. 번역이 늘면 차례로 진해집니다.", "Highlighted books have translated commentaries or sermons. More will be highlighted as translations are added.")}</p>'
+    쪽들["expositions/index.html"] = 틀("expositions/index.html", T("주석·설교", "Commentaries & Sermons"), 본문, "expositions",
+                                     [("", SITE["name"]), (None, T("주석·설교", "Commentaries & Sermons"))])
 
 
 PSALTER_DIR = 뿌리 / "content" / "psalter" / "genevan"
@@ -623,10 +769,19 @@ def 절구성(글: str) -> dict:
 def 시편찬송쪽():
     """시편찬송: 한국어 제네바 시편가 150편(악보 PDF, MusicXML, 가사)과 개역한글 시편"""
     시편 = next(b for b in BIBLE["books"] if b["abbr"] == "시")
-    칸 = "".join(f'<a class="cell" href="{{R}}bible/{시편["code"]}/{n}.html" title="시편 {n}편 (개역한글판)">{n}</a>' for n in range(1, 151))
-    상태 = "공개(AI 초벌 편역 · 신학 감수 전)" if PSALTER else "예정"
-    본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>"""
-    싣는것 = f"""<h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
+    칸 = "".join(f'<a class="cell" href="{{R}}bible/{시편["code"]}/{n}.html" title="{T(f"시편 {n}편 (개역한글판)", f"Psalm {n} (Korean Revised Version)")}">{n}</a>' for n in range(1, 151))
+    상태 = T("공개(AI 초벌 편역 · 신학 감수 전)", "Published (AI draft adaptation · not yet theologically reviewed)") if PSALTER else T("예정", "Planned")
+    if LANG == "en":
+        본문 = """<h1>Psalter</h1><p class="lead">The churches of the Reformation put the psalms into meter so that the whole congregation could sing them together. The Genevan Psalter (1562), completed in Calvin's church in Geneva, is the foremost example.</p>"""
+        싣는것 = f"""<h2>Contents</h2><table class="t"><tr><th style="width:190px">Material</th><th>Description</th><th style="width:150px">Status</th></tr>
+<tr><td>Korean Genevan Psalter</td><td>All 150 psalms: the Genevan tunes (1539–1562) with Claude Goudimel's four-part harmonizations (1564), set to Korean lyrics adapted in meter from the psalms of the Korean Revised Version. A score PDF and MusicXML files (for printing and for accompaniment) can be downloaded for every tune</td><td>{상태}</td></tr>
+<tr><td>Original Genevan Psalter</td><td>The French metrical psalms of Marot and Beza (16th century, public domain)</td><td>Planned</td></tr>
+<tr><td>Calvin's preface</td><td>Calvin's preface to the psalter (1542, 1543)</td><td>Planned</td></tr>
+<tr><td>Psalm texts</td><td>The 150 psalms of the Korean Revised Version (read from each tune page or from the Bible menu)</td><td>Published</td></tr></table>
+<div class="box">Most Korean psalm and hymn lyrics and arrangements used in churches today are still under copyright, so they are not included. This library includes only public-domain material such as the sixteenth-century texts and tunes, and newly translates the Korean lyrics and releases them without conditions. The melodies and harmonies were transcribed from the scores published at genevanpsalter.com; the Korean lyrics and the edited scores are released under CC0.</div>"""
+    else:
+        본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>"""
+        싣는것 = f"""<h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
 <tr><td>한국어 제네바 시편가</td><td>제네바 곡조(1539–1562)와 클로드 구디멜의 4성부 화성(1564)에 개역한글판 시편을 운율에 맞게 편역한 가사를 붙인 150편. 곡마다 악보 PDF와 MusicXML(출력용·반주용)을 내려받을 수 있습니다</td><td>{상태}</td></tr>
 <tr><td>제네바 시편가 원문</td><td>마로와 베자의 프랑스어 운율 시편(16세기, 공유 저작물)</td><td>예정</td></tr>
 <tr><td>칼빈의 서문</td><td>시편가에 붙인 칼빈의 서문(1542·1543)</td><td>예정</td></tr>
@@ -637,64 +792,78 @@ def 시편찬송쪽():
     for p in PSALTER:
         if p.get("parts"):
             for q in p["parts"]:
-                곡들.append({"p": p, "id": q["id"], "이름": f'시편 {p["n"]}편 {q["label"]}', "표": f'{p["n"]}{q["label"]}',
+                곡들.append({"p": p, "id": q["id"], "이름": T(f'시편 {p["n"]}편 {q["label"]}', f'Psalm {p["n"]}{q["label"]}'), "표": f'{p["n"]}{q["label"]}',
                            "시작": q["start"], "절": p["verses"][q["start"]:q["start"] + q["count"]], "형제": p["parts"]})
         else:
-            곡들.append({"p": p, "id": f'{p["n"]:03d}', "이름": f'시편 {p["n"]}편', "표": str(p["n"]),
+            곡들.append({"p": p, "id": f'{p["n"]:03d}', "이름": T(f'시편 {p["n"]}편', f'Psalm {p["n"]}'), "표": str(p["n"]),
                        "시작": 0, "절": p["verses"], "형제": None})
     if PSALTER:
         격자 = "".join(f'<a class="cell" href="{{R}}psalter/{g["id"]}.html" title="{g["이름"]} · {e(g["p"]["tune"])}">{g["표"]}</a>' for g in 곡들)
-        본문 += f"""<h2>한국어 제네바 시편가 150편</h2>
+        본문 += T(f"""<h2>한국어 제네바 시편가 150편</h2>
 <p class="mini">번호를 누르면 악보와 가사가 열립니다. 절이 많은 긴 시편은 뜻의 단락을 따라 A, B, C …로 나누어 한 곡씩 실었습니다. 가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보에는 빠르기와 도돌이표를 표시하지 않았으니 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
-<div class="grid">{격자}</div>"""
+<div class="grid">{격자}</div>""", f"""<h2>Korean Genevan Psalter, 150 psalms</h2>
+<p class="mini">Click a number to open the score and lyrics. Long psalms with many stanzas are divided into tunes A, B, C … following their sense units. The Korean lyrics are an AI draft adaptation of the psalms of the Korean Revised Version (1961), fitted to the syllable counts of the tunes, and have not yet been theologically reviewed. The scores show no tempo or repeat signs; repeat the tune for as many stanzas as there are lines of lyrics.</p>
+<div class="grid">{격자}</div>""")
     else:
-        본문 += f"""<h2>시편 150편 (개역한글판)</h2><div class="grid">{칸}</div>"""
+        본문 += f"""<h2>{T("시편 150편 (개역한글판)", "The 150 Psalms (Korean Revised Version)")}</h2><div class="grid">{칸}</div>"""
     본문 += 싣는것
-    쪽들["psalter/index.html"] = 틀("psalter/index.html", "시편찬송", 본문, "psalter", [("", SITE["name"]), (None, "시편찬송")])
+    쪽들["psalter/index.html"] = 틀("psalter/index.html", T("시편찬송", "Psalter"), 본문, "psalter", [("", SITE["name"]), (None, T("시편찬송", "Psalter"))])
     for i, g in enumerate(곡들):
         p, gid, n = g["p"], g["id"], g["p"]["n"]
         구성 = 절구성(p.get("plan", ""))
         절들 = "".join(
-            f'<div style="margin:0 0 14px"><b>{k}절</b>'
-            + (f' <span class="mini">(시편 {e(구성[k + g["시작"]])})</span>' if k + g["시작"] in 구성 else "")
+            f'<div style="margin:0 0 14px"><b>{T(f"{k}절", f"Stanza {k}")}</b>'
+            + (f' <span class="mini">({T("시편 ", "Ps. ")}{e(구성[k + g["시작"]])})</span>' if k + g["시작"] in 구성 else "")
             + '<br>' + "<br>".join(e(x) for x in v) + "</div>"
             for k, v in enumerate(g["절"], 1))
         쪽수 = len(list((PSALTER_DIR / "img").glob(f"ps{gid}-*.png")))
-        악보 = "".join(f'<img src="img/ps{gid}-{k}.png" alt="{g["이름"]} 악보 {k}쪽" loading="{"eager" if k == 1 else "lazy"}" '
+        악보 = "".join(f'<img src="{{A}}psalter/img/ps{gid}-{k}.png" alt="{g["이름"]} {T("악보", "score, page")} {k}{T("쪽", "")}" loading="{"eager" if k == 1 else "lazy"}" '
                       f'style="width:100%;max-width:820px;display:block;margin:0 auto 12px;background:#fff;border:1px solid var(--line);border-radius:6px">'
                       for k in range(1, 쪽수 + 1))
         음원 = PSALTER_DIR / "mp3" / f"ps{gid}.mp3"
-        반주 = (f'<button class="btn" onclick="var a=document.getElementById(\'acc\');if(a.paused){{a.play();this.textContent=\'반주 멈춤\'}}else{{a.pause();this.textContent=\'반주 재생\'}}">반주 재생</button>'
-                f'<audio id="acc" preload="none" src="mp3/ps{gid}.mp3"></audio>') if 음원.exists() else \
-               '<span class="btn" style="opacity:.45;cursor:default" title="반주 음원은 준비 중입니다">반주 재생(준비 중)</span>'
+        재생, 멈춤 = T("반주 재생", "Play accompaniment"), T("반주 멈춤", "Stop accompaniment")
+        반주 = (f'<button class="btn" onclick="var a=document.getElementById(\'acc\');if(a.paused){{a.play();this.textContent=\'{멈춤}\'}}else{{a.pause();this.textContent=\'{재생}\'}}">{재생}</button>'
+                f'<audio id="acc" preload="none" src="{{A}}psalter/mp3/ps{gid}.mp3"></audio>') if 음원.exists() else \
+               f'<span class="btn" style="opacity:.45;cursor:default" title="{T("반주 음원은 준비 중입니다", "The accompaniment audio is in preparation")}">{T("반주 재생(준비 중)", "Accompaniment (in preparation)")}</span>'
         앞 = f'<a class="btn" href="{곡들[i-1]["id"]}.html">← {곡들[i-1]["이름"]}</a> ' if i > 0 else ""
         뒤 = f'<a class="btn" href="{곡들[i+1]["id"]}.html">{곡들[i+1]["이름"]} →</a>' if i < len(곡들) - 1 else ""
         나눔 = ""
         if g["형제"]:
-            나눔 = (f'<p class="mini">시편 {n}편은 {len(g["형제"])}곡으로 나누어 실었습니다: '
-                    + " ".join((f'<b>{q["label"]}</b>' if q["id"] == gid else f'<a href="{q["id"]}.html">{q["label"]}</a>') for q in g["형제"])
-                    + f' · 이 곡은 시편 {n}편 가사의 {g["시작"] + 1}~{g["시작"] + len(g["절"])}번째 절입니다.</p>')
+            단추들 = " ".join((f'<b>{q["label"]}</b>' if q["id"] == gid else f'<a href="{q["id"]}.html">{q["label"]}</a>') for q in g["형제"])
+            처음, 끝 = g["시작"] + 1, g["시작"] + len(g["절"])
+            나눔 = T(f'<p class="mini">시편 {n}편은 {len(g["형제"])}곡으로 나누어 실었습니다: {단추들} · 이 곡은 시편 {n}편 가사의 {처음}~{끝}번째 절입니다.</p>',
+                     f'<p class="mini">Psalm {n} is divided into {len(g["형제"])} tunes: {단추들} · This tune contains stanzas {처음}–{끝} of the Psalm {n} lyrics.</p>')
+        if LANG == "en":
+            소개 = (f'<p class="lead">{e(p["tune"])} · {e(p["meter"])}</p>'
+                  + (f'<p class="mini">English title: {e(re.sub(r"(?<![A-Za-z])L(?![A-Za-z])", "LORD", p["title_en"]))}</p>' if p.get("title_en") else "")
+                  + f'<p class="mini">Tune: {e(p["music"])} · Harmony: {e(p["harm"])} · Lyrics: Korean adaptation of Psalm {n} from the Korean Revised Version '
+                  f'(AI draft adaptation · not yet theologically reviewed) · {len(g["절"])} stanza{"" if len(g["절"]) == 1 else "s"}</p>')
+        else:
+            소개 = (f'<p class="lead">{e(p["tune"])} · {e(p["meter"])}</p>'
+                  f'<p class="mini">곡조: {e(p["music"])} · 화성: {e(p["harm"])} · 가사: 개역한글판 시편 {n}편 편역(AI 초벌 편역판 · 신학 감수 전) · {len(g["절"])}절</p>')
         본문 = f"""<h1>{g["이름"]}</h1>
-<p class="lead">{e(p["tune"])} · {e(p["meter"])}</p>
-<p class="mini">곡조: {e(p["music"])} · 화성: {e(p["harm"])} · 가사: 개역한글판 시편 {n}편 편역(AI 초벌 편역판 · 신학 감수 전) · {len(g["절"])}절</p>{나눔}
-<p><a class="btn dl" href="pdf/ps{gid}.pdf">악보 PDF</a>
-<a class="btn" href="xml/ps{gid}.musicxml" download>MusicXML(출력용)</a>
-<a class="btn" href="xml/ps{gid}_accomp.musicxml" download>MusicXML(반주용, 전주·반복 포함)</a>
-<a class="btn" href="{{R}}bible/{시편["code"]}/{n}.html">개역한글 시편 {n}편 읽기</a></p>
-<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:28px 0 14px;padding-bottom:8px"><h2 style="margin:0;border:0;padding:0">악보</h2>
-<span style="display:flex;gap:6px;flex-wrap:wrap">{앞}<a class="btn" href="./">목록</a>{반주}{뒤}</span></div>{악보}
-<h2>가사</h2><div style="font-family:var(--serif);font-size:17px;line-height:1.9">{절들}</div>
+{소개}{나눔}
+<p><a class="btn dl" href="{{A}}psalter/pdf/ps{gid}.pdf">{T("악보 PDF", "Score PDF")}</a>
+<a class="btn" href="{{A}}psalter/xml/ps{gid}.musicxml" download>{T("MusicXML(출력용)", "MusicXML (for printing)")}</a>
+<a class="btn" href="{{A}}psalter/xml/ps{gid}_accomp.musicxml" download>{T("MusicXML(반주용, 전주·반복 포함)", "MusicXML (for accompaniment, with prelude and repeats)")}</a>
+<a class="btn" href="{{R}}bible/{시편["code"]}/{n}.html">{T(f"개역한글 시편 {n}편 읽기", f"Read Psalm {n} (Korean Revised Version)")}</a></p>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:28px 0 14px;padding-bottom:8px"><h2 style="margin:0;border:0;padding:0">{T("악보", "Score")}</h2>
+<span style="display:flex;gap:6px;flex-wrap:wrap">{앞}<a class="btn" href="./">{T("목록", "List")}</a>{반주}{뒤}</span></div>{악보}
+<h2>{T("가사", "Lyrics (Korean)")}</h2><div lang="ko" style="font-family:var(--serif);font-size:17px;line-height:1.9">{절들}</div>
 """
-        쪽들[f"psalter/{gid}.html"] = 틀(f"psalter/{gid}.html", f'{g["이름"]} · 한국어 제네바 시편가', 본문, "psalter",
-                                      [("", SITE["name"]), ("psalter/", "시편찬송"), (None, g["이름"])],
-                                      설명=f'한국어 제네바 시편가 {g["이름"]}: {p["tune"]} 곡조의 악보 PDF, MusicXML, 가사')
+        쪽들[f"psalter/{gid}.html"] = 틀(f"psalter/{gid}.html", T(f'{g["이름"]} · 한국어 제네바 시편가', f'{g["이름"]} · Korean Genevan Psalter'), 본문, "psalter",
+                                      [("", SITE["name"]), ("psalter/", T("시편찬송", "Psalter")), (None, g["이름"])],
+                                      설명=T(f'한국어 제네바 시편가 {g["이름"]}: {p["tune"]} 곡조의 악보 PDF, MusicXML, 가사',
+                                            f'Korean Genevan Psalter, {g["이름"]}: score PDF, MusicXML, and Korean lyrics for the tune {p["tune"]}'))
     # 나누기 전 주소(예: psalter/119.html)는 첫 곡으로 넘긴다
     for p in PSALTER:
         if p.get("parts"):
-            첫 = p["parts"][0]["id"]
-            쪽들[f'psalter/{p["n"]:03d}.html'] = (f'<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">'
-                f'<meta http-equiv="refresh" content="0; url={첫}.html"><link rel="canonical" href="{첫}.html"><title>시편 {p["n"]}편</title></head>'
-                f'<body><a href="{첫}.html">시편 {p["n"]}편 {p["parts"][0]["label"]}로 이동</a></body></html>')
+            첫, 표, 라 = p["parts"][0]["id"], p["n"], p["parts"][0]["label"]
+            제목 = T(f"시편 {표}편", f"Psalm {표}")
+            이동 = T(f"시편 {표}편 {라}로 이동", f"Go to Psalm {표}{라}")
+            쪽들[f'psalter/{표:03d}.html'] = (f'<!DOCTYPE html><html lang="{T("ko", "en")}"><head><meta charset="utf-8">'
+                f'<meta http-equiv="refresh" content="0; url={첫}.html"><link rel="canonical" href="{첫}.html"><title>{제목}</title></head>'
+                f'<body><a href="{첫}.html">{이동}</a></body></html>')
 
 
 def 찾기쪽():
@@ -702,96 +871,114 @@ def 찾기쪽():
     색인 = []
     for a in LIB["authors"]:
         if a["ready"]:
-            색인.append({"t": a["name"], "s": "저자", "u": f'{a["id"]}/'})
+            색인.append({"t": a["name"], "s": T("저자", "Author"), "u": f'{a["id"]}/'})
     for w in WORKS:
         a = 저자이름[w["author"]]["name"]
-        색인.append({"t": f'{a}, 「{w["title"]}」', "s": "저작", "u": 저작주소(w), "x": w["summary"]})
+        색인.append({"t": T(f'{a}, 「{w["title"]}」', f'{a}, {w["title"]}'), "s": T("저작", "Work"), "u": 저작주소(w), "x": w["summary"]})
         for n, u in sorted(w["units"].items()):
-            색인.append({"t": f'「{w["title"]}」 제{n}{w["unit"]} {u["title"]}', "s": f'{a} · {u["ref"]} · {쪽범위(w, u)}',
-                       "u": 단위주소(w, n)})
+            색인.append({"t": T(f'「{w["title"]}」 {제(n, w)} {u["title"]}', f'{w["title"]}, {제(n, w)}: {u["title"]}'),
+                       "s": f'{a} · {u["ref"]} · {쪽범위(w, u)}', "u": 단위주소(w, n)})
     for b in BIBLE["books"]:
-        색인.append({"t": b["name"], "s": "성경", "u": f'bible/{b["code"]}/', "x": b["abbr"]})
-    책목록 = {b["abbr"]: b["code"] for b in BIBLE["books"]} | {b["name"]: b["code"] for b in BIBLE["books"]}
-    본문 = (f'<h1>찾기</h1><p class="lead">저자, 저작, 설교 제목, 성경 구절로 찾습니다. 성경 구절은 "욥 16:2"나 "욥기 16"처럼 적으면 그 장으로 갑니다.</p>'
-          f'<input class="search big" id="sq" type="search" placeholder="예: 욥 16:2, 위로자, 칼빈" autofocus>'
+        색인.append({"t": b["name"], "s": T("성경", "Bible"), "u": f'bible/{b["code"]}/', "x": b["abbr"] + " " + 원자료["BIBLE"]["books"][BIBLE["books"].index(b)]["name"]})
+    # 구절 바로 가기용 책 이름표: 한국어 약칭·이름은 늘 받고, 영문판은 영어 이름과 코드(예: job, 1sa)도 받는다
+    책목록 = {b["abbr"]: b["code"] for b in 원자료["BIBLE"]["books"]} | {b["name"]: b["code"] for b in 원자료["BIBLE"]["books"]}
+    if LANG == "en":
+        for b in BIBLE["books"]:
+            책목록[b["name"].lower()] = b["code"]
+            책목록[b["code"]] = b["code"]
+            책목록[b["name"].lower().replace(" ", "")] = b["code"]
+            책목록[b["name"][:3].lower()] = 책목록.get(b["name"][:3].lower(), b["code"])
+    본문 = (T('<h1>찾기</h1><p class="lead">저자, 저작, 설교 제목, 성경 구절로 찾습니다. 성경 구절은 "욥 16:2"나 "욥기 16"처럼 적으면 그 장으로 갑니다.</p>',
+              '<h1>Search</h1><p class="lead">Search by author, work, title, or Bible reference. Type a reference such as "Job 16:2" or "Psalms 23" to go to that chapter. Titles of individual sermons and parts are in Korean.</p>')
+          + f'<input class="search big" id="sq" type="search" placeholder="{T("예: 욥 16:2, 위로자, 칼빈", "e.g. Job 16:2, Calvin, Institutes")}" autofocus>'
           f'<div id="sr" class="results"></div>'
-          f'<p class="mini">지금은 제목과 구절 색인으로 찾습니다. 본문 전체 찾기는 번역이 늘어나면 더합니다.</p>'
+          f'<p class="mini">{T("지금은 제목과 구절 색인으로 찾습니다. 본문 전체 찾기는 번역이 늘어나면 더합니다.", "For now the search covers titles and references. Full-text search will be added as the translations grow.")}</p>'
           f'<script>window.KLCCL_SEARCH={json.dumps(색인, ensure_ascii=False)};window.KLCCL_BOOKS={json.dumps(책목록, ensure_ascii=False)};</script>')
-    쪽들["search/index.html"] = 틀("search/index.html", "찾기", 본문, "search", [("", SITE["name"]), (None, "찾기")])
+    쪽들["search/index.html"] = 틀("search/index.html", T("찾기", "Search"), 본문, "search", [("", SITE["name"]), (None, T("찾기", "Search"))])
 
 
 def 총서():
-    본문 = '<h1>총서</h1><p class="lead">총서는 저자와 갈래별로 묶어 펴내는 번역 시리즈입니다. 권마다 진행 정도를 표시합니다.</p>'
+    본문 = T('<h1>총서</h1><p class="lead">총서는 저자와 갈래별로 묶어 펴내는 번역 시리즈입니다. 권마다 진행 정도를 표시합니다.</p>',
+            '<h1>Series</h1><p class="lead">The series are translation collections published by author and branch. Progress is shown for each volume.</p>')
     for s in LIB["series"]:
         본문 += f"<h2>{e(s['name'])}</h2><p>{e(s['desc'])}</p>"
         for b in s["branches"]:
             vols = [(w, v) for w in WORKS if w["series"] == s["id"] and w["branch"] == b["id"] for v in w["volumes"]]
-            본문 += f'<h3 style="font-family:var(--serif);margin:18px 0 4px">갈래: {e(b["name"])}</h3><p class="mini">{e(b["note"])}</p>'
+            본문 += f'<h3 style="font-family:var(--serif);margin:18px 0 4px">{T("갈래", "Branch")}: {e(b["name"])}</h3><p class="mini">{e(b["note"])}</p>'
             if not vols:
-                본문 += '<p class="mini">대상 선정 중입니다.</p>'
+                본문 += f'<p class="mini">{T("대상 선정 중입니다.", "Works are being selected.")}</p>'
                 continue
             줄 = "".join(
                 f'<tr><td>{권표(v)[3:] if 권표(v).startswith("CR") else 권표(v)}</td><td><b><a href="{{R}}{저작주소(w)}">{e(v["title"])}</a></b><br>'
-                f'<span class="mini">{v["from"]}–{v["to"]} ({len(v["items"])}{e(w["unit"])})</span>'
+                f'<span class="mini">{v["from"]}–{v["to"]} ({e(편수(len(v["items"]), w))})</span>'
                 f'{PDF링크(w, v, "tag")}</td><td class="mini">{e(원전권(w, v))}</td>'
                 f'<td>{막대(v["items"])}<span class="mini">{요약(v["items"])}</span></td></tr>'
                 for w, v in sorted(vols, key=lambda x: x[1]["no"]))
-            본문 += f'<table class="t"><tr><th style="width:64px">CR</th><th>제목</th><th style="width:80px">저본</th><th style="width:230px">진행</th></tr>{줄}</table>'
-    본문 += '<div class="card soon" style="margin-top:20px"><h3>다른 총서 (예정)</h3><p>교부, 종교개혁자, 청교도의 공유 저작물로 총서를 더합니다.</p></div>'
-    쪽들["series/index.html"] = 틀("series/index.html", "총서", 본문, "books", [("", SITE["name"]), ("books/", "도서"), (None, "총서")], 하위="series", 하위목록=도서하위)
+            본문 += (f'<table class="t"><tr><th style="width:64px">CR</th><th>{T("제목", "Title")}</th><th style="width:80px">{T("저본", "Source")}</th>'
+                     f'<th style="width:230px">{T("진행", "Progress")}</th></tr>{줄}</table>')
+    본문 += T('<div class="card soon" style="margin-top:20px"><h3>다른 총서 (예정)</h3><p>교부, 종교개혁자, 청교도의 공유 저작물로 총서를 더합니다.</p></div>',
+             '<div class="card soon" style="margin-top:20px"><h3>Other series (planned)</h3><p>Series will be added with public-domain works of the Church Fathers, the Reformers, and the Puritans.</p></div>')
+    쪽들["series/index.html"] = 틀("series/index.html", T("총서", "Series"), 본문, "books",
+                                [("", SITE["name"]), ("books/", T("도서", "Books")), (None, T("총서", "Series"))], 하위="series", 하위목록=도서하위)
 
 
 def 진행():
     it = 모든항목()
     c = 집계(it)
     범례 = "".join(f'<span><i class="cell s{k}"></i>{상태이름[k]} {c[k]}</span>' for k in (3, 2, 1, "0x", 0))
-    본문 = f'<h1>진행 현황</h1><p class="lead">원고 파일에서 자동으로 만든 표입니다. 기준일 {기준일}.</p><div class="legend">{범례}</div>'
+    본문 = (T(f'<h1>진행 현황</h1><p class="lead">원고 파일에서 자동으로 만든 표입니다. 기준일 {기준일}.</p>',
+              f'<h1>Progress</h1><p class="lead">This table is generated automatically from the manuscript files. As of {기준일}.</p>')
+          + f'<div class="legend">{범례}</div>')
     for w in WORKS:
         for v in w["volumes"]:
             본문 += f'<h2>{e(v["title"])} <span class="mini">{e(원전권(w, v))}</span></h2>'
             본문 += f'{막대(v["items"])}<div class="mini">{요약(v["items"])}</div><div class="grid">'
             for x in v["items"]:
-                제 = f'제{x["no"]}{w["unit"]} {x["title"]} · {상태이름[x["s"]]}'
+                제목 = f'{제(x["no"], w)} {x["title"]} · {상태이름[x["s"]]}'
                 if x["s"] in (2, 3):
-                    본문 += f'<a class="cell s{x["s"]}" href="{{R}}{단위주소(w, x["no"])}" title="{e(제)}">{e(x["short"])}</a>'
+                    본문 += f'<a class="cell s{x["s"]}" href="{{R}}{단위주소(w, x["no"])}" title="{e(제목)}">{e(x["short"])}</a>'
                 else:
-                    본문 += f'<span class="cell s{x["s"]}" title="{e(제)}">{e(x["short"])}</span>'
+                    본문 += f'<span class="cell s{x["s"]}" title="{e(제목)}">{e(x["short"])}</span>'
             본문 += "</div>"
-    쪽들["about/progress/index.html"] = 틀("about/progress/index.html", "진행 현황", 본문, "about",
-                                       [("", SITE["name"]), ("about/", "소개"), (None, "진행 현황")], 하위="progress")
+    쪽들["about/progress/index.html"] = 틀("about/progress/index.html", T("진행 현황", "Progress"), 본문, "about",
+                                       [("", SITE["name"]), ("about/", T("소개", "About")), (None, T("진행 현황", "Progress"))], 하위="progress")
 
 
 def 저작쪽(w):
     경로 = 저작주소(w) + "index.html"
     a = 저자이름[w["author"]]
-    본문 = f'<h1>{e(a["name"])}, 「{e(w["title"])}」</h1><p class="lead">{e(w["summary"])}</p>'
+    제목 = T("「" + e(w["title"]) + "」", "<i>" + e(w["title"]) + "</i>")
+    본문 = f'<h1>{e(a["name"])}, {제목}</h1><p class="lead">{e(w["summary"])}</p>'
+    if LANG == "en":
+        본문 += '<p class="mini">The texts below are Korean translations, shown side by side with the original.</p>'
     for v in w["volumes"]:
-        본문 += f'<h2>{권표(v)} 『{e(v["title"])}』 <span class="mini">{e(원전권(w, v))}</span></h2>'
+        본문 += f'<h2>{권표(v)} {T("『" + e(v["title"]) + "』", "<i>" + e(v["title"]) + "</i>")} <span class="mini">{e(원전권(w, v))}</span></h2>'
         본문 += f'{막대(v["items"])}<div class="mini" style="margin-bottom:8px">{요약(v["items"])}</div>'
         본문 += PDF링크(w, v)
         공개 = [x for x in v["items"] if x["s"] in (2, 3)]
         if 공개:
-            본문 += (f'<details class="units"><summary>편 목록 펼치기 <span class="mini">(공개 {len(공개)}{e(w["unit"])})</span></summary>'
-                     '<table class="t"><tr><th style="width:80px">편</th><th>제목</th><th style="width:110px">상태</th></tr>') + "".join(
-                f'<tr><td>제{x["no"]}{e(w["unit"])}</td><td><a href="{{R}}{단위주소(w, x["no"])}">{e(x["title"])}</a> ' +
+            본문 += (f'<details class="units"><summary>{T("편 목록 펼치기", "Show list of parts")} <span class="mini">({T("공개", "published:")} {e(편수(len(공개), w))})</span></summary>'
+                     f'<table class="t"><tr><th style="width:80px">{T("편", "No.")}</th><th>{T("제목", "Title (Korean)")}</th><th style="width:110px">{T("상태", "Status")}</th></tr>') + "".join(
+                f'<tr><td>{e(제(x["no"], w))}</td><td><a href="{{R}}{단위주소(w, x["no"])}" lang="ko">{e(x["title"])}</a> ' +
                 (f'<span class="mini">({e(w["units"][x["no"]]["ref"])})</span>' if w["units"][x["no"]]["ref"] else "") + '</td>' +
-                f'<td><span class="tag">{"대역" if x["s"] == 3 else "한국어"}</span></td></tr>' for x in 공개) + "</table></details>"
+                f'<td><span class="tag">{T("대역", "Parallel") if x["s"] == 3 else T("한국어", "Korean")}</span></td></tr>' for x in 공개) + "</table></details>"
         남음 = [x for x in v["items"] if x["s"] not in (2, 3)]
         if 남음:
             c = 집계(남음)
-            본문 += (f'<p class="mini">웹 연결 대기 {c[1]}{e(w["unit"])}, 원고 확보 필요 {c["0x"]}{e(w["unit"])}, '
-                    f'번역 예정 {c[0]}{e(w["unit"])}.' + "</p>")
-    쪽들[경로] = 틀(경로, f'「{w["title"]}」', 본문, "books",
-                  [("", SITE["name"]), ("books/", "도서"), (f'{a["id"]}/', a["name"]), (None, w["title"])])
+            본문 += T(f'<p class="mini">웹 연결 대기 {편수(c[1], w)}, 원고 확보 필요 {편수(c["0x"], w)}, 번역 예정 {편수(c[0], w)}.</p>',
+                     f'<p class="mini">Awaiting web publication: {c[1]}; source text needed: {c["0x"]}; translation planned: {c[0]}.</p>')
+    쪽들[경로] = 틀(경로, T(f'「{w["title"]}」', w["title"]), 본문, "books",
+                  [("", SITE["name"]), ("books/", T("도서", "Books")), (f'{a["id"]}/', a["name"]), (None, w["title"])])
 
 
 def 서가(w, 현재번호: int) -> str:
     a = 저자이름[w["author"]]
-    h = f'<div class="shelf"><h3>저자</h3><div class="series"><a href="{{R}}{a["id"]}/" style="text-decoration:none">{e(a["name"])} ({e(a["life"])})</a></div><h3>저작</h3>'
-    h += f'<div class="series"><a href="{{R}}{저작주소(w)}" style="text-decoration:none">「{e(w["title"])}」</a></div>'
+    h = (f'<div class="shelf"><h3>{T("저자", "Author")}</h3><div class="series"><a href="{{R}}{a["id"]}/" style="text-decoration:none">{e(a["name"])} ({e(a["life"])})</a></div>'
+         f'<h3>{T("저작", "Work")}</h3>')
+    h += f'<div class="series"><a href="{{R}}{저작주소(w)}" style="text-decoration:none">{T("「" + e(w["title"]) + "」", e(w["title"]))}</a></div>'
     for v in w["volumes"]:
         여기 = v["from"] <= 현재번호 <= v["to"]
-        제목 = f'{권표(v)} 『{e(v["title"])}』 {v["from"]}–{v["to"]}'
+        제목 = f'{권표(v)} {T("『" + e(v["title"]) + "』", e(v["title"]))} {v["from"]}–{v["to"]}'
         공개 = [x for x in v.get("items", []) if x["s"] in (2, 3)]
         if not 공개:
             # 공개된 편이 없는 권은 접을 것이 없으므로 제목만 둔다
@@ -802,11 +989,11 @@ def 서가(w, 현재번호: int) -> str:
         h += PDF링크(w, v, "mini")
         h += '<nav class="slist">'
         for x in 공개:
-            h += (f'<a href="{{R}}{단위주소(w, x["no"])}"{" class=cur" if x["no"] == 현재번호 else ""}>제{x["no"]}{e(w["unit"])}'
-                  f'{" <span class=tag>대역</span>" if x["s"] == 3 else ""}<span>{e(x["title"])}</span></a>')
+            h += (f'<a href="{{R}}{단위주소(w, x["no"])}"{" class=cur" if x["no"] == 현재번호 else ""}>{e(제(x["no"], w))}'
+                  f'{" <span class=tag>" + T("대역", "Parallel") + "</span>" if x["s"] == 3 else ""}<span lang="ko">{e(x["title"])}</span></a>')
         남 = len(v["items"]) - len(공개)
         if 남:
-            h += f'<span class="off">그 밖 {남}{e(w["unit"])}은 준비 중</span>'
+            h += f'<span class="off">{T(f"그 밖 {편수(남, w)}은 준비 중", f"{남} more in preparation")}</span>'
         h += "</nav></details>"
     return h + "</div>"
 
@@ -819,31 +1006,31 @@ def 읽기쪽(w, u):
     경로 = 단위주소(w, u["no"])
     a = 저자이름[w["author"]]
     원문있음 = bool(u["orig"])
-    h = (f'<div class="tools"><div class="seg" role="group" aria-label="보기 방식">'
-         f'<button class="btn" data-mode="both">대역</button><button class="btn" data-mode="ko">한국어</button>'
-         f'<button class="btn" data-mode="fr">원문</button></div>'
-         f'<div class="seg" role="group" aria-label="글자 크기"><button class="btn" data-fs="-1">가−</button><button class="btn" data-fs="1">가+</button></div>'
-         f'<input class="search" id="q" type="search" placeholder="이 글에서 찾기 (한국어·원문)"><span class="hits" id="hits"></span>'
-         f'<button class="btn" id="copyText">본문 복사</button></div>')
+    h = (f'<div class="tools"><div class="seg" role="group" aria-label="{T("보기 방식", "View")}">'
+         f'<button class="btn" data-mode="both">{T("대역", "Parallel")}</button><button class="btn" data-mode="ko">{T("한국어", "Korean")}</button>'
+         f'<button class="btn" data-mode="fr">{T("원문", "Original")}</button></div>'
+         f'<div class="seg" role="group" aria-label="{T("글자 크기", "Text size")}"><button class="btn" data-fs="-1">{T("가−", "A−")}</button><button class="btn" data-fs="1">{T("가+", "A+")}</button></div>'
+         f'<input class="search" id="q" type="search" placeholder="{T("이 글에서 찾기 (한국어·원문)", "Find in this text (Korean or original)")}"><span class="hits" id="hits"></span>'
+         f'<button class="btn" id="copyText">{T("본문 복사", "Copy Korean text")}</button></div>')
     h += (f'<article class="reader" id="reader" data-author="{e(a["name"])}" data-cite-title="{e(w["cite_title"])}" data-no="{u["no"]}" '
-          f'data-unit="{e(w["unit"])}" data-vol="{u["vol"]}" data-cite-pre="{e(쪽앞뒤(w, u)[0])}" data-cite-post="{쪽앞뒤(w, u)[1]}" data-site="{e(SITE["name"])}">')
-    h += (f'<div class="head"><div class="no">제{u["no"]}{e(w["unit"])}</div><div class="sub">{e(u["title"])}{" (" + e(u["ref"]) + ")" if u["ref"] else ""}</div>'
+          f'data-unit="{e(w["unit"])}" data-label="{e(제(u["no"], w))}" data-vol="{u["vol"]}" data-cite-pre="{e(쪽앞뒤(w, u)[0])}" data-cite-post="{쪽앞뒤(w, u)[1]}" data-site="{e(SITE["name"])}">')
+    h += (f'<div class="head"><div class="no">{e(제(u["no"], w))}</div><div class="sub" lang="ko">{e(u["title"])}{" (" + e(u["ref"]) + ")" if u["ref"] else ""}</div>'
           f'<div class="co">{e(쪽범위(w, u))}</div></div>')
     책 = KRV.get(w.get("krv_book", ""), {}).get("verses", {})
     구절 = 구절목록(u["ref"], 책) if 책 else None
-    칼빈본문 = (f'<div class="ko calvin"><span class="lbl">칼빈이 읽은 본문 · 프랑스어에서 옮김 (Claude 번역)</span>'
+    칼빈본문 = (f'<div class="ko calvin"><span class="lbl">{T("칼빈이 읽은 본문 · 프랑스어에서 옮김 (Claude 번역)", "The text Calvin read · translated into Korean from the French (by Claude)")}</span>'
               f'{각주표시(e(둥근따옴표(u["box"])))}</div>')
     if not 구절 and not u["box"].strip():
         h += '<div class="verse">'
     elif 구절:
         개역 = " ".join(f'<sup class="vn">{k}</sup>{e(책[k])}' for k in 구절)
-        h += (f'<div class="verse"><div class="vgrid"><div class="ko krv"><span class="lbl">성경 본문 · 개역한글판</span>{개역}</div>'
+        h += (f'<div class="verse"><div class="vgrid"><div class="ko krv"><span class="lbl">{T("성경 본문 · 개역한글판", "Bible text · Korean Revised Version")}</span>{개역}</div>'
               f'{칼빈본문}</div>')
     else:
         h += f'<div class="verse">{칼빈본문}'
     h += ((f'<div class="fr frbox" lang="fr"><span class="lbl">{e(w["orig_label"])}</span>{e(u["origbox"])}</div>' if u["origbox"] else "") + "</div>")
     h += ('<div class="notice">' + 고지(w)
-          + ("" if 원문있음 else " 이 글은 아직 원문 대역이 연결되지 않았습니다.") + "</div>")
+          + ("" if 원문있음 else T(" 이 글은 아직 원문 대역이 연결되지 않았습니다.", " The parallel original text has not yet been linked for this text.")) + "</div>")
     for idx, p in enumerate(sorted(u["pages"])):
         ko = "".join(
             f'<p class="{"note " if x["note"] else ""}{"cont" if x["cont"] else ""}">{각주표시(e(둥근따옴표(x["t"])))}</p>'
@@ -852,31 +1039,37 @@ def 읽기쪽(w, u):
             fr = "".join(f'<p lang="fr">{e(t)}</p>' for t in u["orig"].get(p, []))
             오른쪽 = f'<div class="fr">{"<div class=lang>" + e(w["orig_label"]) + "</div>" if idx == 0 else ""}{fr}</div>'
         else:
-            오른쪽 = '<div class="fr-missing">원문 대역은 준비 중입니다.</div>' if idx == 0 else "<div class=fr></div>"
-        h += (f'<section class="row" id="p{p}"><div class="pg">{쪽앞뒤(w, u)[0]}{p}{쪽앞뒤(w, u)[1]}<button data-cite="{p}" title="인용 표기 복사">인용</button></div>'
-              f'<div class="ko">{"<div class=lang>한국어 번역</div>" if idx == 0 else ""}{ko}</div>{오른쪽}</section>')
+            오른쪽 = f'<div class="fr-missing">{T("원문 대역은 준비 중입니다.", "The parallel original text is in preparation.")}</div>' if idx == 0 else "<div class=fr></div>"
+        h += (f'<section class="row" id="p{p}"><div class="pg">{쪽앞뒤(w, u)[0]}{p}{쪽앞뒤(w, u)[1]}<button data-cite="{p}" title="{T("인용 표기 복사", "Copy citation")}">{T("인용", "Cite")}</button></div>'
+              f'<div class="ko" lang="ko">{"<div class=lang>" + T("한국어 번역", "Korean translation") + "</div>" if idx == 0 else ""}{ko}</div>{오른쪽}</section>')
     if u["notes"]:
-        h += '<div class="notes"><h4>각주</h4><ol>' + "".join(
+        h += f'<div class="notes" lang="ko"><h4>{T("각주", "Notes")}</h4><ol>' + "".join(
             f'<li id="fn{k}">{e(둥근따옴표(n))}</li>' for k, n in enumerate(u["notes"], 1)) + "</ol></div>"
     장들 = 단위장들(w, u)
     if 장들:
-        h += '<div class="notes"><h4>성경 본문 전체 보기</h4>' + " · ".join(
-            f'<a href="{{R}}bible/{책코드[b]["code"]}/{c}.html">{e(책코드[b]["name"])} {c}장</a>' for b, c in 장들) + "</div>"
+        h += f'<div class="notes"><h4>{T("성경 본문 전체 보기", "Full Bible text")}</h4>' + " · ".join(
+            f'<a href="{{R}}bible/{책코드[b]["code"]}/{c}.html">{e(장이름(책코드[b]["name"], c))}</a>' for b, c in 장들) + "</div>"
     번호들 = sorted(w["units"])
     i = 번호들.index(u["no"])
     앞 = w["units"][번호들[i - 1]] if i > 0 else None
     뒤 = w["units"][번호들[i + 1]] if i + 1 < len(번호들) else None
     h += '<div class="pager">' + (
-        f'<a href="{{R}}{단위주소(w, 앞["no"])}"><small>이전</small>제{앞["no"]}{e(w["unit"])} {e(앞["title"])}</a>' if 앞 else '<span style="flex:1"></span>') + (
-        f'<a class="next" href="{{R}}{단위주소(w, 뒤["no"])}"><small>다음</small>제{뒤["no"]}{e(w["unit"])} {e(뒤["title"])}</a>' if 뒤 else '<span style="flex:1"></span>') + "</div>"
+        f'<a href="{{R}}{단위주소(w, 앞["no"])}"><small>{T("이전", "Previous")}</small>{e(제(앞["no"], w))} {e(앞["title"])}</a>' if 앞 else '<span style="flex:1"></span>') + (
+        f'<a class="next" href="{{R}}{단위주소(w, 뒤["no"])}"><small>{T("다음", "Next")}</small>{e(제(뒤["no"], w))} {e(뒤["title"])}</a>' if 뒤 else '<span style="flex:1"></span>') + "</div>"
     h += "</article>"
     강해 = w.get("genre") in ("sermons", "commentaries")
-    빵 = [("", SITE["name"]), ("expositions/", "주석·설교") if 강해 else ("books/", "도서"), (f'{a["id"]}/', a["name"]), (저작주소(w), w["title"]), (None, f'제{u["no"]}{w["unit"]}')]
-    쪽들[경로] = 틀(경로, f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]}', h, "expositions" if 강해 else "books", 빵, 서가(w, u["no"]),
-                  설명=f'{a["name"]} 「{w["title"]}」 제{u["no"]}{w["unit"]} {u["title"]}' + (f'({u["ref"]})' if u["ref"] else "") + ' 한국어 번역과 원문 대역')
+    빵 = [("", SITE["name"]), ("expositions/", T("주석·설교", "Commentaries & Sermons")) if 강해 else ("books/", T("도서", "Books")),
+         (f'{a["id"]}/', a["name"]), (저작주소(w), w["title"]), (None, 제(u["no"], w))]
+    쪽제목 = T(f'{a["name"]} 「{w["title"]}」 {제(u["no"], w)}', f'{a["name"]}, {w["title"]}, {제(u["no"], w)}')
+    쪽들[경로] = 틀(경로, 쪽제목, h, "expositions" if 강해 else "books", 빵, 서가(w, u["no"]),
+                  설명=T(f'{쪽제목} {u["title"]}' + (f'({u["ref"]})' if u["ref"] else "") + ' 한국어 번역과 원문 대역',
+                        f'{쪽제목}' + (f' ({u["ref"]})' if u["ref"] else "") + ': Korean translation side by side with the original'))
 
 
 def 소개쪽들():
+    if LANG == "en":
+        소개쪽들_영()
+        return
     빵 = lambda t: [("", SITE["name"]), ("about/", "소개"), (None, t)]
     소개 = f"""<h1>도서관 소개</h1><p class="lead">{e(SITE['name'])}({e(SITE['en'])})는 서양 기독교 고전을 한국어로 옮겨 무료로 공개하는 온라인 도서관입니다.</p>
 <h2>왜 만드는가</h2><p>영어권에는 교부와 종교개혁자, 청교도의 저작을 무료로 읽을 수 있는 도서관이 오래전부터 있습니다. 한국어로는 그런 서고가 없어서, 원어를 모르는 목회자와 신학생, 성도가 원전에 닿기 어렵습니다. 이 도서관은 그 빈자리를 채우려 합니다.</p>
@@ -924,6 +1117,55 @@ def 소개쪽들():
     b = SITE.get("base_url", "").rstrip("/")
     쪽들["404.html"] = 틀("404.html", "찾을 수 없음",
                          f'<h1>쪽을 찾을 수 없습니다</h1><p><a href="{b + "/" if b else "{R}"}">홈으로 가기</a> · <a href="{b + "/search/" if b else "{R}search/"}">찾기</a></p>')
+
+
+def 소개쪽들_영():
+    """소개 쪽 영문판"""
+    빵 = lambda t: [("", SITE["name"]), ("about/", "About"), (None, t)]
+    소개 = f"""<h1>About the library</h1><p class="lead">{e(SITE['name'])} ({e(SITE['full'])}) is an online library that translates Western Christian classics into Korean and makes them freely available.</p>
+<h2>Why we are building it</h2><p>English readers have long had libraries where the works of the Church Fathers, the Reformers, and the Puritans can be read for free. There has been no such collection in Korean, so pastors, theological students, and church members who do not read the original languages find it hard to reach the primary sources. This library seeks to fill that gap.</p>
+<h2>What makes it different</h2><table class="t"><tr><th style="width:160px">Feature</th><th>Description</th></tr>
+<tr><td>Christian classics only</td><td>The library concentrates on patristic, Reformation, and Puritan works.</td></tr>
+<tr><td>Direct translation</td><td>Works are translated from the original languages, not through an intermediate translation.</td></tr>
+<tr><td>Scholarly page citations</td><td>The original and the translation are aligned by the page numbers of the standard edition, so they can be cited directly in papers and sermons.</td></tr>
+<tr><td>Open without conditions</td><td>Translations are CC0. Not even a non-commercial condition is attached.</td></tr></table>
+<h2>How the library is organized</h2><table class="t"><tr><th style="width:160px">Tab</th><th>Contents</th></tr>
+<tr><td>Bible</td><td>The 66 books of the Korean Revised Version, with this library's sermons and commentaries for each book and chapter.</td></tr>
+<tr><td>Commentaries &amp; Sermons</td><td>Commentaries and sermons arranged by the 66 books of the Bible.</td></tr>
+<tr><td>Books</td><td>Doctrinal works, creeds, letters, devotional books, and series, filtered by genre, era, and original language.</td></tr>
+<tr><td>Psalter</td><td>The 150 psalms of the Korean Genevan Psalter (score PDFs, MusicXML, lyrics) and the 150 psalms of the Korean Revised Version.</td></tr>
+<tr><td>Authors</td><td>Authors in chronological order, with their works.</td></tr>
+<tr><td>Search</td><td>Search by author, work, title, and Bible reference.</td></tr></table>
+<h2>Languages</h2><p>The library is a Korean library: the translations, the PDFs, and the psalter lyrics are in Korean, alongside the original Latin, French, or Dutch. These English pages translate the menus, descriptions, and guides so that readers who do not read Korean can find their way around and locate the original texts.</p>
+<h2>How it is run</h2><p>It is a static site with no sign-up, no advertising, and no donation payments. It runs simply by placing files on free hosting, so there are no operating costs. The manuscripts and site files are kept in a public repository, so anyone can download and keep them or republish them elsewhere.</p>
+<h2>Affiliation</h2><p>This library is a private, non-profit project with no affiliation to any denomination, school, or foreign library.</p>"""
+    원칙 = """<h1>Principles of this library</h1><p class="lead">What we include, how we translate, and on what terms we publish.</p>
+<h2>What we include</h2><dl class="def">
+<dt>Public domain only</dt><dd>Only works whose authors died more than 70 years ago, in editions that are themselves in the public domain, are included. Calvin's works are translated from Calvin's collected works (Ioannis Calvini Opera, 1863–1900) and sixteenth-century first editions.</dd>
+<dt>What we do not use</dt><dd>Modern critical editions (Supplementa Calviniana, new collected editions, etc.), modern translations still under copyright, and introductions, covers, or e-book editions added by other sites are not used.</dd></dl>
+<h2>How we translate</h2><dl class="def">
+<dt>Directly from the original</dt><dd>Works are translated directly from the original (French, Latin, etc.), not through an English translation.</dd>
+<dt>Page-by-page parallel text</dt><dd>The original and the translation are aligned page by page in the source edition (e.g. CO 34:n). Click "Cite" next to a page marker to copy a citation.</dd>
+<dt>Style</dt><dd>Sermons are rendered in the formal Korean polite style. Bible quotations follow the Korean Revised Version (1961), whose copyright has expired.</dd>
+<dt>The Scripture box at the start of a sermon</dt><dd>The Korean Revised Version text is set beside a translation of the French Bible text Calvin read when preaching. Since Calvin preaches by working through the words of the text he read, the two are best read together. The translation of Calvin's text is by Claude from the French, and the original is kept below it.</dd>
+<dt>Bible versions included</dt><dd>Besides the Korean Revised Version, the Geneva Bible (1599), the King James Version, the World English Bible, and the Berean Standard Bible are included. All are public-domain texts, and the foreign-language versions are reference material for comparison. The Apocrypha (deuterocanonical books) are not included.</dd>
+<dt>AI draft translation</dt><dd>Generative AI (Claude) was used for the draft translation, and it has not been reviewed by theological experts. Every translation is therefore marked "AI draft translation · not yet theologically reviewed." When quoting, please check the original (CO volume:page).</dd></dl>
+<h2>Terms of use</h2><div class="box">The translations are released as a CC0 1.0 public-domain dedication. Anyone may copy, distribute, modify, and publish them without permission. Crediting the source is appreciated but not required.</div>
+<h2>Corrections and records</h2><p>Error reports are received as described on the <a href="{R}about/contribute/">Contribute &amp; report errors</a> page. Corrections are recorded with edition numbers so that it is clear which edition was cited.</p>"""
+    gh, em = SITE["contact"].get("github"), SITE["contact"].get("email")
+    제보 = f"""<h1>Contribute &amp; report errors</h1><p class="lead">Please let us know about mistranslations, omitted sentences, awkward expressions, or wrong Bible references. You do not need theological training; a place that reads oddly is enough.</p>
+<h2>How to report</h2><table class="t"><tr><th style="width:160px">Method</th><th>Details</th></tr>
+<tr><td>GitHub issues</td><td>{f'Please open a new issue on the <a href="{e(gh)}/issues" target="_blank" rel="noopener">repository issues page</a>.' if gh else 'The address will be given here once the repository is public.'}</td></tr>
+<tr><td>Email</td><td>{e(em) if em else 'The address will be given here once it is set.'}</td></tr></table>
+<h2>Helpful details</h2><div class="box">Work: Calvin, Sermons on Job, Sermon 62<br>Page: CO 34:3 (copy it with the "Cite" button next to the page marker)<br>Current translation: (the sentence in question)<br>Suggestion: (a corrected sentence, if you have one)<br>Reason: (the basis in the original or why it reads oddly, briefly)</div>
+<p>Reports may be written in English or Korean.</p>
+<h2>Join in</h2><p>Reviews by readers of the original languages, checks of theological terminology, and research on source editions are all welcome. If you wish, your name will be recorded in the correction history.</p>"""
+    소식 = '<h1>News</h1><table class="t"><tr><th style="width:120px">Date</th><th>Item</th></tr>' + "".join(
+        f"<tr><td>{e(d)}</td><td>{e(t)}</td></tr>" for d, t in LIB["news"]) + "</table>"
+    쪽들["about/index.html"] = 틀("about/index.html", "About", 소개, "about", 빵("About the library"), 하위="about")
+    쪽들["about/principles/index.html"] = 틀("about/principles/index.html", "Principles", 원칙, "about", 빵("Principles"), 하위="principles")
+    쪽들["about/contribute/index.html"] = 틀("about/contribute/index.html", "Contribute & report errors", 제보, "about", 빵("Contribute & report errors"), 하위="contribute")
+    쪽들["about/news/index.html"] = 틀("about/news/index.html", "News", 소식, "about", 빵("News"), 하위="news")
 
 
 # ------------------------------------------------------------------
@@ -1022,14 +1264,30 @@ show(location.hash.slice(1) || 'index.html');
     (뿌리 / "docs_preview.html").write_text(틀글, encoding="utf-8")
 
 
-if __name__ == "__main__":
+def 모든쪽():
     홈(); 서가쪽(); 저자쪽(); 총서(); 성경쪽(); 강해쪽(); 성경책쪽(); 시편찬송쪽(); 찾기쪽(); 진행(); 소개쪽들()
     for w in WORKS:
         저작쪽(w)
         for n in sorted(w["units"]):
             읽기쪽(w, w["units"][n])
-    쓰기()
+
+
+if __name__ == "__main__":
+    # 1) 한국어판: docs/ 뿌리
+    언어설정("ko")
+    모든쪽()
     if "--one" in sys.argv:
         미리보기한장()
+    한국어쪽 = dict(쪽들)
+    # 2) 영문판: docs/en/. 화면 글(메뉴, 안내, 표제)만 영어이고, 번역 원고·PDF·악보·성경 자료는 한국어판과 같은 파일을 함께 쓴다
+    쪽들.clear()
+    언어설정("en")
+    모든쪽()
+    영문쪽 = {"en/" + k: v for k, v in 쪽들.items()}
+    쪽들.clear()
+    쪽들.update(한국어쪽)
+    쪽들.update(영문쪽)
+    언어설정("ko")
+    쓰기()
     공개 = sum(len(w["units"]) for w in WORKS)
-    print(f"완료: 쪽 {len(쪽들)}개, 웹 공개 {공개}편, 출력 {출력}")
+    print(f"완료: 쪽 {len(쪽들)}개(한국어 {len(한국어쪽)}, 영어 {len(영문쪽)}), 웹 공개 {공개}편, 출력 {출력}")
