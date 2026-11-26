@@ -113,6 +113,31 @@ def 범위풀기(글: str) -> set:
 # ------------------------------------------------------------------
 # 1. 원고 읽기
 # ------------------------------------------------------------------
+로마 = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100}
+
+
+def 쪽값(s: str) -> int:
+    """쪽 표시를 정렬용 정수로. 로마 숫자 쪽(머리말 V, VI 등)은 본문 쪽보다 앞에 오도록 -1000+값"""
+    if s.isdigit():
+        return int(s)
+    n = 0
+    for i, c in enumerate(s):
+        v = 로마[c]
+        n += -v if i + 1 < len(s) and 로마[s[i + 1]] > v else v
+    return -1000 + n
+
+
+def 쪽글(p: int) -> str:
+    """정렬용 정수를 다시 쪽 표시 글로(로마 숫자 쪽 복원)"""
+    if p >= 0:
+        return str(p)
+    n, 글 = p + 1000, ""
+    for v, c in ((100, "C"), (90, "XC"), (50, "L"), (40, "XL"), (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")):
+        while n >= v:
+            글, n = 글 + c, n - v
+    return 글
+
+
 def 원고읽기(경로: Path) -> dict:
     글 = 경로.read_text(encoding="utf-8")
     머리, 몸 = 글.split("\n---\n", 1)
@@ -133,11 +158,11 @@ def 원고읽기(경로: Path) -> dict:
         안내 = 문단.startswith("!")
         상자 = 문단.startswith(">")
         문단 = 문단.lstrip("!>").strip()
-        부분 = re.split(r"\{CO (\d+)\}", 문단)
+        부분 = re.split(r"\{CO (\d+|[IVXLC]+)\}", 문단)
         if 부분[0].strip():
             쪽별.setdefault(현재 or "intro", []).append({"t": 부분[0].strip(), "note": 안내, "box": 상자, "cont": True})
         for i in range(1, len(부분), 2):
-            현재 = int(부분[i])
+            현재 = 쪽값(부분[i])
             if 부분[i + 1].strip():
                 쪽별.setdefault(현재, []).append({"t": 부분[i + 1].strip(), "note": False, "box": False, "cont": False})
     if "intro" in 쪽별:
@@ -153,8 +178,8 @@ def 원문읽기(경로: Path) -> dict:
     if not 경로.exists():
         return {}
     글 = 경로.read_text(encoding="utf-8")
-    return {int(m.group(1)): [p.strip() for p in m.group(2).strip().split("\n") if p.strip()]
-            for m in re.finditer(r"⟦(\d+)⟧\n(.*?)(?=⟦\d+⟧|\Z)", 글, re.S)}
+    return {쪽값(m.group(1)): [p.strip() for p in m.group(2).strip().split("\n") if p.strip()]
+            for m in re.finditer(r"⟦(\d+|[IVXLC]+)⟧\n(.*?)(?=⟦(?:\d+|[IVXLC]+)⟧|\Z)", 글, re.S)}
 
 
 def 저작읽기() -> list:
@@ -294,12 +319,19 @@ def 언어설정(lang: str):
 
 
 def 제(n, w) -> str:
-    """편 이름: '제62편' / 'Sermon 62'"""
+    """편 이름: '제62편' / 'Sermon 62'. work.json 의 names(예: 0 → 머리말)가 있으면 그 이름, 단위가 '§'이면 '§ 12'"""
+    이름 = w.get("names", {}).get(str(n))
+    if 이름:
+        return T(이름[0], 이름[1]) if isinstance(이름, list) else 이름
+    if w["unit"] == "§":
+        return f"§ {n}"
     return T(f'제{n}{w["unit"]}', f'{w["unit"]} {n}')
 
 
 def 편수(k, w) -> str:
     """편 수: '61편' / '61 sermons'"""
+    if w["unit"] == "§":
+        return T(f"{k}개 절", f'{k} section{"" if k == 1 else "s"}')
     return T(f'{k}{w["unit"]}', f'{k} {w["unit"].lower() if k == 1 else w.get("units_word", "parts")}')
 
 
@@ -1040,7 +1072,7 @@ def 읽기쪽(w, u):
             오른쪽 = f'<div class="fr">{"<div class=lang>" + e(w["orig_label"]) + "</div>" if idx == 0 else ""}{fr}</div>'
         else:
             오른쪽 = f'<div class="fr-missing">{T("원문 대역은 준비 중입니다.", "The parallel original text is in preparation.")}</div>' if idx == 0 else "<div class=fr></div>"
-        h += (f'<section class="row" id="p{p}"><div class="pg">{쪽앞뒤(w, u)[0]}{p}{쪽앞뒤(w, u)[1]}<button data-cite="{p}" title="{T("인용 표기 복사", "Copy citation")}">{T("인용", "Cite")}</button></div>'
+        h += (f'<section class="row" id="p{쪽글(p)}"><div class="pg">{쪽앞뒤(w, u)[0]}{쪽글(p)}{쪽앞뒤(w, u)[1]}<button data-cite="{쪽글(p)}" title="{T("인용 표기 복사", "Copy citation")}">{T("인용", "Cite")}</button></div>'
               f'<div class="ko" lang="ko">{"<div class=lang>" + T("한국어 번역", "Korean translation") + "</div>" if idx == 0 else ""}{ko}</div>{오른쪽}</section>')
     if u["notes"]:
         h += f'<div class="notes" lang="ko"><h4>{T("각주", "Notes")}</h4><ol>' + "".join(
