@@ -504,8 +504,8 @@ def 홈():
     # 웹에 공개된 도서 권수: 공개된 편(웹 또는 대역)이 하나라도 있는 권
     공개권 = sum(1 for w in WORKS if w.get("genre") != "catechisms" for v in w["volumes"] if any(x["s"] in (2, 3) for x in v["items"]))
     # 웹에 공개된 신조 편수 (신조는 도서 권수에 넣지 않고 따로 센다)
-    # 웹에 공개된 시편찬송 편수 (가사가 있는 곡)
-    공개시편 = sum(1 for x in PSALTER if x.get("verses"))
+    # 웹에 공개된 시편찬송 편수: 나눠 부르는 시편은 부분마다 한 곡으로 센다(150편 → 186곡)
+    공개시편 = sum(len(x["parts"]) if x.get("parts") else 1 for x in PSALTER if x.get("verses"))
     공개신조 = sum(1 for w in WORKS if w.get("genre") == "catechisms" for v in w["volumes"] for x in v["items"] if x["s"] in (2, 3))
     둘러보기 = [("bible/", T("성경", "Bible"), T("개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다.",
                                              "Read all 66 books of the Korean Revised Version laid open like a book, side by side with English translations.")),
@@ -527,7 +527,7 @@ def 홈():
 <div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>authors in the library</span></div>
 <div class="stat"><b>{공개권}</b><span>volumes published on the web</span></div>
 <div class="stat"><b>{공개신조}</b><span>creeds published on the web</span></div>
-<div class="stat"><b>{공개시편}</b><span>psalms of the psalter published on the web</span></div></div></div>
+<div class="stat"><b>{공개시편}</b><span>psalter songs published on the web</span></div></div></div>
 <div class="box">The English pages are for finding your way around the library. The translations themselves, the PDFs, and the psalter lyrics are in Korean, shown next to the original Latin, French, or Dutch text.</div>
 <h2>Explore</h2><div class="cards">{카드}</div>
 <h2>The current goal: the 59 volumes of Calvin's works</h2>
