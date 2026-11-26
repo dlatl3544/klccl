@@ -504,7 +504,7 @@ def 홈():
     # 웹에 공개된 도서 권수: 공개된 편(웹 또는 대역)이 하나라도 있는 권
     공개권 = sum(1 for w in WORKS if w.get("genre") != "catechisms" for v in w["volumes"] if any(x["s"] in (2, 3) for x in v["items"]))
     # 웹에 공개된 신조 편수 (신조는 도서 권수에 넣지 않고 따로 센다)
-    # 웹에 공개된 시편찬송 편수: 나눠 부르는 시편은 부분마다 한 곡으로 센다(150편 → 186곡)
+    # 웹에 공개된 시편찬송 곡수: 나눠 부르는 시편은 부분마다 한 곡(장)으로 센다(시편 150편 → 186장)
     공개시편 = sum(len(x["parts"]) if x.get("parts") else 1 for x in PSALTER if x.get("verses"))
     공개신조 = sum(1 for w in WORKS if w.get("genre") == "catechisms" for v in w["volumes"] for x in v["items"] if x["s"] in (2, 3))
     둘러보기 = [("bible/", T("성경", "Bible"), T("개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다.",
@@ -513,8 +513,8 @@ def 홈():
                                              "Read the creeds, confessions, and catechisms side by side with the original.")),
             ("books/", T("도서", "Books"), T("주석과 설교, 교리서, 서신, 경건 서적과 총서를 갈래·시대·원어로 골라 보고, 주석·설교는 성경 책별로 찾습니다.",
                                            "Browse commentaries, sermons, doctrinal works, letters, devotional books, and series by genre, era, and original language, and find commentaries and sermons by book of the Bible.")),
-            ("psalter/", T("시편찬송", "Psalter"), T("한국어 제네바 시편가 150편의 악보와 가사, 개역한글판 시편 150편입니다.",
-                                                 "Scores and lyrics of the 150 psalms of the Korean Genevan Psalter, and the 150 psalms of the Korean Revised Version.")),
+            ("psalter/", T("시편찬송", "Psalter"), T("한국어 제네바 시편가 186장(시편 150편)의 악보와 가사, 개역한글판 시편 150편입니다.",
+                                                 "Scores and lyrics of the 186 tunes (150 psalms) of the Korean Genevan Psalter, and the 150 psalms of the Korean Revised Version.")),
             ("authors/", T("저자", "Authors"), T("교부부터 종교개혁자, 청교도까지 저자별로 봅니다.",
                                                "Browse by author, from the Church Fathers to the Reformers and the Puritans."))]
     카드 = "".join(f'<a class="card" href="{{R}}{h}"><h3>{t}</h3><p>{d}</p></a>' for h, t, d in 둘러보기)
@@ -527,7 +527,7 @@ def 홈():
 <div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>authors in the library</span></div>
 <div class="stat"><b>{공개권}</b><span>volumes published on the web</span></div>
 <div class="stat"><b>{공개신조}</b><span>creeds published on the web</span></div>
-<div class="stat"><b>{공개시편}</b><span>psalter songs published on the web</span></div></div></div>
+<div class="stat"><b>{공개시편}</b><span>psalter tunes published on the web</span></div></div></div>
 <div class="box">The English pages are for finding your way around the library. The translations themselves, the PDFs, and the psalter lyrics are in Korean, shown next to the original Latin, French, or Dutch text.</div>
 <h2>Explore</h2><div class="cards">{카드}</div>
 <h2>The current goal: the 59 volumes of Calvin's works</h2>
@@ -548,7 +548,7 @@ def 홈():
 <div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>도서관에 오른 저자</span></div>
 <div class="stat"><b>{공개권}</b><span>웹에 공개된 도서 권수</span></div>
 <div class="stat"><b>{공개신조}</b><span>웹에 공개된 신조 편수</span></div>
-<div class="stat"><b>{공개시편}</b><span>웹에 공개된 시편찬송 편수</span></div></div></div>
+<div class="stat"><b>{공개시편}</b><span>웹에 공개된 시편찬송 곡수</span></div></div></div>
 <h2>둘러보기</h2><div class="cards">{카드}</div>
 <h2>지금의 목표: 칼빈 전집 59권</h2>
 <p>첫 목표는 19세기에 간행된 칼빈 전집(CO, 1863–1900) 59권 전체를 원문에서 한국어로 옮기는 것입니다. 번역에는 오랜 시간이 걸리므로, 마치는 대로 한 편씩 더합니다. 그다음에는 다른 종교개혁자와 교부, 청교도의 공유 저작물로 서가를 넓힙니다.</p>
@@ -836,7 +836,7 @@ def 절구성(글: str) -> dict:
 
 
 def 시편찬송쪽():
-    """시편찬송: 한국어 제네바 시편가 150편(악보 PDF, MusicXML, 가사)과 개역한글 시편"""
+    """시편찬송: 한국어 제네바 시편가 186장(악보 PDF, MusicXML, 가사)과 개역한글 시편"""
     시편 = next(b for b in BIBLE["books"] if b["abbr"] == "시")
     칸 = "".join(f'<a class="cell" href="{{R}}bible/{시편["code"]}/{n}.html" title="{T(f"시편 {n}편 (개역한글판)", f"Psalm {n} (Korean Revised Version)")}">{n}</a>' for n in range(1, 151))
     상태 = T("공개(AI 초벌 편역 · 신학 감수 전)", "Published (AI draft adaptation · not yet theologically reviewed)") if PSALTER else T("예정", "Planned")
@@ -851,7 +851,7 @@ def 시편찬송쪽():
     else:
         본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>"""
         싣는것 = f"""<h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
-<tr><td>한국어 제네바 시편가</td><td>제네바 곡조(1539–1562)와 클로드 구디멜의 4성부 화성(1564)에 개역한글판 시편을 운율에 맞게 편역한 가사를 붙인 150편. 곡마다 악보 PDF와 MusicXML(출력용·반주용)을 내려받을 수 있습니다</td><td>{상태}</td></tr>
+<tr><td>한국어 제네바 시편가</td><td>제네바 곡조(1539–1562)와 클로드 구디멜의 4성부 화성(1564)에 개역한글판 시편을 운율에 맞게 편역한 가사를 붙인 186장(시편 150편). 곡마다 악보 PDF와 MusicXML(출력용·반주용)을 내려받을 수 있습니다</td><td>{상태}</td></tr>
 <tr><td>제네바 시편가 원문</td><td>마로와 베자의 프랑스어 운율 시편(16세기, 공유 저작물)</td><td>예정</td></tr>
 <tr><td>칼빈의 서문</td><td>시편가에 붙인 칼빈의 서문(1542·1543)</td><td>예정</td></tr>
 <tr><td>시편 본문</td><td>개역한글판 시편 150편 (곡별 쪽과 성경 메뉴에서 읽기)</td><td>공개</td></tr></table>
@@ -868,9 +868,9 @@ def 시편찬송쪽():
                        "시작": 0, "절": p["verses"], "형제": None})
     if PSALTER:
         격자 = "".join(f'<a class="cell" href="{{R}}psalter/{g["id"]}.html" title="{g["이름"]} · {e(g["p"]["tune"])}">{g["표"]}</a>' for g in 곡들)
-        본문 += T(f"""<h2>한국어 제네바 시편가 150편</h2>
+        본문 += T(f"""<h2>한국어 제네바 시편가 186장 (시편 150편)</h2>
 <p class="mini">번호를 누르면 악보와 가사가 열립니다. 절이 많은 긴 시편은 뜻의 단락을 따라 A, B, C …로 나누어 한 곡씩 실었습니다. 가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보에는 빠르기와 도돌이표를 표시하지 않았으니 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
-<div class="grid">{격자}</div>""", f"""<h2>Korean Genevan Psalter, 150 psalms</h2>
+<div class="grid">{격자}</div>""", f"""<h2>Korean Genevan Psalter, 186 tunes (150 psalms)</h2>
 <p class="mini">Click a number to open the score and lyrics. Long psalms with many stanzas are divided into tunes A, B, C … following their sense units. The Korean lyrics are an AI draft adaptation of the psalms of the Korean Revised Version (1961), fitted to the syllable counts of the tunes, and have not yet been theologically reviewed. The scores show no tempo or repeat signs; repeat the tune for as many stanzas as there are lines of lyrics.</p>
 <div class="grid">{격자}</div>""")
     else:
@@ -1154,7 +1154,7 @@ def 소개쪽들():
 <tr><td>성경</td><td>개역한글판 66권과, 책·장마다 이 도서관의 설교와 주석을 함께 봅니다.</td></tr>
 <tr><td>신조</td><td>신경과 신앙고백, 요리문답입니다.</td></tr>
 <tr><td>도서</td><td>이 도서관의 모든 저작입니다. 주석과 설교, 교리서, 서신, 경건 서적과 총서를 갈래, 시대, 원어로 골라 보고, 주석·설교는 성경 66권 차례로도 찾습니다.</td></tr>
-<tr><td>시편찬송</td><td>한국어 제네바 시편가 150편(악보 PDF·MusicXML·가사)과 개역한글판 시편 150편입니다.</td></tr>
+<tr><td>시편찬송</td><td>한국어 제네바 시편가 186장(악보 PDF·MusicXML·가사)과 개역한글판 시편 150편입니다.</td></tr>
 <tr><td>저자</td><td>시대 순으로 정리한 저자와 저자별 저작입니다.</td></tr>
 <tr><td>원전</td><td>번역의 저본인 원전 전집의 권별 지도입니다.</td></tr>
 <tr><td>찾기</td><td>저자, 저작, 제목, 성경 구절로 찾습니다.</td></tr></table>
