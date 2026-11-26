@@ -648,6 +648,10 @@ def 시편찬송쪽():
         악보 = "".join(f'<img src="img/ps{n:03d}-{k}.png" alt="시편 {n}편 악보 {k}쪽" loading="{"eager" if k == 1 else "lazy"}" '
                       f'style="width:100%;max-width:820px;display:block;margin:0 auto 12px;background:#fff;border:1px solid var(--line);border-radius:6px">'
                       for k in range(1, 쪽수 + 1))
+        음원 = PSALTER_DIR / "mp3" / f"ps{n:03d}.mp3"
+        반주 = (f'<button class="btn" onclick="var a=document.getElementById(\'acc\');if(a.paused){{a.play();this.textContent=\'반주 멈춤\'}}else{{a.pause();this.textContent=\'반주 재생\'}}">반주 재생</button>'
+                f'<audio id="acc" preload="none" src="mp3/ps{n:03d}.mp3"></audio>') if 음원.exists() else \
+               '<span class="btn" style="opacity:.45;cursor:default" title="반주 음원은 준비 중입니다">반주 재생(준비 중)</span>'
         앞 = f'<a class="btn" href="{n-1:03d}.html">← 시편 {n-1}편</a> ' if i > 0 else ""
         뒤 = f'<a class="btn" href="{n+1:03d}.html">시편 {n+1}편 →</a>' if i < len(PSALTER) - 1 else ""
         본문 = f"""<h1>시편 {n}편</h1>
@@ -657,9 +661,10 @@ def 시편찬송쪽():
 <a class="btn" href="xml/ps{n:03d}.musicxml" download>MusicXML(출력용)</a>
 <a class="btn" href="xml/ps{n:03d}_accomp.musicxml" download>MusicXML(반주용, 전주·반복 포함)</a>
 <a class="btn" href="{{R}}bible/{시편["code"]}/{n}.html">개역한글 시편 {n}편 읽기</a></p>
-<h2>악보</h2>{악보}
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:28px 0 14px;padding-bottom:8px"><h2 style="margin:0;border:0;padding:0">악보</h2>
+<span style="display:flex;gap:6px;flex-wrap:wrap">{앞}<a class="btn" href="./">목록</a>{반주}{뒤}</span></div>{악보}
 <h2>가사</h2><div style="font-family:var(--serif);font-size:17px;line-height:1.9">{절들}</div>
-<p>{앞}<a class="btn" href="./">목록</a> {뒤}</p>"""
+"""
         쪽들[f"psalter/{n:03d}.html"] = 틀(f"psalter/{n:03d}.html", f"시편 {n}편 · 한국어 제네바 시편가", 본문, "psalter",
                                        [("", SITE["name"]), ("psalter/", "시편찬송"), (None, f"시편 {n}편")],
                                        설명=f"한국어 제네바 시편가 시편 {n}편: {p['tune']} 곡조의 악보 PDF, MusicXML, 가사")
@@ -914,7 +919,7 @@ def 쓰기():
                     (출력 / 저작주소(w) / "pdf").mkdir(parents=True, exist_ok=True)
                     shutil.copy2(원본, 출력 / 저작주소(w) / "pdf" / v["pdf"])
     # 한국어 제네바 시편가: content/psalter/genevan/{pdf,xml} → docs/psalter/{pdf,xml}
-    for 하위 in ("pdf", "xml", "img"):
+    for 하위 in ("pdf", "xml", "img", "mp3"):
         if (PSALTER_DIR / 하위).exists():
             shutil.copytree(PSALTER_DIR / 하위, 출력 / "psalter" / 하위)
     # 책 모양 읽기용 성경 본문: data/<번역본>/<책코드>.json = {"name", "chapters": [[[절, 본문], …], …]}
