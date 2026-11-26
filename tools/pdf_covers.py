@@ -232,7 +232,11 @@ def main():
             모두.save(뿌리 / "covers_preview.pdf")
             print("covers_preview.pdf")
             return
+        골라 = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
         for i, c in enumerate(자료):
+            # --only 글자: pdf 경로에 그 글자가 있는 항목만 처리
+            if 골라 and 골라 not in c["pdf"]:
+                continue
             찾음 = glob.glob(str(뿌리 / c["pdf"]))
             assert len(찾음) == 1, (c["pdf"], 찾음)
             원본 = Path(찾음[0])

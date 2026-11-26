@@ -5,42 +5,112 @@
   "tagline": "A free, open library for reading public-domain Christian classics side by side in the original language and in Korean translation. The translations are released under CC0, so anyone may use them without conditions."
  },
  "authors": {
-  "calvin": {"name": "John Calvin", "desc": "Reformer of Geneva. He left sermons, commentaries, the Institutes of the Christian Religion, treatises, and letters; his collected works (CO) were published in 59 volumes in 1863–1900."},
-  "beza": {"name": "Theodore Beza", "desc": "Calvin's successor in Geneva. The works to be included are being identified."},
-  "bullinger": {"name": "Heinrich Bullinger", "desc": "Reformer of Zurich. The Decades and other works are under review."},
-  "fathers": {"name": "Church Fathers", "life": "2nd–8th c.", "desc": "Latin and Greek patristic works, beginning with Augustine, are under review."},
-  "puritans": {"name": "Puritans", "life": "16th–17th c.", "desc": "Since their works were written in English, their translation priority is set separately."},
-  "schilder": {"name": "Klaas Schilder", "desc": "Dutch Reformed theologian. He taught at the Theological Seminary in Kampen and is known for his works on covenant theology and on the sufferings of Christ."}
+  "calvin": {
+   "name": "John Calvin",
+   "desc": "Reformer of Geneva. He left sermons, commentaries, the Institutes of the Christian Religion, treatises, and letters; his collected works (CO) were published in 59 volumes in 1863–1900."
+  },
+  "beza": {
+   "name": "Theodore Beza",
+   "desc": "Calvin's successor in Geneva. The works to be included are being identified."
+  },
+  "bullinger": {
+   "name": "Heinrich Bullinger",
+   "desc": "Reformer of Zurich. The Decades and other works are under review."
+  },
+  "fathers": {
+   "name": "Church Fathers",
+   "life": "2nd–8th c.",
+   "desc": "Latin and Greek patristic works, beginning with Augustine, are under review."
+  },
+  "puritans": {
+   "name": "Puritans",
+   "life": "16th–17th c.",
+   "desc": "Since their works were written in English, their translation priority is set separately."
+  },
+  "schilder": {
+   "name": "Klaas Schilder",
+   "desc": "Dutch Reformed theologian. He taught at the Theological Seminary in Kampen and is known for his works on covenant theology and on the sufferings of Christ."
+  }
  },
  "eras": {
-  "patristic": {"name": "Patristic", "range": "2nd–8th c."},
-  "medieval": {"name": "Medieval", "range": "9th–15th c."},
-  "reformation": {"name": "Reformation", "range": "16th c."},
-  "post-reformation": {"name": "Post-Reformation & Puritan", "range": "17th–18th c."},
-  "modern": {"name": "Modern", "range": "19th–20th c."}
+  "patristic": {
+   "name": "Patristic",
+   "range": "2nd–8th c."
+  },
+  "medieval": {
+   "name": "Medieval",
+   "range": "9th–15th c."
+  },
+  "reformation": {
+   "name": "Reformation",
+   "range": "16th c."
+  },
+  "post-reformation": {
+   "name": "Post-Reformation & Puritan",
+   "range": "17th–18th c."
+  },
+  "modern": {
+   "name": "Modern",
+   "range": "19th–20th c."
+  }
  },
  "genres": {
-  "sermons": "Sermons", "commentaries": "Commentaries", "treatises": "Doctrine & Treatises",
-  "catechisms": "Creeds & Catechisms", "letters": "Letters", "devotional": "Devotion & Prayer", "history": "History & Biography"
+  "sermons": "Sermons",
+  "commentaries": "Commentaries",
+  "treatises": "Doctrine & Treatises",
+  "catechisms": "Creeds & Catechisms",
+  "letters": "Letters",
+  "devotional": "Devotion & Prayer",
+  "history": "History & Biography"
  },
  "series": {
-  "geneva": {"name": "Open Geneva Series", "desc": "A series translating all 59 volumes of Calvin's collected works (CO) into Korean from the original languages. Each branch has its own volume numbering.",
+  "geneva": {
+   "name": "Open Geneva Series",
+   "desc": "A series translating all 59 volumes of Calvin's collected works (CO) into Korean from the original languages. Each branch has its own volume numbering.",
    "branches": {
-    "sermons": {"name": "Calvin's Sermons", "note": "French sermons, rendered in the formal Korean polite style."},
-    "commentaries": {"name": "Calvin's Commentaries", "note": "Latin commentaries, to be translated in order from CO 23–57."},
-    "treatises": {"name": "Calvin's Treatises", "note": "The Institutes, treatises, catechisms, and confessions (CO 1–9, 22)."},
-    "letters": {"name": "Calvin's Letters", "note": "Calvin's correspondence (CO 10–20)."}
-   }},
-  "reformed": {"name": "Reformed Classics", "desc": "Public-domain works of Reformed theologians after Calvin, translated from the original languages.",
+    "sermons": {
+     "name": "Calvin's Sermons",
+     "note": "French sermons, rendered in the formal Korean polite style."
+    },
+    "commentaries": {
+     "name": "Calvin's Commentaries",
+     "note": "Latin commentaries, to be translated in order from CO 23–57."
+    },
+    "treatises": {
+     "name": "Calvin's Treatises",
+     "note": "The Institutes, treatises, catechisms, and confessions (CO 1–9, 22)."
+    },
+    "letters": {
+     "name": "Calvin's Letters",
+     "note": "Calvin's correspondence (CO 10–20)."
+    }
+   }
+  },
+  "reformed": {
+   "name": "Reformed Classics",
+   "desc": "Public-domain works of Reformed theologians after Calvin, translated from the original languages.",
    "branches": {
-    "treatises": {"name": "Doctrine & Treatises", "note": "Translated from the original languages in the formal Korean polite style."}
-   }}
+    "treatises": {
+     "name": "Doctrine & Treatises",
+     "note": "Translated from the original languages in the formal Korean polite style."
+    }
+   }
+  }
  },
  "sources": {
-  "co": {"name": "Calvin's Collected Works (CO)"},
-  "cr-bullinger": {"name": "Bullinger's Works", "full": "Public-domain editions under investigation"},
-  "pl": {"name": "Patrologia Latina (PL)"},
-  "pg": {"name": "Patrologia Graeca (PG)"}
+  "co": {
+   "name": "Calvin's Collected Works (CO)"
+  },
+  "cr-bullinger": {
+   "name": "Bullinger's Works",
+   "full": "Public-domain editions under investigation"
+  },
+  "pl": {
+   "name": "Patrologia Latina (PL)"
+  },
+  "pg": {
+   "name": "Patrologia Graeca (PG)"
+  }
  },
  "news": {
   "PDF 7권 새 판: KLCCL 표지 적용(앞 겉표지·공백·내표지, 뒤 공백·펴낸 곳 정보·공백·뒷표지, 저자별 표지 색). 본문과 차례는 그대로": "New editions of seven PDFs with KLCCL covers (front: outer cover, blank, title page; back: blank, colophon, blank, back cover; cover color by author). Text and table of contents unchanged",
@@ -56,7 +126,8 @@
   "사이트 틀 공개: CO 1–59 지도, 성경 66권 대조, 총서, 진행 현황": "Site framework released: CO 1–59 map, 66-book Bible table, series, progress",
   "프로젝트 첫 목표 확정: 칼빈 전집(CO) 1–59권 전체 번역": "First project goal set: translating all of Calvin's collected works (CO 1–59)",
   "「욥기 설교 2」 제62편 원문 대역 연결": "Sermons on Job 2, Sermon 62: parallel original text linked",
-  "「욥기 설교 1」(제1–61편) AI 초벌 번역판 PDF 완성": "Sermons on Job 1 (Sermons 1–61): AI draft translation PDF completed"
+  "「욥기 설교 1」(제1–61편) AI 초벌 번역판 PDF 완성": "Sermons on Job 1 (Sermons 1–61): AI draft translation PDF completed",
+  "스킬더 『하이델베르크 요리문답 해설』 1권(제1–4주일, 문 1–11) 머리말과 33편(§1–32) 원문 대역 공개, PDF(722쪽, 부록 4종) 함께 제공. 2–4권은 차례로 이어서 공개": "Schilder, Commentary on the Heidelberg Catechism, vol. 1 (Lord's Days 1–4, Q&A 1–11): foreword and §§1–32 published with the Dutch original, plus PDF (722 pages, four appendices). Volumes 2–4 to follow"
  },
  "works": {
   "calvin/co01-institutio": {
@@ -64,72 +135,189 @@
    "cite_title": "Calvin's Collected Works, vol. 1, Institutes",
    "summary": "Volume 1 of Calvin's collected works (Institutio religionis christianae), in CO column order: the first edition of the Institutes (Basel, 1536: the dedicatory preface to Francis I and six chapters), and the 1539–1554 edition, which combines the 1539 Strasbourg edition with the additions of the 1543, 1545, 1550, 1553, and 1554 editions (the letter to the reader, the dedicatory preface, and 21 chapters).",
    "orig_label": "Original (CO 1, 1863, uncorrected OCR)",
-   "unit": "Part", "units": "parts",
-   "volumes": {"1": "Institutes, 1536 and 1539–1554 Editions (CO 1)"}
+   "unit": "Part",
+   "units": "parts",
+   "volumes": {
+    "1": "Institutes, 1536 and 1539–1554 Editions (CO 1)"
+   }
   },
   "calvin/co02-institutio": {
    "title": "Institutes of the Christian Religion, 1559 Edition (CO 2)",
    "cite_title": "Calvin's Collected Works, vol. 2, Institutes",
    "summary": "Volume 2 of Calvin's collected works (Institutio christianae religionis, 1559). The final Geneva edition of 1559, which Calvin thoroughly revised and rearranged into four books and 80 chapters, in CO column order from the letter to the reader and the dedicatory preface to Francis I through Book 4, Chapter 20, on civil government.",
    "orig_label": "Original (CO 2, 1864, uncorrected OCR)",
-   "unit": "Part", "units": "parts",
-   "volumes": {"2": "Institutes, 1559 Edition (CO 2)"}
+   "unit": "Part",
+   "units": "parts",
+   "volumes": {
+    "2": "Institutes, 1559 Edition (CO 2)"
+   }
   },
   "calvin/co08-tractatus": {
    "title": "Calvin's Treatises (CO 8)",
    "cite_title": "Calvin's Collected Works, vol. 8, Treatises",
    "summary": "Volume 8 of Calvin's collected works (Tractatus theologici minores 4), in CO column order: On Scandals (1550), the Congregation on Eternal Election (1551), the records of the Bolsec trial, On the Eternal Predestination of God (1552), Four Sermons (1552), the Defense of the Orthodox Faith concerning the Holy Trinity (1554), and thirty letters of Servetus with the records of his trial.",
    "orig_label": "Original (CO 8, 1870, uncorrected OCR)",
-   "unit": "Part", "units": "parts",
-   "volumes": {"4": "Calvin's Treatises 4 (CO 8)"}
+   "unit": "Part",
+   "units": "parts",
+   "volumes": {
+    "4": "Calvin's Treatises 4 (CO 8)"
+   }
   },
   "calvin/hezekiah-isaiah-sermons": {
    "title": "Sermons on the Song of Hezekiah and Isaiah 53",
    "cite_title": "Sermons on the Song of Hezekiah and Isaiah 53",
    "summary": "Four sermons on the Song of Hezekiah (Isaiah 38) and seven sermons on Isaiah 53, with the prefaces to the first editions of both collections.",
    "orig_label": "Original (French)",
-   "unit": "Sermon", "units": "parts",
-   "volumes": {"4": "Sermons on the Song of Hezekiah and Isaiah 53"}
+   "unit": "Sermon",
+   "units": "parts",
+   "volumes": {
+    "4": "Sermons on the Song of Hezekiah and Isaiah 53"
+   }
   },
   "calvin/job-sermons": {
    "title": "Sermons on Job",
    "cite_title": "Sermons on Job",
    "summary": "The 159 sermons Calvin preached through the whole book of Job in Geneva in 1554–1555, first published in Geneva in 1563.",
    "orig_label": "Original (French, 1563)",
-   "unit": "Sermon", "units": "sermons",
-   "volumes": {"1": "Sermons on Job 1", "2": "Sermons on Job 2", "3": "Sermons on Job 3"}
+   "unit": "Sermon",
+   "units": "sermons",
+   "volumes": {
+    "1": "Sermons on Job 1",
+    "2": "Sermons on Job 2",
+    "3": "Sermons on Job 3"
+   }
   },
   "schilder/wat-is-de-hel": {
    "title": "What Is Hell?",
    "cite_title": "What Is Hell?",
    "summary": "The third edition (1932) by Klaas Schilder (1890–1952), based on his 1919 lecture in Vlaardingen and greatly expanded in 1932. It sets out the biblical teaching on hell from the standpoint of Reformed theology and answers objections.",
    "orig_label": "Original (Dutch, 3rd ed. 1932, DBNL)",
-   "source_short": "3rd ed. 1932", "page_prefix": "p. ",
-   "unit": "Chapter", "units": "chapters",
-   "volumes": {"1": "What Is Hell?"}
+   "source_short": "3rd ed. 1932",
+   "page_prefix": "p. ",
+   "unit": "Chapter",
+   "units": "chapters",
+   "volumes": {
+    "1": "What Is Hell?"
+   }
+  },
+  "schilder/heidelbergsche-catechismus": {
+   "title": "Commentary on the Heidelberg Catechism",
+   "cite_title": "Commentary on the Heidelberg Catechism",
+   "summary": "Klaas Schilder's (1890–1952) commentary on the Heidelberg Catechism, begun in 1938 and published in four volumes in 1947–1953. It covers Lord's Days 1–10 (Questions 1–28) and remained unfinished at the author's death.",
+   "orig_label": "Original (Dutch, 1947–1953, DBNL)",
+   "source_short": "1947–1953 ed.",
+   "page_prefix": "p. ",
+   "unit": "§",
+   "units": "sections",
+   "volumes": {
+    "1": "Commentary on the Heidelberg Catechism 1 (Lord's Days 1–4)",
+    "2": "Commentary on the Heidelberg Catechism 2 (Lord's Days 5–7)",
+    "3": "Commentary on the Heidelberg Catechism 3 (Lord's Days 8–9)",
+    "4": "Commentary on the Heidelberg Catechism 4 (Lord's Day 10)"
+   }
   }
  },
  "bible_books": {
-  "gen": "Genesis", "exo": "Exodus", "lev": "Leviticus", "num": "Numbers", "deu": "Deuteronomy", "jos": "Joshua", "jdg": "Judges", "rut": "Ruth",
-  "1sa": "1 Samuel", "2sa": "2 Samuel", "1ki": "1 Kings", "2ki": "2 Kings", "1ch": "1 Chronicles", "2ch": "2 Chronicles", "ezr": "Ezra", "neh": "Nehemiah",
-  "est": "Esther", "job": "Job", "psa": "Psalms", "pro": "Proverbs", "ecc": "Ecclesiastes", "sng": "Song of Songs", "isa": "Isaiah", "jer": "Jeremiah",
-  "lam": "Lamentations", "ezk": "Ezekiel", "dan": "Daniel", "hos": "Hosea", "jol": "Joel", "amo": "Amos", "oba": "Obadiah", "jon": "Jonah",
-  "mic": "Micah", "nam": "Nahum", "hab": "Habakkuk", "zep": "Zephaniah", "hag": "Haggai", "zec": "Zechariah", "mal": "Malachi",
-  "mat": "Matthew", "mrk": "Mark", "luk": "Luke", "jhn": "John", "act": "Acts", "rom": "Romans", "1co": "1 Corinthians", "2co": "2 Corinthians",
-  "gal": "Galatians", "eph": "Ephesians", "php": "Philippians", "col": "Colossians", "1th": "1 Thessalonians", "2th": "2 Thessalonians",
-  "1ti": "1 Timothy", "2ti": "2 Timothy", "tit": "Titus", "phm": "Philemon", "heb": "Hebrews", "jas": "James", "1pe": "1 Peter", "2pe": "2 Peter",
-  "1jn": "1 John", "2jn": "2 John", "3jn": "3 John", "jud": "Jude", "rev": "Revelation"
+  "gen": "Genesis",
+  "exo": "Exodus",
+  "lev": "Leviticus",
+  "num": "Numbers",
+  "deu": "Deuteronomy",
+  "jos": "Joshua",
+  "jdg": "Judges",
+  "rut": "Ruth",
+  "1sa": "1 Samuel",
+  "2sa": "2 Samuel",
+  "1ki": "1 Kings",
+  "2ki": "2 Kings",
+  "1ch": "1 Chronicles",
+  "2ch": "2 Chronicles",
+  "ezr": "Ezra",
+  "neh": "Nehemiah",
+  "est": "Esther",
+  "job": "Job",
+  "psa": "Psalms",
+  "pro": "Proverbs",
+  "ecc": "Ecclesiastes",
+  "sng": "Song of Songs",
+  "isa": "Isaiah",
+  "jer": "Jeremiah",
+  "lam": "Lamentations",
+  "ezk": "Ezekiel",
+  "dan": "Daniel",
+  "hos": "Hosea",
+  "jol": "Joel",
+  "amo": "Amos",
+  "oba": "Obadiah",
+  "jon": "Jonah",
+  "mic": "Micah",
+  "nam": "Nahum",
+  "hab": "Habakkuk",
+  "zep": "Zephaniah",
+  "hag": "Haggai",
+  "zec": "Zechariah",
+  "mal": "Malachi",
+  "mat": "Matthew",
+  "mrk": "Mark",
+  "luk": "Luke",
+  "jhn": "John",
+  "act": "Acts",
+  "rom": "Romans",
+  "1co": "1 Corinthians",
+  "2co": "2 Corinthians",
+  "gal": "Galatians",
+  "eph": "Ephesians",
+  "php": "Philippians",
+  "col": "Colossians",
+  "1th": "1 Thessalonians",
+  "2th": "2 Thessalonians",
+  "1ti": "1 Timothy",
+  "2ti": "2 Timothy",
+  "tit": "Titus",
+  "phm": "Philemon",
+  "heb": "Hebrews",
+  "jas": "James",
+  "1pe": "1 Peter",
+  "2pe": "2 Peter",
+  "1jn": "1 John",
+  "2jn": "2 John",
+  "3jn": "3 John",
+  "jud": "Jude",
+  "rev": "Revelation"
  },
  "versions": {
-  "krv": {"name": "Korean Revised Version", "note": "Korean Revised Version (Gaeyeok Hangeul, 1961), Korean Bible Society. Copyright expired (December 31, 2011)."},
-  "gnv": {"name": "Geneva Bible 1599", "note": "Geneva Bible 1599. A Reformed English Bible produced in Calvin's Geneva. Public domain."},
-  "kjv": {"name": "King James Version (KJV)", "note": "King James (Authorized) Version. Words in brackets, supplied by the translators, are shown in italics. Public domain."},
-  "webp": {"name": "World English Bible", "note": "World English Bible (66-book edition, LORD form). Public domain. \"World English Bible\" is a trademark."},
-  "bsb": {"name": "Berean Standard Bible", "note": "Berean Standard Bible. Dedicated to the public domain on April 30, 2023."}
+  "krv": {
+   "name": "Korean Revised Version",
+   "note": "Korean Revised Version (Gaeyeok Hangeul, 1961), Korean Bible Society. Copyright expired (December 31, 2011)."
+  },
+  "gnv": {
+   "name": "Geneva Bible 1599",
+   "note": "Geneva Bible 1599. A Reformed English Bible produced in Calvin's Geneva. Public domain."
+  },
+  "kjv": {
+   "name": "King James Version (KJV)",
+   "note": "King James (Authorized) Version. Words in brackets, supplied by the translators, are shown in italics. Public domain."
+  },
+  "webp": {
+   "name": "World English Bible",
+   "note": "World English Bible (66-book edition, LORD form). Public domain. \"World English Bible\" is a trademark."
+  },
+  "bsb": {
+   "name": "Berean Standard Bible",
+   "note": "Berean Standard Bible. Dedicated to the public domain on April 30, 2023."
+  }
  },
  "terms": {
-  "프랑스어": "French", "라틴어": "Latin", "네덜란드어": "Dutch", "라틴어·프랑스어": "Latin · French", "프랑스어·라틴어": "French · Latin",
-  "주석": "Commentary", "설교": "Sermons", "주석·설교": "Commentary & sermons", "확인 중": "Under review", "없음": "None",
+  "프랑스어": "French",
+  "라틴어": "Latin",
+  "네덜란드어": "Dutch",
+  "라틴어·프랑스어": "Latin · French",
+  "프랑스어·라틴어": "French · Latin",
+  "주석": "Commentary",
+  "설교": "Sermons",
+  "주석·설교": "Commentary & sermons",
+  "확인 중": "Under review",
+  "없음": "None",
   "모세 네 책 조화(Harmonia)": "Harmony of the last four books of Moses (Harmonia)",
   "모세 네 책 조화": "Harmony of the last four books of Moses",
   "모세 네 책 조화, 신명기 설교": "Harmony of the last four books of Moses; sermons on Deuteronomy",
@@ -141,7 +329,12 @@
   "강의록": "Lectures",
   "공관복음 조화": "Harmony of the Gospels",
   "칼빈 전집(CO)에 실린 주석·설교 기준. 설교 수록 범위는 CO 조사표를 만들며 보완한다.": "Based on the commentaries and sermons in Calvin's collected works (CO). The coverage of sermons will be completed as the CO survey proceeds.",
-  "기독교 강요": "Institutes", "논고": "Treatises", "서신": "Letters", "연보": "Annals", "보유·색인": "Supplements & Index", "서지": "Bibliography",
+  "기독교 강요": "Institutes",
+  "논고": "Treatises",
+  "서신": "Letters",
+  "연보": "Annals",
+  "보유·색인": "Supplements & Index",
+  "서지": "Bibliography",
   "『기독교 강요』 여러 판(1536–1560)": "Institutes, various editions (1536–1560)",
   "논고·교리문답·신앙고백": "Treatises, catechisms, confessions",
   "서신(Thesaurus epistolicus)": "Letters (Thesaurus epistolicus)",
