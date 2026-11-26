@@ -1,0 +1,37 @@
+{
+  "id": "belgic-confession",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "three-forms",
+  "title": "벨기에 신앙고백",
+  "cite_title": "벨기에 신앙고백",
+  "orig_lang": "fr",
+  "orig_label": "원문 (프랑스어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "귀도 드 브레가 1561년 플랑드르와 네덜란드 교회를 위해 프랑스어로 쓰고 1619년 도르트 총회가 개정한 신앙고백 37조. Schaff 판의 프랑스어 본문(1580년 정본 사본, 도르트 개정)과 조 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "벨기에 신앙고백",
+      "from": 1,
+      "to": 1,
+      "labels": [
+        "37조"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "프랑스어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 3권 (1919년 4판)",
+  "page_prefix": "제",
+  "page_suffix": "조",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds3 (iv.viii) 텍스트, Schaff 3권 383–436쪽"
+}

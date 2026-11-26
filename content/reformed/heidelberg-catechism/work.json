@@ -1,0 +1,37 @@
+{
+  "id": "heidelberg-catechism",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "three-forms",
+  "title": "하이델베르크 요리문답",
+  "cite_title": "하이델베르크 요리문답",
+  "orig_lang": "de",
+  "orig_label": "원문 (독일어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "1563년 팔츠 선제후 프리드리히 3세의 명으로 하이델베르크에서 펴낸 요리문답 129문. Schaff 판의 1563년 독일어 본문과 문답 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "하이델베르크 요리문답",
+      "from": 1,
+      "to": 1,
+      "labels": [
+        "129문"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "독일어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 3권 (1919년 4판)",
+  "page_prefix": "제",
+  "page_suffix": "문",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds3 (iv.vi) 텍스트, Schaff 3권 307–355쪽"
+}

@@ -1,0 +1,46 @@
+{
+  "id": "canons-of-dort",
+  "author": "reformed",
+  "series": "creeds",
+  "branch": "three-forms",
+  "title": "도르트 신조",
+  "cite_title": "도르트 신조",
+  "orig_lang": "la",
+  "orig_label": "원문 (라틴어)",
+  "unit": "편",
+  "co": [],
+  "bible": [],
+  "summary": "1618–1619년 도르트레흐트 전국 총회가 논쟁이 된 다섯 교리에 관해 내린 판단. 서문, 다섯 교리의 조항과 오류 배척, 결론을 Schaff 판의 라틴어 공인 본문과 조 단위로 나란히 읽습니다.",
+  "volumes": [
+    {
+      "no": 1,
+      "title": "도르트 신조",
+      "from": 1,
+      "to": 10,
+      "labels": [
+        "서문",
+        "첫째 교리",
+        "첫째 교리 오류 배척",
+        "둘째 교리",
+        "둘째 교리 오류 배척",
+        "셋째·넷째 교리",
+        "셋째·넷째 교리 오류 배척",
+        "다섯째 교리",
+        "다섯째 교리 오류 배척",
+        "결론"
+      ],
+      "co": null
+    }
+  ],
+  "translated_offline": "",
+  "missing": "",
+  "genre": "catechisms",
+  "lang": "라틴어",
+  "source": "schaff",
+  "source_short": "Schaff, The Creeds of Christendom 3권 (1919년 4판)",
+  "page_prefix": "§",
+  "page_suffix": "",
+  "range_prefix": "Schaff ",
+  "check_label": "Schaff 판 쪽",
+  "source_note": "CCEL creeds3 (iv.xvi) 텍스트, Schaff 3권 550–577쪽. 서명자 명단, 항론파에 대한 판결, 연방의회 승인문(577–580쪽)은 옮기지 않음"
+}

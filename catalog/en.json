@@ -34,6 +34,10 @@
   "schilder": {
    "name": "Klaas Schilder",
    "desc": "Dutch Reformed theologian. He taught at the Theological Seminary in Kampen and is known for his works on covenant theology and on the sufferings of Christ."
+  },
+  "reformed": {
+   "name": "The Reformed Churches",
+   "desc": "Confessions and catechisms publicly adopted by the Reformed churches through their synods and assemblies after the Reformation. These are not the work of a single author but documents the church has confessed together."
   }
  },
  "eras": {
@@ -107,6 +111,10 @@
     "ancient": {
      "name": "Ancient creeds",
      "note": "Translated from the Latin and Greek originals in Schaff, vol. 2."
+    },
+    "three-forms": {
+     "name": "The Three Forms of Unity",
+     "note": "The Belgic Confession (French), the Heidelberg Catechism (German), and the Canons of Dort (Latin), from Schaff, vol. 3."
     }
    }
   }
@@ -144,7 +152,8 @@
   "「욥기 설교 1」(제1–61편) AI 초벌 번역판 PDF 완성": "Sermons on Job 1 (Sermons 1–61): AI draft translation PDF completed",
   "스킬더 『하이델베르크 요리문답 해설』 1권(제1–4주일, 문 1–11) 머리말과 33편(§1–32) 원문 대역 공개, PDF(722쪽, 부록 4종) 함께 제공. 2–4권은 차례로 이어서 공개": "Schilder, Commentary on the Heidelberg Catechism, vol. 1 (Lord's Days 1–4, Q&A 1–11): foreword and §§1–32 published with the Dutch original, plus PDF (722 pages, four appendices). Volumes 2–4 to follow",
   "스킬더 『하이델베르크 요리문답 해설』 2권(제5–7주일, 문 12–23) §33–57 원문 대역 공개, PDF(875쪽, 부록 4종). 1권도 저자 정오표를 반영한 새 판(722쪽)으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vol. 2 (Lord's Days 5–7, Q&A 12–23): §§33–57 published with the Dutch original, plus PDF (875 pages, four appendices). Vol. 1 replaced with a new edition incorporating the author's errata (722 pages)",
-  "스킬더 『하이델베르크 요리문답 해설』 3권(제8–9주일, 문 24–26)과 4권(제10주일, 문 27–28) 원문 대역 공개, PDF(709쪽·429쪽, 부록 4종). 네 권 전체(§1–82) 완간, 1·2권도 엮은이 정오를 반영한 새 판으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vols. 3 (Lord's Days 8–9, Q&A 24–26) and 4 (Lord's Day 10, Q&A 27–28) published with the Dutch original, plus PDFs (709 and 429 pages, four appendices). All four volumes (§§1–82) are now complete; vols. 1–2 replaced with new editions incorporating the editor's late errata"
+  "스킬더 『하이델베르크 요리문답 해설』 3권(제8–9주일, 문 24–26)과 4권(제10주일, 문 27–28) 원문 대역 공개, PDF(709쪽·429쪽, 부록 4종). 네 권 전체(§1–82) 완간, 1·2권도 엮은이 정오를 반영한 새 판으로 교체": "Schilder, Commentary on the Heidelberg Catechism, vols. 3 (Lord's Days 8–9, Q&A 24–26) and 4 (Lord's Day 10, Q&A 27–28) published with the Dutch original, plus PDFs (709 and 429 pages, four appendices). All four volumes (§§1–82) are now complete; vols. 1–2 replaced with new editions incorporating the editor's late errata",
+  "신조 탭에 세 일치 신조 공개: 벨기에 신앙고백 37조(프랑스어), 하이델베르크 요리문답 129문(1563년 독일어), 도르트 신조(라틴어 공인 본문, 서문·다섯 교리의 조항과 오류 배척·결론 10편)를 Schaff 3권 원문과 조항 단위 대역으로": "The Three Forms of Unity on the Creeds tab: the Belgic Confession in 37 articles (French), the Heidelberg Catechism in 129 questions (German, 1563), and the Canons of Dort (official Latin text: preface, the articles and rejections of errors of the five heads, and conclusion, in 10 parts), article by article alongside the original text in Schaff, vol. 3"
  },
  "works": {
   "ecumenical/ancient-creeds": {
@@ -243,6 +252,42 @@
     "2": "Commentary on the Heidelberg Catechism 2 (Lord's Days 5–7)",
     "3": "Commentary on the Heidelberg Catechism 3 (Lord's Days 8–9)",
     "4": "Commentary on the Heidelberg Catechism 4 (Lord's Day 10)"
+   }
+  },
+  "reformed/belgic-confession": {
+   "title": "The Belgic Confession",
+   "cite_title": "The Belgic Confession",
+   "summary": "The confession of faith in 37 articles written in French by Guido de Brès in 1561 for the churches of Flanders and the Netherlands and revised by the Synod of Dort in 1619, read article by article alongside the French text in Schaff's edition (the authentic manuscript of 1580 with the Dort revision).",
+   "orig_label": "Original (French)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Belgic Confession"
+   }
+  },
+  "reformed/heidelberg-catechism": {
+   "title": "The Heidelberg Catechism",
+   "cite_title": "The Heidelberg Catechism",
+   "summary": "The catechism of 129 questions published at Heidelberg in 1563 by order of Elector Frederick III of the Palatinate, read question by question alongside the German text of 1563 in Schaff's edition.",
+   "orig_label": "Original (German)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Heidelberg Catechism"
+   }
+  },
+  "reformed/canons-of-dort": {
+   "title": "The Canons of Dort",
+   "cite_title": "The Canons of Dort",
+   "summary": "The judgment of the National Synod of Dordrecht (1618–1619) on the five disputed heads of doctrine: the preface, the articles and rejections of errors of each head, and the conclusion, read article by article alongside the official Latin text in Schaff's edition.",
+   "orig_label": "Original (Latin)",
+   "unit": "Part",
+   "units": "parts",
+   "source_short": "Schaff, The Creeds of Christendom, vol. 3 (4th ed., 1919)",
+   "volumes": {
+    "1": "The Canons of Dort"
    }
   }
  },

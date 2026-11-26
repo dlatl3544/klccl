@@ -15,9 +15,9 @@
    {"title": "프랑스 신앙고백", "en": "French Confession", "year": "1559", "lang": "프랑스어", "source": "CO 9, Schaff 3권", "en_year": "1559", "en_lang": "French", "en_source": "CO 9, Schaff vol. 3"}
   ]},
   {"id": "three-forms", "name": "세 일치 신조", "en": "The Three Forms of Unity", "items": [
-   {"title": "벨기에 신앙고백", "en": "Belgic Confession", "year": "1561", "lang": "프랑스어(라틴어 병기)", "source": "Schaff 3권, Niemeyer", "en_year": "1561", "en_lang": "French (with Latin)", "en_source": "Schaff vol. 3, Niemeyer"},
-   {"title": "하이델베르크 요리문답", "en": "Heidelberg Catechism", "year": "1563", "lang": "독일어(라틴어 병기)", "source": "Schaff 3권, Niemeyer", "en_year": "1563", "en_lang": "German (with Latin)", "en_source": "Schaff vol. 3, Niemeyer"},
-   {"title": "도르트 신조", "en": "Canons of Dort", "year": "1619", "lang": "라틴어", "source": "Schaff 3권", "en_year": "1619", "en_lang": "Latin", "en_source": "Schaff vol. 3"}
+   {"title": "벨기에 신앙고백", "en": "Belgic Confession", "year": "1561", "lang": "프랑스어", "source": "Schaff 3권", "work": "reformed/belgic-confession", "no": 1, "en_year": "1561", "en_lang": "French", "en_source": "Schaff vol. 3"},
+   {"title": "하이델베르크 요리문답", "en": "Heidelberg Catechism", "year": "1563", "lang": "독일어", "source": "Schaff 3권", "work": "reformed/heidelberg-catechism", "no": 1, "en_year": "1563", "en_lang": "German", "en_source": "Schaff vol. 3"},
+   {"title": "도르트 신조", "en": "Canons of Dort", "year": "1619", "lang": "라틴어", "source": "Schaff 3권", "work": "reformed/canons-of-dort", "no": 1, "en_year": "1619", "en_lang": "Latin", "en_source": "Schaff vol. 3"}
   ]},
   {"id": "swiss-scots", "name": "스위스와 스코틀랜드", "en": "Swiss and Scottish Confessions", "items": [
    {"title": "제1 스위스 신앙고백", "en": "First Helvetic Confession", "year": "1536", "lang": "라틴어·독일어", "source": "Niemeyer, Müller", "en_year": "1536", "en_lang": "Latin & German", "en_source": "Niemeyer, Müller"},
