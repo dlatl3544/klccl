@@ -501,13 +501,8 @@ def 단위장들(w, u) -> list:
 def 홈():
     it = 모든항목()
     c = 집계(it)
-    공개 = [(w, n) for w in WORKS for n in sorted(w["units"])]
-    대역 = [(w, n) for w, n in 공개 if w["units"][n]["orig"]]
-    시작 = 대역[0] if 대역 else (공개[0] if 공개 else None)
-    시작단추 = (f'<a class="btn on" href="{{R}}{단위주소(*시작)}">'
-            + T(f'대역 읽기 시작: 칼빈 「{e(시작[0]["title"])}」 제{시작[1]}편',
-                f'Start reading: Calvin, {e(시작[0]["title"])}, {e(제(시작[1], 시작[0]))}') + '</a> '
-            if 시작 else "")
+    # 웹에 공개된 도서 권수: 공개된 편(웹 또는 대역)이 하나라도 있는 권
+    공개권 = sum(1 for w in WORKS for v in w["volumes"] if any(x["s"] in (2, 3) for x in v["items"]))
     둘러보기 = [("bible/", T("성경", "Bible"), T("개역한글판 66권을 책처럼 펼쳐 읽습니다. 영어 번역본과 나란히 볼 수 있습니다.",
                                              "Read all 66 books of the Korean Revised Version laid open like a book, side by side with English translations.")),
             ("creeds/", T("신조", "Creeds"), T("신경과 신앙고백, 요리문답을 원문과 나란히 읽습니다.",
@@ -520,16 +515,13 @@ def 홈():
                                                "Browse by author, from the Church Fathers to the Reformers and the Puritans."))]
     카드 = "".join(f'<a class="card" href="{{R}}{h}"><h3>{t}</h3><p>{d}</p></a>' for h, t, d in 둘러보기)
     소식 = "".join(f"<tr><td>{e(d)}</td><td>{e(t)}</td></tr>" for d, t in LIB["news"][:4])
-    co진행 = sum(1 for v in CO["volumes"] if CO진행(v["vol"]) > 0)
     if LANG == "en":
         본문 = f"""<div class="hero"><div class="en">{e(SITE['name'])}</div>
-<h1>{e(SITE['full'])}</h1><p class="lead">{e(SITE['tagline'])}</p>
-<p>{시작단추}<a class="btn" href="{{R}}about/principles/">Principles of this library</a></p>
-<div class="stats">
+<div class="hero-title"><h1>{e(SITE['full'])}</h1><a class="btn" href="{{R}}about/principles/">Principles of this library</a></div>
+<p class="lead">{e(SITE['tagline'])}</p>
+<div class="stats two">
 <div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>authors in the library</span></div>
-<div class="stat"><b>{c[1]+c[2]+c[3]}</b><span>parts translated</span></div>
-<div class="stat"><b>{c[2]+c[3]}</b><span>parts readable on the web</span></div>
-<div class="stat"><b>{co진행}/59</b><span>volumes of Calvin's works begun</span></div></div></div>
+<div class="stat"><b>{공개권}</b><span>volumes published on the web</span></div></div></div>
 <div class="box">The English pages are for finding your way around the library. The translations themselves, the PDFs, and the psalter lyrics are in Korean, shown next to the original Latin, French, or Dutch text.</div>
 <h2>Explore</h2><div class="cards">{카드}</div>
 <h2>The current goal: the 59 volumes of Calvin's works</h2>
@@ -544,13 +536,11 @@ def 홈():
         쪽들["index.html"] = 틀("index.html", "", 본문, "home")
         return
     본문 = f"""<div class="hero"><div class="en">{e(SITE['en'])}</div>
-<h1>{e(SITE['name'])} {e(SITE['full'])}</h1><p class="lead">{e(SITE['tagline'])}</p>
-<p>{시작단추}<a class="btn" href="{{R}}about/principles/">이 도서관의 원칙</a></p>
-<div class="stats">
+<div class="hero-title"><h1>{e(SITE['name'])} {e(SITE['full'])}</h1><a class="btn" href="{{R}}about/principles/">이 도서관의 원칙</a></div>
+<p class="lead">{e(SITE['tagline'])}</p>
+<div class="stats two">
 <div class="stat"><b>{len([a for a in LIB['authors'] if a['ready']])}</b><span>도서관에 오른 저자</span></div>
-<div class="stat"><b>{c[1]+c[2]+c[3]}</b><span>번역을 마친 편</span></div>
-<div class="stat"><b>{c[2]+c[3]}</b><span>웹에서 읽을 수 있는 편</span></div>
-<div class="stat"><b>{co진행}/59</b><span>작업을 시작한 칼빈 전집 권</span></div></div></div>
+<div class="stat"><b>{공개권}</b><span>웹에 공개된 도서 권수</span></div></div></div>
 <h2>둘러보기</h2><div class="cards">{카드}</div>
 <h2>지금의 목표: 칼빈 전집 59권</h2>
 <p>첫 목표는 19세기에 간행된 칼빈 전집(CO, 1863–1900) 59권 전체를 원문에서 한국어로 옮기는 것입니다. 번역에는 오랜 시간이 걸리므로, 마치는 대로 한 편씩 더합니다. 그다음에는 다른 종교개혁자와 교부, 청교도의 공유 저작물로 서가를 넓힙니다.</p>

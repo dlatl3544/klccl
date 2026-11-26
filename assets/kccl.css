@@ -195,6 +195,9 @@
   .page p{margin:0 0 .8em}
   .hero{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:34px 32px;margin-bottom:22px}
   .hero h1{font-size:34px}
+  .hero-title{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px}
+  .hero-title h1{margin:0}
+  .stats.two{grid-template-columns:repeat(2,1fr);max-width:520px}
   .hero .en{font-family:var(--fr);font-style:italic;color:var(--gold);font-size:17px}
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 0}
   .stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
