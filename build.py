@@ -620,24 +620,21 @@ def 시편찬송쪽():
     """시편찬송: 한국어 제네바 시편가 150편(악보 PDF, MusicXML, 가사)과 개역한글 시편"""
     시편 = next(b for b in BIBLE["books"] if b["abbr"] == "시")
     칸 = "".join(f'<a class="cell" href="{{R}}bible/{시편["code"]}/{n}.html" title="시편 {n}편 (개역한글판)">{n}</a>' for n in range(1, 151))
-    줄들 = "".join(
-        f'<tr><td><a href="{{R}}psalter/{p["n"]:03d}.html">시편 {p["n"]}편</a></td>'
-        f'<td>{e(p["verses"][0][0])} …</td><td class="mini">{e(p["tune"])}<br>{e(p["meter"])}</td>'
-        f'<td style="text-align:center">{len(p["verses"])}</td>'
-        f'<td><a href="{{R}}psalter/pdf/ps{p["n"]:03d}.pdf">PDF</a></td></tr>' for p in PSALTER)
     상태 = "공개(AI 초벌 편역 · 신학 감수 전)" if PSALTER else "예정"
     본문 = f"""<h1>시편찬송</h1><p class="lead">종교개혁 교회는 시편을 운율로 옮겨 회중이 함께 불렀습니다. 칼빈의 제네바 교회에서 완성된 「제네바 시편가」(1562)가 그 대표입니다.</p>
 <h2>싣는 것</h2><table class="t"><tr><th style="width:190px">자료</th><th>내용</th><th style="width:150px">상태</th></tr>
 <tr><td>한국어 제네바 시편가</td><td>제네바 곡조(1539–1562)와 클로드 구디멜의 4성부 화성(1564)에 개역한글판 시편을 운율에 맞게 편역한 가사를 붙인 150편. 곡마다 악보 PDF와 MusicXML(출력용·반주용)을 내려받을 수 있습니다</td><td>{상태}</td></tr>
 <tr><td>제네바 시편가 원문</td><td>마로와 베자의 프랑스어 운율 시편(16세기, 공유 저작물)</td><td>예정</td></tr>
 <tr><td>칼빈의 서문</td><td>시편가에 붙인 칼빈의 서문(1542·1543)</td><td>예정</td></tr>
-<tr><td>시편 본문</td><td>개역한글판 시편 150편 (아래에서 바로 읽기)</td><td>공개</td></tr></table>
+<tr><td>시편 본문</td><td>개역한글판 시편 150편 (곡별 쪽과 성경 메뉴에서 읽기)</td><td>공개</td></tr></table>
 <div class="box">오늘날 교회에서 쓰는 한국어 시편찬송가와 찬송가 가사·편곡은 대부분 저작권이 살아 있어 싣지 않습니다. 이 도서관은 16세기 원문과 곡조처럼 공유 저작물인 것만 싣고, 한국어 가사는 새로 옮겨 조건 없이 공개합니다. 선율과 화성은 genevanpsalter.com에 공개된 악보를 옮겼고, 한국어 가사와 편집 악보는 CC0로 공개합니다.</div>"""
     if PSALTER:
+        격자 = "".join(f'<a class="cell" href="{{R}}psalter/{p["n"]:03d}.html" title="시편 {p["n"]}편 · {e(p["tune"])}">{p["n"]}</a>' for p in PSALTER)
         본문 += f"""<h2>한국어 제네바 시편가 150편</h2>
-<p class="mini">가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 줄이거나 풀어 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보 PDF에는 빠르기와 도돌이표를 표시하지 않았습니다. 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
-<table class="t"><tr><th style="width:90px">시편</th><th>첫 줄</th><th>곡조 · 운율</th><th style="width:44px">절</th><th style="width:50px">악보</th></tr>{줄들}</table>"""
-    본문 += f"""<h2>시편 150편 (개역한글판)</h2><div class="grid">{칸}</div>"""
+<p class="mini">편 번호를 누르면 악보와 가사가 열립니다. 가사는 개역한글판(1961) 시편을 곡조의 음절 수에 맞게 옮긴 AI 초벌 편역판이며 신학 감수 전입니다. 악보에는 빠르기와 도돌이표를 표시하지 않았으니 가사 줄 수만큼 절을 되풀이해 부릅니다.</p>
+<div class="grid">{격자}</div>"""
+    else:
+        본문 += f"""<h2>시편 150편 (개역한글판)</h2><div class="grid">{칸}</div>"""
     쪽들["psalter/index.html"] = 틀("psalter/index.html", "시편찬송", 본문, "psalter", [("", SITE["name"]), (None, "시편찬송")])
     for i, p in enumerate(PSALTER):
         n = p["n"]
@@ -647,6 +644,10 @@ def 시편찬송쪽():
             + (f' <span class="mini">(시편 {e(구성[k])})</span>' if k in 구성 else "")
             + '<br>' + "<br>".join(e(x) for x in v) + "</div>"
             for k, v in enumerate(p["verses"], 1))
+        쪽수 = len(list((PSALTER_DIR / "img").glob(f"ps{n:03d}-*.png")))
+        악보 = "".join(f'<img src="img/ps{n:03d}-{k}.png" alt="시편 {n}편 악보 {k}쪽" loading="{"eager" if k == 1 else "lazy"}" '
+                      f'style="width:100%;max-width:820px;display:block;margin:0 auto 12px;background:#fff;border:1px solid var(--line);border-radius:6px">'
+                      for k in range(1, 쪽수 + 1))
         앞 = f'<a class="btn" href="{n-1:03d}.html">← 시편 {n-1}편</a> ' if i > 0 else ""
         뒤 = f'<a class="btn" href="{n+1:03d}.html">시편 {n+1}편 →</a>' if i < len(PSALTER) - 1 else ""
         본문 = f"""<h1>시편 {n}편</h1>
@@ -656,8 +657,9 @@ def 시편찬송쪽():
 <a class="btn" href="xml/ps{n:03d}.musicxml" download>MusicXML(출력용)</a>
 <a class="btn" href="xml/ps{n:03d}_accomp.musicxml" download>MusicXML(반주용, 전주·반복 포함)</a>
 <a class="btn" href="{{R}}bible/{시편["code"]}/{n}.html">개역한글 시편 {n}편 읽기</a></p>
+<h2>악보</h2>{악보}
 <h2>가사</h2><div style="font-family:var(--serif);font-size:17px;line-height:1.9">{절들}</div>
-<p>{앞}{뒤}</p>"""
+<p>{앞}<a class="btn" href="./">목록</a> {뒤}</p>"""
         쪽들[f"psalter/{n:03d}.html"] = 틀(f"psalter/{n:03d}.html", f"시편 {n}편 · 한국어 제네바 시편가", 본문, "psalter",
                                        [("", SITE["name"]), ("psalter/", "시편찬송"), (None, f"시편 {n}편")],
                                        설명=f"한국어 제네바 시편가 시편 {n}편: {p['tune']} 곡조의 악보 PDF, MusicXML, 가사")
@@ -912,7 +914,7 @@ def 쓰기():
                     (출력 / 저작주소(w) / "pdf").mkdir(parents=True, exist_ok=True)
                     shutil.copy2(원본, 출력 / 저작주소(w) / "pdf" / v["pdf"])
     # 한국어 제네바 시편가: content/psalter/genevan/{pdf,xml} → docs/psalter/{pdf,xml}
-    for 하위 in ("pdf", "xml"):
+    for 하위 in ("pdf", "xml", "img"):
         if (PSALTER_DIR / 하위).exists():
             shutil.copytree(PSALTER_DIR / 하위, 출력 / "psalter" / 하위)
     # 책 모양 읽기용 성경 본문: data/<번역본>/<책코드>.json = {"name", "chapters": [[[절, 본문], …], …]}
